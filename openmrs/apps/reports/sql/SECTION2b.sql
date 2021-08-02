@@ -367,6 +367,32 @@ from obs o
 														AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('2020-07-31' AS DATE)) BETWEEN 0 AND 28
 											))
         )lost)
+		
+		UNION ALL
+		
+		SELECT  '','Transfer_In_This_Month'
+		
+		UNION ALL
+		
+		SELECT  '','Transfer_Out_This_Month'
+		
+		UNION ALL
+		
+		SELECT  '','ART_Restart'
+		
+		UNION ALL
+		
+		SELECT  '','Dead'
+		
+		UNION ALL
+		
+		SELECT  '','Stopped'
+		
+		UNION ALL
+		
+		SELECT  '','Lost'
+	
     )all_lost
     )all_agg
     GROUP BY Heading
+	ORDER By FIELD (Heading,'Transfer_In_This_Month','Transfer_Out_This_Month','ART_Restart','Dead','Stopped','Lost' )

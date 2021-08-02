@@ -99,5 +99,24 @@ FROM
                         and concept_id = 3728 and value_numeric >= 1
             )ctx_d
             WHERE Age > 14)
+			
+			UNION ALL
+			
+			(SELECT  '','','Under1yr') 
+			
+			UNION ALL
+			
+			(SELECT  '','','1yr-4yrs') 
+			
+			UNION ALL
+			
+			(SELECT  '','','5yr-14yrs') 
+			
+			UNION ALL
+			
+			(SELECT  '','','Adults') 
+			
     )all_CTX
     )all_agg
+	GROUP BY Persons
+	ORDER BY FIELD (Persons,'Under1yr','1yr-4yrs','5yr-14yrs','Adults')
