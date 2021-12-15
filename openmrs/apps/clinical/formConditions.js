@@ -1538,7 +1538,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         }
                 else if (testingStrategy.includes('HIVTC, Self Test') && !testingStrategy.includes('HIVTC, Rapid Test')) {
                         conditions.show.push("HTC, Date Of Distribution","HTC, Distribution Mode","HTC, Kit Collected For","HTC, Key Pop","HTC, Tested for HIV in The Past 12 Months","HTC, HIVST Results");
-                        conditions.hide.push("HTC, Pre-test Counseling Set","HTC, Post-test Counseling Set");
+                        conditions.hide.push("HTC, Pre-test Counseling Set","HTC, HIV Test","HTC, Post-test Counseling Set");
                        
                         conditions.hide.push("ART, Condoms Dispensed");
                         conditions.hide.push("HIVTC, TB Screened");
