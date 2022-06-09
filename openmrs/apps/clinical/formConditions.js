@@ -1115,7 +1115,8 @@ Bahmni.ConceptSet.FormConditions.rules = {
                          var conditions = { assignedValues: [], error: [] };
                          var dateUtil = Bahmni.Common.Util.DateUtil;
                          var LNMPDate = new Date(LNMP);
-                         var EDDWithTime = dateUtil.addMonths(LNMPDate,9);
+                        //  var EDDWithTime = dateUtil.addMonths(LNMPDate,9);
+                         var EDDWithTime = dateUtil.addDays(LNMPDate,280);
                          var EDDWithoutTime = dateUtil.getDateWithoutTime(EDDWithTime);
 
                          if(LNMP) {
@@ -1123,7 +1124,9 @@ Bahmni.ConceptSet.FormConditions.rules = {
                             conditions.assignedValues.push({ field: "ANC, Estimated Date of Delivery", fieldValue:EDDWithoutTime ,autocalculate:true});
 
                          }
+                         console.log(conditions.assignedValues)
                          return conditions;
+                         
                  }
              },
 

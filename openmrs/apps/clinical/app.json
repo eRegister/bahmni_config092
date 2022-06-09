@@ -524,6 +524,15 @@
 				"Malaria, Death Date": "2015-12-01",
 				"HIVTC, ART Regimen": "",
 				"Posture": "Sitting"
+			},
+			"1st Dose":{
+				"multiSelect": true
+			},
+			"2nd Dose":{
+				"multiSelect": true
+			},
+			"3rd Dose":{
+				"multiSelect": true
 			}
 		},
 		"visitPage": {
