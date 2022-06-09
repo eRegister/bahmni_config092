@@ -1115,8 +1115,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                          var conditions = { assignedValues: [], error: [] };
                          var dateUtil = Bahmni.Common.Util.DateUtil;
                          var LNMPDate = new Date(LNMP);
-                        //  var EDDWithTime = dateUtil.addMonths(LNMPDate,9);
-                         var EDDWithTime = dateUtil.addDays(LNMPDate,280);
+                         var EDDWithTime = dateUtil.addMonths(LNMPDate,9);
                          var EDDWithoutTime = dateUtil.getDateWithoutTime(EDDWithTime);
 
                          if(LNMP) {
