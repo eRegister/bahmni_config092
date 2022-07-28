@@ -25,7 +25,7 @@ FROM (
 					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, HIV_Status, 'PITC' AS 'HIV_Testing_Initiation'
 							, 'Repeat' AS 'Testing_History' , sort_order
 					FROM
-									(select distinct patient.patient_id AS Id,
+									(select  patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -44,7 +44,7 @@ FROM (
 											 
 											 -- PROVIDER INITIATED TESTING AND COUNSELING
 											 AND o.person_id in (
-												select distinct os.person_id 
+												select  os.person_id 
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4227
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -54,7 +54,7 @@ FROM (
 											 
 											 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
 											 AND o.person_id in (
-												select distinct os.person_id
+												select  os.person_id
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2146
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -72,12 +72,12 @@ FROM (
 					ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
 
-					UNION
+					UNION ALL
 
 					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, HIV_Status, 'PITC' AS 'HIV_Testing_Initiation'
 							, 'New' AS 'Testing_History' , sort_order
 					FROM
-									(select distinct patient.patient_id AS Id,
+									(select  patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -96,7 +96,7 @@ FROM (
 											 
 											 -- PROVIDER INITIATED TESTING AND COUNSELING
 											 AND o.person_id in (
-												select distinct os.person_id 
+												select  os.person_id 
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4227
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -106,7 +106,7 @@ FROM (
 											 
 											 -- NEW TESTER, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
 											 AND o.person_id in (
-												select distinct os.person_id
+												select  os.person_id
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2147
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -124,12 +124,12 @@ FROM (
 					ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
 
-					UNION
+					UNION ALL
 
 					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, HIV_Status, 'CITC' AS 'HIV_Testing_Initiation'
 							, 'Repeat' AS 'Testing_History' , sort_order
 					FROM
-									(select distinct patient.patient_id AS Id,
+									(select  patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -148,7 +148,7 @@ FROM (
 											 
 											 -- PROVIDER INITIATED TESTING AND COUNSELING
 											 AND o.person_id in (
-												select distinct os.person_id 
+												select  os.person_id 
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4226
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -158,7 +158,7 @@ FROM (
 											 
 											 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
 											 AND o.person_id in (
-												select distinct os.person_id
+												select  os.person_id
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2146
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -175,12 +175,12 @@ FROM (
 									   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS HTSClients_HIV_Status
 					ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
-					UNION
+					UNION ALL
 
 					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, HIV_Status, 'CITC' AS 'HIV_Testing_Initiation'
 							, 'New' AS 'Testing_History' , sort_order
 					FROM
-									(select distinct patient.patient_id AS Id,
+									(select  patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -199,7 +199,7 @@ FROM (
 											 
 											 -- PROVIDER INITIATED TESTING AND COUNSELING
 											 AND o.person_id in (
-												select distinct os.person_id 
+												select  os.person_id 
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4226
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -209,7 +209,7 @@ FROM (
 											 
 											 -- NEW TESTER, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
 											 AND o.person_id in (
-												select distinct os.person_id
+												select  os.person_id
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2147
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -251,7 +251,7 @@ FROM (
 					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", HIV_Status, 'PITC' AS 'HIV_Testing_Initiation'
 							, 'Repeat' AS 'Testing_History'
 					FROM
-									(select distinct patient.patient_id AS Id,
+									(select  patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -267,7 +267,7 @@ FROM (
 											 
 											 -- PROVIDER INITIATED TESTING AND COUNSELING
 											 AND o.person_id in (
-												select distinct os.person_id 
+												select  os.person_id 
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4227
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -277,7 +277,7 @@ FROM (
 											 
 											 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
 											 AND o.person_id in (
-												select distinct os.person_id
+												select  os.person_id
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2146
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -291,12 +291,12 @@ FROM (
 									) AS HTSClients_HIV_Status_Total
 					)
 
-					UNION
+					UNION ALL
 
 					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", HIV_Status, 'PITC' AS 'HIV_Testing_Initiation'
 							, 'New' AS 'Testing_History'
 					FROM
-									(select distinct patient.patient_id AS Id,
+									(select  patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -312,7 +312,7 @@ FROM (
 											 
 											 -- PROVIDER INITIATED TESTING AND COUNSELING
 											 AND o.person_id in (
-												select distinct os.person_id 
+												select  os.person_id 
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4227
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -322,7 +322,7 @@ FROM (
 											 
 											 -- NEW TESTER, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
 											 AND o.person_id in (
-												select distinct os.person_id
+												select  os.person_id
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2147
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -336,12 +336,12 @@ FROM (
 									) AS HTSClients_HIV_Status_Total
 					)
 
-					UNION
+					UNION ALL
 
 					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", HIV_Status, 'CITC' AS 'HIV_Testing_Initiation'
 							, 'Repeat' AS 'Testing_History'
 					FROM
-									(select distinct patient.patient_id AS Id,
+									(select  patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -357,7 +357,7 @@ FROM (
 											 
 											 -- PROVIDER INITIATED TESTING AND COUNSELING
 											 AND o.person_id in (
-												select distinct os.person_id 
+												select  os.person_id 
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4226
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -367,7 +367,7 @@ FROM (
 											 
 											 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
 											 AND o.person_id in (
-												select distinct os.person_id
+												select  os.person_id
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2146
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -381,12 +381,12 @@ FROM (
 									) AS HTSClients_HIV_Status_Total
 					)
 
-					UNION
+					UNION ALL
 
 					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", HIV_Status, 'CITC' AS 'HIV_Testing_Initiation'
 							, 'New' AS 'Testing_History'
 					FROM
-									(select distinct patient.patient_id AS Id,
+									(select  patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -402,7 +402,7 @@ FROM (
 											 
 											 -- PROVIDER INITIATED TESTING AND COUNSELING
 											 AND o.person_id in (
-												select distinct os.person_id 
+												select  os.person_id 
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4226
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -412,7 +412,7 @@ FROM (
 											 
 											 -- NEW TESTER, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
 											 AND o.person_id in (
-												select distinct os.person_id
+												select  os.person_id
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2147
 												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 

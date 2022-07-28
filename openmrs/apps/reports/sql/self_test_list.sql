@@ -1,12 +1,12 @@
 
-Select Distinct Patient_Identifier, Patient_Name,Age, Gender, age_group,HIV_Testing_Initiation, HIV_Status, Distribution_Date, IFNULL(Primary_Distributed,0) AS "Primary Distributed", IFNULL(Secondary_Distributed,0) AS "Secondary Distributed", IFNULL(Kits_Returned,0) AS "Returned Kits"
+Select  Patient_Identifier, Patient_Name,Age, Gender, age_group,HIV_Testing_Initiation, HIV_Status, Distribution_Date, IFNULL(Primary_Distributed,0) AS "Primary Distributed", IFNULL(Secondary_Distributed,0) AS "Secondary Distributed", IFNULL(Kits_Returned,0) AS "Returned Kits"
 from(
 SELECT Id,Patient_Identifier, Patient_Name, Age, Gender, age_group, HIV_Testing_Initiation  , HIV_Status
 FROM (
 (SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'Self-test' AS 'HIV_Testing_Initiation'
                           , HIV_Status, sort_order
 		FROM
-						(select distinct patient.patient_id AS Id,
+						(select  patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -24,7 +24,7 @@ FROM (
 								 
 								 -- HAS HIV POSITIVE RESULTS 
 								 AND o.person_id in (
-									select distinct os.person_id
+									select  os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 1738
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -42,11 +42,11 @@ FROM (
 								 ) AS HTSClients_HIV_Status
 		ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 		
-UNION
+UNION ALL
 (SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'Self-test' AS 'HIV_Testing_Initiation'
 				, HIV_Status, sort_order
 		FROM
-						(select distinct patient.patient_id AS Id,
+						(select  patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -64,7 +64,7 @@ UNION
 								 
 								 -- HAS HIV NEGATIVE RESULTS 
 								 AND o.person_id in (
-									select distinct os.person_id
+									select  os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 1016
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -82,11 +82,11 @@ UNION
 								 ) AS HTSClients_HIV_Status
 		ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 		
-UNION
+UNION ALL
 (SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'Self-test' AS 'HIV_Testing_Initiation'
 				 , HIV_Status, sort_order
 		FROM
-						(select distinct patient.patient_id AS Id,
+						(select  patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -104,7 +104,7 @@ UNION
 								 
 								 -- HAS HIV UNKNOWN RESULTS 
 								    AND o.person_id in (
-									select distinct os.person_id
+									select  os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 2148
 									AND MONTH(o.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -209,14 +209,14 @@ left outer join
 
 	UNION ALL
 
-	Select Distinct 'Total' AS Patient_Identifier, ' ' AS Patient_Name,' ' AS Age,' ' AS Gender, '' AS age_group,' ' AS HIV_Testing_Initiation, ' ' AS HIV_Status, ' ' AS Distribution_Date,Sum(IFNULL(Primary_Distributed,0)) AS "Primary Distributed", Sum(IFNULL(Secondary_Distributed,0)) AS "Secondary Distributed", Sum(IFNULL(Kits_Returned,0)) AS "Returned Kits"
+	Select  'Total' AS Patient_Identifier, ' ' AS Patient_Name,' ' AS Age,' ' AS Gender, '' AS age_group,' ' AS HIV_Testing_Initiation, ' ' AS HIV_Status, ' ' AS Distribution_Date,Sum(IFNULL(Primary_Distributed,0)) AS "Primary Distributed", Sum(IFNULL(Secondary_Distributed,0)) AS "Secondary Distributed", Sum(IFNULL(Kits_Returned,0)) AS "Returned Kits"
 from(
 SELECT Id,Patient_Identifier, Patient_Name, Age, Gender, age_group, HIV_Testing_Initiation  , HIV_Status
 FROM (
 (SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'Self-test' AS 'HIV_Testing_Initiation'
                           , HIV_Status, sort_order
 		FROM
-						(select distinct patient.patient_id AS Id,
+						(select  patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -234,7 +234,7 @@ FROM (
 								 
 								 -- HAS HIV POSITIVE RESULTS 
 								 AND o.person_id in (
-									select distinct os.person_id
+									select  os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 1738
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -252,11 +252,11 @@ FROM (
 								 ) AS HTSClients_HIV_Status
 		ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 		
-UNION
+UNION ALL
 (SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'Self-test' AS 'HIV_Testing_Initiation'
 				, HIV_Status, sort_order
 		FROM
-						(select distinct patient.patient_id AS Id,
+						(select  patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -274,7 +274,7 @@ UNION
 								 
 								 -- HAS HIV NEGATIVE RESULTS 
 								 AND o.person_id in (
-									select distinct os.person_id
+									select  os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 1016
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
@@ -292,11 +292,11 @@ UNION
 								 ) AS HTSClients_HIV_Status
 		ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 		
-UNION
+UNION ALL
 (SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'Self-test' AS 'HIV_Testing_Initiation'
 				 , HIV_Status, sort_order
 		FROM
-						(select distinct patient.patient_id AS Id,
+						(select  patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -314,7 +314,7 @@ UNION
 								 
 								 -- HAS HIV UNKNOWN RESULTS 
 								    AND o.person_id in (
-									select distinct os.person_id
+									select  os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 2148
 									AND MONTH(o.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
