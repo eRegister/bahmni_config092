@@ -2051,7 +2051,14 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
         }
         return conditions;
+        },
+    //Hide TPT completed date followUp form - Thabiso Nthako
+    'HIVTC, TPT completion Date': function(formName) {
+        var conditions = { assignedValues: [], disable: [] };
+         
+        if (formName == "HIVTC, Patient Register") 
+                conditions.hide.push("HIVTC, TPT completion Date");
+                
+        return conditions;
     }
-
-
 };
