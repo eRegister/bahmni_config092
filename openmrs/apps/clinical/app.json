@@ -468,11 +468,6 @@
         "required": true,
         "multiSelect": true
       },
-
-
-
-
-
 			"LPA Susceptibility result" : {
 				"multiSelect": true
 			},
@@ -544,6 +539,6 @@
 			"observationDisplay": {
 					"conceptNames": []
 			}
-		}
+		} 
     }
 }
