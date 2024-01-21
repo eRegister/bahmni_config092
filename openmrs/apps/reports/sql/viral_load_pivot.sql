@@ -29,19 +29,37 @@ FROM
 
 						from obs o
 
-						      
-								
-								 INNER JOIN patient ON o.person_id = patient.patient_id 
-								 AND patient.voided = 0 AND o.voided = 0
-                                 AND o.concept_id = 4267 AND datediff(cast(o.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
-
+						     INNER JOIN patient ON o.person_id = patient.patient_id 
+								 AND o.concept_id = 5494 AND datediff(cast(o.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
+                                 AND patient.voided = 0 AND o.voided = 0
 
 								--  CLients with with viral load results
 								 AND o.person_id in (
-									select distinct os.person_id 
-									from obs os
-									where os.concept_id = 4268 AND datediff(cast(os.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
-									AND patient.voided = 0 AND os.voided = 0
+															Select pId
+														From
+														(
+															 Select pId, date_received
+																From
+																	(
+																		select oss.person_id as pId, cast(oss.obs_datetime as date) as date_received
+																			from obs oss
+																			where oss.concept_id = 5485
+																			and oss.voided=0
+																			and cast(oss.obs_datetime as date) <= cast('#endDate#' as date)
+																			group by oss.person_id
+
+																		UNION
+
+																		select oss.person_id as pId, cast(oss.obs_datetime as date) as date_received
+																			from obs oss
+																			where oss.concept_id = 5489
+																			and oss.voided=0
+																			and cast(oss.obs_datetime as date)  <= cast('#endDate#' as date)
+																			group by oss.person_id
+
+																	) As received_date
+																where datediff(cast(date_received as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
+														) As Clients_results
 								 )
 								 
 								 
@@ -73,14 +91,36 @@ FROM
 							from obs o
 								
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
-								 AND o.concept_id = 4267 AND datediff(cast(o.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
+								 AND o.concept_id = 5494 AND datediff(cast(o.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
                                  AND patient.voided = 0 AND o.voided = 0
                                             
                         AND o.person_id not in (
-                                            select distinct os.person_id 
-                                            from obs os
-                                            where os.concept_id = 4268 AND datediff(cast(os.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
-                                            AND patient.voided = 0 AND os.voided = 0
+													Select pId
+														From
+														(
+															 Select pId, date_received
+																From
+																	(
+																		select oss.person_id as pId, cast(oss.obs_datetime as date) as date_received
+																			from obs oss
+																			where oss.concept_id = 5485
+																			and oss.voided=0
+																			and cast(oss.obs_datetime as date) <= cast('#endDate#' as date)
+																			group by oss.person_id
+
+																		UNION
+
+																		select oss.person_id as pId, cast(oss.obs_datetime as date) as date_received
+																			from obs oss
+																			where oss.concept_id = 5489
+																			and oss.voided=0
+																			and cast(oss.obs_datetime as date)  <= cast('#endDate#' as date)
+																			group by oss.person_id
+
+																	) As received_date
+																where datediff(cast(date_received as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
+														) As Clients_results
+                                              
                                             )
 								 
 								 
@@ -122,20 +162,37 @@ FROM
 											   o.value_numeric AS vl_result 
 
 						from obs o
-
-						      
-								
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
-								 AND patient.voided = 0 AND o.voided = 0
-                                 AND o.concept_id = 4267 AND datediff(cast(o.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
-
+								 AND o.concept_id = 5494 AND datediff(cast(o.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
+                                 AND patient.voided = 0 AND o.voided = 0
 
 								--  CLients with with viral load results
 								 AND o.person_id in (
-									select distinct os.person_id 
-									from obs os
-									where os.concept_id = 4268 AND datediff(cast(os.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
-									AND patient.voided = 0 AND os.voided = 0
+															Select pId
+														From
+														(
+															 Select pId, date_received
+																From
+																	(
+																		select oss.person_id as pId, cast(oss.obs_datetime as date) as date_received
+																			from obs oss
+																			where oss.concept_id = 5485
+																			and oss.voided=0
+																			and cast(oss.obs_datetime as date) <= cast('#endDate#' as date)
+																			group by oss.person_id
+
+																		UNION
+
+																		select oss.person_id as pId, cast(oss.obs_datetime as date) as date_received
+																			from obs oss
+																			where oss.concept_id = 5489
+																			and oss.voided=0
+																			and cast(oss.obs_datetime as date)  <= cast('#endDate#' as date)
+																			group by oss.person_id
+
+																	) As received_date
+																where datediff(cast(date_received as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
+														) As Clients_results
 								 )
 								 
 								 
@@ -162,16 +219,37 @@ FROM
 											   o.value_numeric AS vl_result 
 
 						from obs o
-								
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
-								 AND o.concept_id = 4267 AND datediff(cast(o.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
+								 AND o.concept_id = 5494 AND datediff(cast(o.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
                                  AND patient.voided = 0 AND o.voided = 0
                                             
                         AND o.person_id not in (
-                                            select distinct os.person_id 
-                                            from obs os
-                                            where os.concept_id = 4268 AND datediff(cast(os.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
-                                            AND patient.voided = 0 AND os.voided = 0
+													Select pId
+														From
+														(
+															 Select pId, date_received
+																From
+																	(
+																		select oss.person_id as pId, cast(oss.obs_datetime as date) as date_received
+																			from obs oss
+																			where oss.concept_id = 5485
+																			and oss.voided=0
+																			and cast(oss.obs_datetime as date) <= cast('#endDate#' as date)
+																			group by oss.person_id
+
+																		UNION
+
+																		select oss.person_id as pId, cast(oss.obs_datetime as date) as date_received
+																			from obs oss
+																			where oss.concept_id = 5489
+																			and oss.voided=0
+																			and cast(oss.obs_datetime as date)  <= cast('#endDate#' as date)
+																			group by oss.person_id
+
+																	) As received_date
+																where datediff(cast(date_received as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
+														) As Clients_results
+                                              
                                             )
 								 
 								 
