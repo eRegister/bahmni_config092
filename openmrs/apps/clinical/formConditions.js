@@ -707,18 +707,21 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         conditions.hide.push("ANC, Partner HIV Status");
                                 
                         if (AncVisits == "ANC, First Visit") {
+                                conditions.hide.push("ANC, Visit order Number");
                                 conditions.show.push("Lesotho Obstetric Record")
                                 conditions.show.push("ANC Register");
                                 conditions.hide.push("Subsequent HIV Test Results");
                         }
                         else if (AncVisits == "ANC, Subsequent Visit") {
+                                conditions.show.push("ANC, Visit order Number");
                                 conditions.show.push("ANC Register");
                                 conditions.hide.push("ANC, TT Doses Previous");
                                 conditions.hide.push("ANC From Lesotho");
                                 conditions.hide.push("Lesotho Obstetric Record");
                         }
                         else {
-                                conditions.hide.push("Lesotho Obstetric Record")
+                                conditions.hide.push("ANC, Visit order Number");
+                                conditions.hide.push("Lesotho Obstetric Record");
                                 conditions.hide.push("ANC Register");
                         }
                         
