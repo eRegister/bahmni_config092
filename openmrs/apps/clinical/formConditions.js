@@ -125,7 +125,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }
                 return conditions;
         },
-         
+
         /*** AUTOFILL Blood Pressure values VALUES ****
          'Diastolic Data': function (formName, formFieldValues) {
                 var conditions = { assignedValues: [] , disable: [] };
@@ -144,7 +144,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }
                 return conditions;
          },
-         
+
          'Systolic Data': function (formName, formFieldValues) {
                 var conditions = { assignedValues: [] , disable: [] };
                 if (formName == "ANC, ANC Program" || formName == "Vitals"){
@@ -354,33 +354,33 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 enableDefaultValue: true,
                                 enableEditAfterAutoFill: true
                         }
-                });                
-               
+                });
+
                 if (formName == "ANC, Obstetric History"){
-                        
+
                         if (ANCGravida > "1") {
                                 conditions.show.push("ANC, Parity");
                                 conditions.show.push("ANC, History of Past Pregnancies");
                         }
-                
+
                         else {
                                 conditions.hide.push("ANC, Parity");
                                 conditions.hide.push("ANC, Alive");
                                 conditions.hide.push("ANC, Number of Miscarriages");
                                 conditions.hide.push("ANC, History of Past Pregnancies");
-                                
-                        }                        
+
+                        }
                 }
                 if (formName == "ANC, Examinations"){
                         if (ANCGravida > "1") {
                                 conditions.show.push("ANC, Number of Miscarriages");
                                 conditions.show.push("ANC, Parity");
                         }
-                
+
                         else {
 
                                 conditions.hide.push("ANC, Parity");
-                                conditions.hide.push("ANC, Number of Miscarriages");                
+                                conditions.hide.push("ANC, Number of Miscarriages");
                         }
                 }
                 return conditions;
@@ -440,15 +440,15 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 var ANCParity = formFieldValues['ANC, Parity'];
                 var conditions = { show: [], hide: [], enable: [], disable: [], assignedValues: [] };
                 if(formName == "ANC, Obstetric History"){
-                        
-                        if(ANCAlive < ANCParity){ 
+
+                        if(ANCAlive < ANCParity){
                                 conditions.show.push("ANC, Number of Miscarriages");
                                 conditions.enable.push("ANC, Number of Miscarriages");
                         }
                         else if(ANCAlive > ANCParity){
                                 alert("Parity should be more or equal to alive")
                                 conditions.hide.push("ANC, Number of Miscarriages");
-                        } 
+                        }
                         else{
                                 conditions.hide.push("ANC, Number of Miscarriages");
                         }
@@ -675,7 +675,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         if (TestedInPNC == "Positive") {
                                 conditions.show.push("PMTCT, WHO clinical staging")
                                 conditions.show.push("PNC, On ART Treatment");
-                        } 
+                        }
                         else {
                                 conditions.hide.push("PMTCT, WHO clinical staging")
                                 conditions.hide.push("PNC, On ART Treatment");
@@ -705,7 +705,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         conditions.hide.push("HIV Prophylaxis/Treatment");
                         conditions.hide.push("HIVTC, Viral Load Monitoring Template");
                         conditions.hide.push("ANC, Partner HIV Status");
-                                
+
                         if (AncVisits == "ANC, First Visit") {
                                 conditions.show.push("Lesotho Obstetric Record")
                                 conditions.show.push("ANC Register");
@@ -721,12 +721,12 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 conditions.hide.push("Lesotho Obstetric Record")
                                 conditions.hide.push("ANC Register");
                         }
-                        
+
                 }
                 return conditions;
 
         },
-        
+
         'ANC, Initiated on ART': function(formName, formFieldValues){
                 var initiation = formFieldValues['ANC, Initiated on ART'];
                 var conditions = { show: [], hide: [], disable: []};
@@ -777,7 +777,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         }
                         if(result_recieved == "Yes"){
                                 conditions.show.push("HIV Prophylaxis/Treatment");
-                                
+
                                 if(result == "Positive"){
                                         conditions.show.push("ANC, Initiated on ART");
                                         conditions.hide.push("ANC, Initiated in Prep");
@@ -1232,12 +1232,12 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 if (formName == "HIV Prevention, Care, and Treatment") {
                         if (status == "Positive") {
                                 conditions.hide.push("Tested in PNC");
-                        } 
+                        }
                         else {
                                 conditions.show.push("Tested in PNC");
                         }
                 }
-                
+
                 if (formName == "ANC, ANC Program"){
                     conditions.assignedValues.push({
                         field: "PNC, HIV Status Known Before Visit",
@@ -1252,7 +1252,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
 
                 }
-    
+
 
                 if(formName == 'ANC HIV Testing Services'){
 
@@ -1282,7 +1282,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 conditions.hide.push("ANC, Initial Test during this pregnancy");
                         }
                 }
-                
+
                 return conditions;
         },
         'Blood Group': function(formName, formFieldValues) {
@@ -1308,7 +1308,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
             }
             return conditions;
         },
-        
+
 
         /*---------------------HIV Care and Treatment-------------------*/
 
@@ -1318,7 +1318,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
                 if (conditionConcept == "Yes") {
                         conditions.show.push("HIVTC, Transferred out");
-                        
+
                 } else {
                         conditions.hide.push("HIVTC, Transferred out");
                 }
@@ -1432,10 +1432,10 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                  } else {
                                         // No action
                                  }
-                                  
+
                                  conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed, autocalculate:true });
                                  conditions.assignedValues.push({ field: "HIVTC, ARV drugs supply duration", fieldValue: drugSupplyPeriod, autocalculate:true });
-                                 
+
                          // }
                  }
                  return conditions;
@@ -1482,12 +1482,12 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 } else {
                                        // No action
                                 }
-                                 
+
 
                                 conditions.assignedValues.push({ field: "PrEP drugs supply duration", fieldValue: drugSupplyPeriod, autocalculate:true });
                                 conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed, autocalculate:true });
-                               
-                                
+
+
                         // }
                 }
                 return conditions;
@@ -1579,7 +1579,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                             enableEditAfterAutoFill: true
                         }
                     });
-    
+
                 }
                 return conditions;
      },
@@ -2192,7 +2192,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 var conditionConcept = formFieldValues['HTC, Distribution Mode'];
                 var conditions = { show: [], hide: [] };
                 conditionConcept = conditionConcept.sort();
-                
+
 
                 if (JSON.stringify(conditionConcept) === JSON.stringify(['HTC, Secondary', 'HTC, Secondary'])) {
                         conditions.show.push("Self_Test_Buddy");
@@ -2496,8 +2496,8 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
         if ((formName == "PrEP , Intake Template") || (formName == "PrEP ,Entry point")) {
                 var conditions = { show: [], hide: [] };
-                
-                
+
+
                 if (EntryMode == "PrEP Community Entry Point") {
                         conditions.show.push("PrEP  Entry Point  Community");
                         conditions.hide.push("PrEP , Health Facility")
@@ -2505,7 +2505,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 } else if (EntryMode == "PrEP Health Facility Entry Point") {
                         conditions.show.push("PrEP , Health Facility");
                         conditions.hide.push("PrEP  Entry Point  Community");
-                        
+
 
 
                 }else{
@@ -2529,7 +2529,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }else{
                         conditions.hide.push("PrEP stopped due to new HIV infection")
                 }
-               
+
         }
 
         return conditions;
@@ -2544,18 +2544,18 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
                 if (EntryMode && patientGender=="F" ) {
                         conditions.show.push("PrEP , Pregnancy Status")
-                        
+
 
                 }else{
-                        
+
                         conditions.hide.push("PrEP , Pregnancy Status")
-                        
-                        
+
+
                 }
         }
         return conditions;
      },
-     
+
 
 
 
@@ -2567,59 +2567,59 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
 
         if ((formName == "PrEP , Follow Up Template") || (formName == "PrEP, STI Screening and Treatment")) {
-             
+
 
                 if (EntryMode =="PrEP , Treatment" ) {
                         conditions.show.push("PrEP, STI Treatment");
                         conditions.hide.push("PrEP, STI Screening");
 
-                        
+
 
                 }else if(EntryMode=="PrEP , Screening") {
 
                         conditions.show.push("PrEP, STI Screening");
                         conditions.hide.push("PrEP, STI Treatment");
-                        
-                        
+
+
                 }else {
                         conditions.hide.push("PrEP, STI Treatment");
                         conditions.hide.push("PrEP, STI Screening")
-          
+
                 }
         }
         return conditions;
      },
-     
- 
+
+
 'PrEP ,Entry Point Mode' : function (formName, formFieldValues) {
-        
-        var conditionConcept = formFieldValues['PrEP ,Entry Point Mode'];    
+
+        var conditionConcept = formFieldValues['PrEP ,Entry Point Mode'];
         var conditions = {show: [], hide: [], assignedValues: []};
 
         conditions.hide.push("PrEP Entry Point Community")
         conditions.hide.push("PrEP , Health Facility");
-        
-        
-        
+
+
+
 
        if (conditionConcept == "PrEP Community Entry Point"){
-           
+
 
            conditions.show.push("PrEP Entry Point Community");
-            
+
            conditions.hide.push("PrEP , Facilty Outreach");
-            
+
        }
        else {
 
-               
+
                conditions.hide.push("PrEP Community Program");
                conditions.show.push("PrEP , Facilty Outreach");
-                
+
         }
         return conditions;
-    },    
-  
+    },
+
     'PrEP ,Entry Point Mode': function (formName, formFieldValues) {
         var EntryMode= formFieldValues['PrEP ,Entry Point Mode'];
 
@@ -2649,18 +2649,18 @@ Bahmni.ConceptSet.FormConditions.rules = {
 'PrEP , Stopping PrEP Confirmation': function (formName, formFieldValues) {
         var conditionConcept = formFieldValues['PrEP , Stopping PrEP Confirmation'];
         var conditions = { show: [], hide: [] };
-          
+
                // conditions.hide.push("PrEP ,Stopping PrEP");
 
                 if (conditionConcept) {
                         conditions.show.push("PrEP ,Stopping PrEP")
-                        
+
                 }
                 else {
                         conditions.hide.push("PrEP ,Stopping PrEP");
-                        
+
                 }
-        
+
         return conditions;
 },
 
@@ -2668,16 +2668,16 @@ Bahmni.ConceptSet.FormConditions.rules = {
 'PrEP, Transfer Inn': function (formName, formFieldValues) {
         var conditionConcept = formFieldValues['PrEP, Transfer Inn'];
         var conditions = { show: [], hide: [] };
-          
+
 
         if (conditionConcept == "Yes") {
                 conditions.show.push("PrEP, Transferred in");
-                
+
         } else {
                 conditions.hide.push("PrEP, Transferred in");
         }
         return conditions;
-        
+
 
 },
 
@@ -2687,13 +2687,13 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
         if (conditionConcept == "Yes") {
                 conditions.show.push("PrEP, Transferred out");
-                
+
         } else {
                 conditions.hide.push("PrEP, Transferred out");
         }
         return conditions;
 },
- 
+
     /////////////////////////////////////////////////////////////////
         //LABOUR AND DELIVERY REGISTER
         //MALFORMATIONS
@@ -2884,4 +2884,15 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 return conditions;
              }
         ///////////////END of MDR-TB////////////////
+        ,
+             'HTC, Initial HIV Test Determine' : function(formName, formFieldValues){
+                 var conditions = { show: []};
+                 var conditionConcept = formFieldValues["HTC, Initial HIV Test Determine"];
+
+                 if(conditionConcept == "Negative"){
+                    conditions.show.push("HTC, Initial HIV Test Unigold Confirmatory");
+                 }
+
+                return conditions;
+             }
 };
