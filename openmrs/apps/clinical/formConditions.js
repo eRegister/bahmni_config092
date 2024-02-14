@@ -12,15 +12,11 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 switch (genexpertTest) {
                         case "GeneXpert test type":
                                 conditions.show.push("GeneXpert results");
-                                conditions.hide.push("Line Probe Assay results");
                                 break;
 
                         case "Line Probe Assay test type":
-                                conditions.show.push("Line Probe Assay results");
                                 conditions.hide.push("GeneXpert results");
                                 break;
-                        default:
-                                conditions.hide.push("GeneXpert results", "Line Probe Assay results");
                 }
                 return conditions;
         },
