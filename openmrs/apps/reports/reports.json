@@ -1446,6 +1446,20 @@
         "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/shippinglist.sql/"
     }
 },
+"HIV_POC_Viral_Load": {
+    "name": "LAB-004 | HIV POC (List)",
+    "type": "MRSGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/hiv_poc.sql/"
+    }
+},
+"HIV_POC_Viral_Load_pivot": {
+    "name": "LAB-005 | HIV POC (Pivot)",
+    "type": "MRSGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/hiv_poc_pivot.sql/"
+    }
+},
 "Cervical_Cancer_Screening": {
     "name": "Cervical Cancer Screening (List)",
     "type": "MRSGeneric",
