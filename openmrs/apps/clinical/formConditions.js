@@ -3113,6 +3113,35 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }
 
                 return conditions;
-        }
+        },
+        'VMMC, Accepted HIV test': function (formName, formFieldValues) {
+                var conditionConcept = formFieldValues['VMMC, Accepted HIV test'];
+                var conditions = { show: [], hide: [] };
+
+                if(conditionConcept == undefined){
+                        conditions.hide.push("VMMC, Reason");
+                } else if (conditionConcept) {
+                        conditions.hide.push("VMMC, Reason");
+                } else {
+                        conditions.show.push("VMMC, Reason");
+                }
+
+                return conditions;
+        },
+        'ANC, Complications during pregnancy': function (formName, formFieldValues) {
+                var selectedFieldValue = formFieldValues['ANC, Complications during pregnancy'];
+                var conditions = { show: [], hide: [] };
+
+                if(selectedFieldValue == 'Other Answer'){
+                        conditions.show.push("Other Notes");
+                }else{
+                        conditions.hide.push("Other Notes");
+                }
+
+                return conditions;
+
+                //ANC, Complications during pregnancy
+
+        },
 
 };
