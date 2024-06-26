@@ -1,5 +1,6 @@
 var visitTypeTracker = '';  //This variable tracks the ANC Program visit type
 var TBStatusTracker = ''; //This varible tracks the TB Status to allow it to be used globally
+var trackAlbendazole = ' ';
 Bahmni.ConceptSet.FormConditions.rules = {
 
 
@@ -706,26 +707,39 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         conditions.hide.push("HIV Prophylaxis/Treatment");
                         conditions.hide.push("HIVTC, Viral Load Monitoring Template");
                         conditions.hide.push("ANC, Partner HIV Status");
+                        var selectedFieldValue = formFieldValues['Albendazole/Mebendazole'];
+                        
+
 
                         if (AncVisits == "ANC, First Visit") {
+                                visitTypeTracker = "ANC, First Visit";
                                 conditions.hide.push("ANC, Visit order Number");
                                 conditions.show.push("Lesotho Obstetric Record")
                                 conditions.show.push("ANC Register");
                                 conditions.hide.push("Subsequent HIV Test Results");
                         }
                         else if (AncVisits == "ANC, Subsequent Visit") {
+                                // visitTypeTracker = " ";
+
                                 conditions.show.push("ANC, Visit order Number");
                                 conditions.show.push("ANC Register");
                                 conditions.hide.push("ANC, TT Doses Previous");
                                 conditions.hide.push("ANC From Lesotho");
                                 conditions.hide.push("Lesotho Obstetric Record");
+                                console.log(selectedFieldValue + " is sected value");
+                    
+                                if(selectedFieldValue == "On Treatment" || selectedFieldValue == "Not Dispensed" || selectedFieldValue == "Prophylaxis"){
+                                        conditions.hide.push("Albendazole/Mebendazole");
+
+                                }else{
+                                        conditions.show.push("Albendazole/Mebendazole");
+                                }
                         }
                         else {
                                 conditions.hide.push("ANC, Visit order Number");
                                 conditions.hide.push("Lesotho Obstetric Record")
                                 conditions.hide.push("ANC Register");
                         }
-
                 }
                 return conditions;
 
@@ -3128,20 +3142,18 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
                 return conditions;
         },
+
+        //ANC configs
         'ANC, Complications during pregnancy': function (formName, formFieldValues) {
                 var selectedFieldValue = formFieldValues['ANC, Complications during pregnancy'];
                 var conditions = { show: [], hide: [] };
-
+                
                 if(selectedFieldValue == 'Other Answer'){
                         conditions.show.push("Other Notes");
                 }else{
                         conditions.hide.push("Other Notes");
                 }
-
                 return conditions;
-
-                //ANC, Complications during pregnancy
-
-        },
-
+        }
+        
 };
