@@ -1,4 +1,4 @@
-SELECT distinct Id, Patient_Identifier, ART_Number, Patient_Name, Age , Gender, TPT_Start_Date, TPT_Completion_Date
+SELECT distinct Patient_Identifier, ART_Number, Patient_Name, Age , Gender, TPT_Start_Date, TPT_Completion_Date
 FROM
     (
         (SELECT distinct Id, patientIdentifier AS "Patient_Identifier", ART_Number, patientName AS "Patient_Name", Age , Gender
