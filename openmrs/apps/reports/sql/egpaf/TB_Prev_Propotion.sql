@@ -1,4 +1,4 @@
-SELECT distinct Id, Patient_Identifier, ART_Number, Patient_Name, Age , Gender, TPT_Start_Date, TPT_Completion_Date
+SELECT distinct Patient_Identifier, ART_Number, Patient_Name, Age , Gender, TPT_Start_Date, TPT_Completion_Date
 FROM
     (
         (SELECT distinct Id, patientIdentifier AS "Patient_Identifier", ART_Number, patientName AS "Patient_Name", Age , Gender
@@ -22,10 +22,11 @@ FROM
                             AND o.person_id in 
                                 (
                                     -- Started TPT in the previous Period
-                                    select distinct ob.person_id 
+                                    select distinct ob.person_id
                                     from obs ob
                                     where ob.concept_id = 5401
-                                    and CAST(ob.value_datetime as date) <= CAST('#endDate#' AS DATE)
+                                    and CAST(ob.value_datetime as date) < CAST('#startDate#' AS DATE)
+                                    and CAST(ob.value_datetime AS DATE) >= DATE_ADD(CAST('#startDate#' AS DATE), INTERVAL -6 MONTH)
                                     and ob.voided = 0
                                 )
 
@@ -33,7 +34,7 @@ FROM
                                 (
                                     select distinct ob.person_id
                                     from obs ob
-                                    -- TPT Completed on this period
+                                    -- TPT Completed in this period
                                     where ob.concept_id = 4821
                                     AND ob.value_datetime >= CAST('#startDate#' AS DATE)
                                     and ob.value_datetime <= CAST('#endDate#'AS DATE)
@@ -63,8 +64,8 @@ FROM
                                 group by person_id) as 6weeks_test
                             on 6weeks_test.person_id = o.person_id
                             where o.concept_id = 5401
-                            and cast(o.value_datetime as date) <= cast('#endDate#' as date)
-                            and cast(o.obs_datetime as date) = cast(max_observation as date)
+                            and CAST(o.value_datetime as date) < CAST('#startDate#' AS DATE)
+                            and CAST(o.value_datetime AS DATE) >= DATE_ADD(CAST('#startDate#' AS DATE), INTERVAL -6 MONTH)
                             and o.voided = 0
                             )TPT
         )TPT_Start
@@ -85,8 +86,8 @@ FROM
                                 group by person_id) as 6weeks_test
                             on 6weeks_test.person_id = o.person_id
                             where o.concept_id = 4821
-                            and cast(o.value_datetime as date) <= cast('#endDate#' as date)
-                            and cast(o.obs_datetime as date) = cast(max_observation as date)
+                            AND o.value_datetime >= CAST('#startDate#' AS DATE)
+                            and o.value_datetime <= CAST('#endDate#'AS DATE)
                             and o.voided = 0
                             )TPT
         )TPT_Completion

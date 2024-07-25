@@ -259,6 +259,13 @@
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/cxca_scrn_list.sql"
         }
     },
+    "cxca_scrn_pivot": {
+        "name": "ART-036 | CXCA_SCRN (Pivot)",
+        "type": "MRSGeneric",
+        "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/cxca_scrn_pivot.sql"
+        }
+    },
     "cxca_scrnlist_pos": {
         "name": "ART-037 | CXCA_SCRN_POS (List)",
         "type": "MRSGeneric",
@@ -660,18 +667,25 @@
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/prep_new_pivot.sql"
         }
     },
-    "PrEP_curr": {
-        "name": "ART-080 | PrEP Current (List)",
+    "PrEP_ct_list": {
+        "name": "ART-079 | PrEP CT (List)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/prep_ct_list.sql"
         }
     },
-    "PrEP_curr_pivot": {
-        "name": "ART-081 | PrEP Current (Pivot)",
+    "PrEP_ct_pivot": {
+        "name": "ART-080 | PrEP CT (Pivot)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/prep_ct_pivot.sql"
+        }
+    },
+    "PrEP_curr": {
+        "name": "ART-081 | PrEP Current (List)",
+        "type": "MRSGeneric",
+        "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/prep_curr_list.sql"
         }
     },
     "visitors_list": {
@@ -1078,6 +1092,13 @@
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/PMTCT_ART.sql"
+        }
+    },
+    "pmtct_art_pivot": {
+        "name": "MCH-026 | PMTCT ART (Pivot)",
+        "type": "MRSGeneric",
+        "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/PMTCT_ART_pivot.sql"
         }
     },
     "completeness_anc_list": {

@@ -1,2028 +1,252 @@
-SELECT HTS_TOTALS_COLS_ROWS.AgeGroup
-            , HTS_TOTALS_COLS_ROWS.Gender
-        	, HTS_TOTALS_COLS_ROWS.First_Visit
-			, HTS_TOTALS_COLS_ROWS.Rescreened
-			, HTS_TOTALS_COLS_ROWS.Treatment_Follow_up
-			,HTS_TOTALS_COLS_ROWS.Screened_Positive
-			,HTS_TOTALS_COLS_ROWS.Screened_Negative
-			,HTS_TOTALS_COLS_ROWS.Screened_Suspect
-			, HTS_TOTALS_COLS_ROWS.Total
-			
-			
-		   
-		
-
+SELECT CXCA_TOTALS_COLS_ROWS.AgeGroup
+            , CXCA_TOTALS_COLS_ROWS.VIA_Test
+        	, CXCA_TOTALS_COLS_ROWS.PapSmear
+			, CXCA_TOTALS_COLS_ROWS.Vili_Test
+			, CXCA_TOTALS_COLS_ROWS.HPV_Test
 FROM (
 
 			(SELECT CANCER_SCREENED.age_group AS 'AgeGroup'
-					, CANCER_SCREENED.Gender
-						, IF(CANCER_SCREENED.Id IS NULL, 0, SUM(IF(CANCER_SCREENED.Visit_Type = 'First_Visit', 1, 0))) AS First_Visit
-						, IF(CANCER_SCREENED.Id IS NULL, 0, SUM(IF(CANCER_SCREENED.Visit_Type = 'Rescreened', 1, 0))) AS Rescreened
-						, IF(CANCER_SCREENED.Id IS NULL, 0, SUM(IF(CANCER_SCREENED.Visit_Type = 'Treatment_Follow_up', 1, 0))) AS Treatment_Follow_up
-						, IF(CANCER_SCREENED.Id IS NULL, 0, SUM(IF(CANCER_SCREENED.Results = 'Positive', 1, 0))) AS Screened_Positive
-						, IF(CANCER_SCREENED.Id IS NULL, 0, SUM(IF(CANCER_SCREENED.Results = 'Negative', 1, 0))) AS Screened_Negative
-						, IF(CANCER_SCREENED.Id IS NULL, 0, SUM(IF(CANCER_SCREENED.Results = 'Suspect', 1, 0))) AS Screened_Suspect
-				        , IF(CANCER_SCREENED.Id IS NULL, 0, SUM(IF(CANCER_SCREENED.Results = 'Positive' or CANCER_SCREENED.Results = 'Negative' or  CANCER_SCREENED.Results = 'Suspect' , 1, 0))) as 'Total'
-						, CANCER_SCREENED.sort_order
+			, IF(CANCER_SCREENED.Id IS NULL, 0, SUM(IF(CANCER_SCREENED.Screening_Type = 'Cervical VIA Test', 1, 0))) AS VIA_Test
+			, IF(CANCER_SCREENED.Id IS NULL, 0, SUM(IF(CANCER_SCREENED.Screening_Type = 'Pap Smear', 1, 0))) AS PapSmear
+			, IF(CANCER_SCREENED.Id IS NULL, 0, SUM(IF(CANCER_SCREENED.Screening_Type = 'Vili Test', 1, 0))) AS Vili_Test
+			, IF(CANCER_SCREENED.Id IS NULL, 0, SUM(IF(CANCER_SCREENED.Screening_Type = 'Cervical HPV Test', 1, 0))) AS HPV_Test
+			, CANCER_SCREENED.sort_order
+			
+	FROM (
+			SELECT Id, patientIdentifier, patientName, Age,DOB, Gender, Screening_Type, age_group,sort_order
+    		FROM
+                (select distinct patient.patient_id AS Id,
+									   patient_identifier.identifier AS patientIdentifier,
+									   p.identifier as ART_Number,
+									   pi.identifier as File_Number,
+									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
+									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
+									   person.birthdate as DOB,
+									   person.gender AS Gender,
+									   observed_age_group.name AS age_group,
+									   observed_age_group.sort_order AS sort_order
+									  
+
+                         from obs o
+
+						  INNER JOIN patient ON o.person_id = patient.patient_id 
+						  AND patient.voided = 0 AND o.voided = 0
+                          and o.person_id in (
+                                select active_clients.person_id -- Active on ART
+                                        from
+                                        (select B.person_id, B.obs_group_id, B.value_datetime AS latest_follow_up
+                                                from obs B
+                                                inner join 
+                                                (select person_id, max(obs_datetime), SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
+                                                from obs where concept_id = 3753
+                                                and obs_datetime <= cast('#endDate#' as date)
+                                                and voided = 0
+                                                group by person_id) as A
+                                                on A.observation_id = B.obs_group_id
+                                                where concept_id = 3752
+                                                and A.observation_id = B.obs_group_id
+                                                and voided = 0	
+                                                group by B.person_id
+                                        ) as active_clients
+                                        where active_clients.latest_follow_up >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -28 DAY)
+		
+                                and active_clients.person_id not in (
+                                        select person_id -- Dead
+                                        from person 
+                                        where death_date <= cast('#endDate#' as date)
+                                        and dead = 1 and voided = 0
+                                        
+                                        )
+
+		                and active_clients.person_id not in(
+                                                                -- Visitors
+                                        select person_id 
+                                        FROM
+                                        (select person_id, max(obs_datetime), SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
+                                        from obs where concept_id = 5416 
+                                        and value_coded = 1 and voided = 0
+                                        and cast(obs_datetime as date) <= cast('#endDate#' as date)
+                                        and voided = 0
+                                        group by person_id)visitor
+					)
+
+                          )
+						  
+                inner join  
+                (
+                select distinct B.person_id
+                from obs B
+                inner join 
+                (select person_id, max(obs_datetime), SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
+                from obs where concept_id = 4511 -- Cervical Cancer Screening Register
+                AND CAST(obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
+                AND CAST(obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
+                group by person_id) as A
+                on A.observation_id = B.obs_group_id
+                where concept_id = 4521 and value_coded = 1738 -- Positive HIV Status
+                and A.observation_id = B.obs_group_id
+                and voided = 0	
+                group by B.person_id
+		) as hiv_pos
+                on hiv_pos.person_id = o.person_id
+
+                INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
+                LEFT OUTER JOIN patient_identifier p ON p.patient_id = person.person_id AND p.identifier_type = 5
+                LEFT OUTER JOIN patient_identifier pi ON pi.patient_id = person.person_id AND pi.identifier_type = 11
+                INNER JOIN reporting_age_group AS observed_age_group ON
+                CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+                AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
+                WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Cervical_Cancer_Screened
+
+-- inner join 
+left outer join 
+(
+        select distinct os.person_id,
+       case
+       -- Screening Type
+           when os.value_coded = 4757 then "Cervical VIA Test"
+           when os.value_coded = 4525 then "Pap Smear"
+           when os.value_coded = 5500 then "Vili Test"
+		   when os.value_coded = 6114 then "Cervical HPV Test"
+           else ""
+       end AS Screening_Type
+       from obs os 
+       where os.concept_id = 4527
+       and os.voided = 0
+       AND CAST(os.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
+       AND CAST(os.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
+
+)screening_type
+on screening_type.person_id = Cervical_Cancer_Screened.Id
+) AS CANCER_SCREENED
+
+GROUP BY CANCER_SCREENED.age_group
+ORDER BY CANCER_SCREENED.sort_order)
+			
+UNION ALL
+
+(SELECT 'Total' AS 'AgeGroup'					
+		, IF(CXCA_Screening_COLS.Id IS NULL, 0, SUM(IF(CXCA_Screening_COLS.Screening_Type = 'Cervical VIA Test', 1, 0))) AS VIA_Test
+		, IF(CXCA_Screening_COLS.Id IS NULL, 0, SUM(IF(CXCA_Screening_COLS.Screening_Type = 'Pap Smear', 1, 0))) AS PapSmear
+		, IF(CXCA_Screening_COLS.Id IS NULL, 0, SUM(IF(CXCA_Screening_COLS.Screening_Type = 'Vili Test', 1, 0))) AS Vili_Test
+		, IF(CXCA_Screening_COLS.Id IS NULL, 0, SUM(IF(CXCA_Screening_COLS.Screening_Type = 'Cervical HPV Test', 1, 0))) AS HPV_Test
+		, 99 AS sort_order
 			FROM (
-
-					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Positive' AS 'Results', 'First_Visit' AS 'Visit_Type', sort_order
-					FROM
-									(select distinct patient.patient_id AS Id,
-														   patient_identifier.identifier AS patientIdentifier,
-														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-														   'Pos' AS Status,
-														   person.gender AS Gender,
-														   observed_age_group.name AS age_group,
-														   observed_age_group.sort_order AS sort_order
-
-									from obs o
-									
-										-- CLIENTS ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer via or pap smear or both
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)    
-						   -- first visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2147
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						-- previous results
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and (os.value_coded = 1016)
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						
-						-- VIA positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 328)
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-					
-									
-									
-											 
-											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-											 INNER JOIN person_name ON person.person_id = person_name.person_id
-											 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-											 INNER JOIN reporting_age_group AS observed_age_group ON
-											  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-											  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-									   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Clients
-					ORDER BY Clients.Status, Clients.Age)
-                     UNION
-					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Negative' AS 'Results','First_Visit' AS 'Visit_Type', sort_order
-FROM
+			
+(
+	SELECT Id, patientIdentifier, patientName, Age,DOB, Gender, Screening_Type, age_group,sort_order
+    		FROM
                 (select distinct patient.patient_id AS Id,
 									   patient_identifier.identifier AS patientIdentifier,
+									   p.identifier as ART_Number,
+									   pi.identifier as File_Number,
 									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
+									   person.birthdate as DOB,
 									   person.gender AS Gender,
 									   observed_age_group.name AS age_group,
 									   observed_age_group.sort_order AS sort_order
+									  
 
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						
-						 -- first visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2147
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						 -- previous results
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and (os.value_coded = 1016)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- VIA -ve
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 329)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
+                         from obs o
+
+						  INNER JOIN patient ON o.person_id = patient.patient_id 
+						  AND patient.voided = 0 AND o.voided = 0
+                          and o.person_id in (
+                                select active_clients.person_id -- Active on ART
+                                        from
+                                        (select B.person_id, B.obs_group_id, B.value_datetime AS latest_follow_up
+                                                from obs B
+                                                inner join 
+                                                (select person_id, max(obs_datetime), SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
+                                                from obs where concept_id = 3753
+                                                and obs_datetime <= cast('#endDate#' as date)
+                                                and voided = 0
+                                                group by person_id) as A
+                                                on A.observation_id = B.obs_group_id
+                                                where concept_id = 3752
+                                                and A.observation_id = B.obs_group_id
+                                                and voided = 0	
+                                                group by B.person_id
+                                        ) as active_clients
+                                        where active_clients.latest_follow_up >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -28 DAY)
+		
+                                and active_clients.person_id not in (
+                                        select person_id -- Dead
+                                        from person 
+                                        where death_date <= cast('#endDate#' as date)
+                                        and dead = 1 and voided = 0
+                                        
+                                        )
+
+		                and active_clients.person_id not in(
+                                                                -- Visitors
+                                        select person_id 
+                                        FROM
+                                        (select person_id, max(obs_datetime), SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
+                                        from obs where concept_id = 5416 
+                                        and value_coded = 1 and voided = 0
+                                        and cast(obs_datetime as date) <= cast('#endDate#' as date)
+                                        and voided = 0
+                                        group by person_id)visitor
+					)
+
+                          )
 						  
-						  AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-                     UNION
+                inner join  
+                (
+                select distinct B.person_id
+                from obs B
+                inner join 
+                (select person_id, max(obs_datetime), SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
+                from obs where concept_id = 4511 -- Cervical Cancer Screening Register
+                AND CAST(obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
+                AND CAST(obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
+                group by person_id) as A
+                on A.observation_id = B.obs_group_id
+                where concept_id = 4521 and value_coded = 1738 -- Positive HIV Status
+                and A.observation_id = B.obs_group_id
+                and voided = 0	
+                group by B.person_id
+		) as hiv_pos
+                on hiv_pos.person_id = o.person_id
 
-                    (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Suspect' AS 'Results','First_Visit' AS 'Visit_Type', sort_order
-FROM
-                (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
+                INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
+                LEFT OUTER JOIN patient_identifier p ON p.patient_id = person.person_id AND p.identifier_type = 5
+                LEFT OUTER JOIN patient_identifier pi ON pi.patient_id = person.person_id AND pi.identifier_type = 11
+                INNER JOIN reporting_age_group AS observed_age_group ON
+                CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+                AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
+                WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Cervical_Cancer_Screened
 
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						         -- first visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2147
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						     -- previous results
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and (os.value_coded = 1016)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- suspect positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 4793)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- first visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2147
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						  AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-                     UNION
-                    (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Positive' AS 'Results','Rescreened' AS 'Visit_Type', sort_order
-FROM
-                (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
+-- inner join 
+left outer join 
+(
+        select distinct os.person_id,
+       case
+       -- Screening Type
+           when os.value_coded = 4757 then "Cervical VIA Test"
+           when os.value_coded = 4525 then "Pap Smear"
+           when os.value_coded = 5500 then "Vili Test"
+		   when os.value_coded = 6114 then "Cervical HPV Test"
+           else ""
+       end AS Screening_Type
+       from obs os 
+       where os.concept_id = 4527
+       and os.voided = 0
+       AND CAST(os.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
+       AND CAST(os.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
 
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- via positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 328)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- second  visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						--   results screened negative
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and os.value_coded = 1016
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						  AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-                     UNION
-
-                    (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Negative' AS 'Results','Rescreened' AS 'Visit_Type', sort_order
-					
-FROM
-                (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
-
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- via nagative
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 329)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- second  visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						--   results screened negative
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and os.value_coded = 1016
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						  AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-                     UNION
-
-                    (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Suspect' AS 'Results','Rescreened' AS 'Visit_Type', sort_order
-FROM
-                (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
-
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- suspect positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 4793)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- second  visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						--   results screened negative
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and os.value_coded = 1016
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						  AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-                    UNION
-
-                   (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Positive' AS 'Results','Treatment_Follow_up' AS 'Visit_Type', sort_order
-FROM
-                (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
-
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- via positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 328)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- second  visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						--   results screened positive
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and os.value_coded = 1738
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-                    UNION
-
-                    (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Negative' AS 'Results','Treatment_Follow_up' AS 'Visit_Type', sort_order
-FROM
-                (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
-
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- via positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 329)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- second  visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						--   results screened positive
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and os.value_coded = 1738
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						 AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-
-
-					 
+)screening_type
+on screening_type.person_id = Cervical_Cancer_Screened.Id	
 			
-			) AS CANCER_SCREENED
-
-			GROUP BY CANCER_SCREENED.age_group, CANCER_SCREENED.Gender
-			ORDER BY CANCER_SCREENED.sort_order)
-			
-			UNION ALL
-			
-			(SELECT 'Total' AS 'AgeGroup'
-					, 'All' AS 'Gender'
-						, IF(HTS_TOTALS_COLS.Id IS NULL, 0, SUM(IF(HTS_TOTALS_COLS.Visit_Type = 'First_Visit', 1, 0))) AS First_Visit
-						, IF(HTS_TOTALS_COLS.Id IS NULL, 0, SUM(IF(HTS_TOTALS_COLS.Visit_Type = 'Rescreened', 1, 0))) AS Rescreened
-						, IF(HTS_TOTALS_COLS.Id IS NULL, 0, SUM(IF(HTS_TOTALS_COLS.Visit_Type = 'Treatment_Follow_up', 1, 0))) AS Treatment_Follow_up
-						, IF(HTS_TOTALS_COLS.Id IS NULL, 0, SUM(IF(HTS_TOTALS_COLS.Results = 'Positive', 1, 0))) AS Screened_Positive
-						, IF(HTS_TOTALS_COLS.Id IS NULL, 0, SUM(IF(HTS_TOTALS_COLS.Results = 'Negative', 1, 0))) AS Screened_Negative
-						, IF(HTS_TOTALS_COLS.Id IS NULL, 0, SUM(IF(HTS_TOTALS_COLS.Results = 'Suspect', 1, 0))) AS Screened_Suspect
-				        , IF(HTS_TOTALS_COLS.Id IS NULL, 0, SUM(IF(HTS_TOTALS_COLS.Results = 'Positive' or HTS_TOTALS_COLS.Results = 'Negative' or  HTS_TOTALS_COLS.Results = 'Suspect' , 1, 0))) as 'Total'
-						, 99 AS sort_order
-						
-						
-						FROM
-						(
-						(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Positive' AS 'Results', 'First_Visit' AS 'Visit_Type', sort_order
-				       	FROM
-						
-							       (select distinct patient.patient_id AS Id,
-														   patient_identifier.identifier AS patientIdentifier,
-														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-														   'Pos' AS Status,
-														   person.gender AS Gender,
-														   observed_age_group.name AS age_group,
-														   observed_age_group.sort_order AS sort_order
-		                      
-									from obs o
-									
-										-- CLIENTS ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer via or pap smear or both
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)    
-						   -- first visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2147
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						-- previous results
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and (os.value_coded = 1016)
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						
-						-- VIA positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 328)
-							   AND patient.voided = 0 AND os.voided = 0
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-					
-									
-									
-											 
-											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-											 INNER JOIN person_name ON person.person_id = person_name.person_id
-											 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-											 INNER JOIN reporting_age_group AS observed_age_group ON
-											  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-											  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-									   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Clients
-					 ORDER BY Clients.Status, Clients.Age)
-                     UNION
-					 (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Negative' AS 'Results','First_Visit' AS 'Visit_Type', sort_order
-                     FROM
-                     (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
-
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						
-						 -- first visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2147
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						 -- previous results
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and (os.value_coded = 1016)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- VIA -ve
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 329)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						  AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-                      ORDER BY Screened_For_Cancer.Age)
-                     UNION
-
-                    (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Suspect' AS 'Results','First_Visit' AS 'Visit_Type', sort_order
-                     FROM
-                    (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
-
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						         -- first visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2147
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						     -- previous results
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and (os.value_coded = 1016)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- suspect positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 4793)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- first visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2147
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						  AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-                     UNION
-                    (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Positive' AS 'Results','Rescreened' AS 'Visit_Type', sort_order
-                     FROM
-                    (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
-
-                    from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- via positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 328)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- second  visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						--   results screened negative
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and os.value_coded = 1016
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						  AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-                    UNION
-
-                    (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Negative' AS 'Results','Rescreened' AS 'Visit_Type', sort_order
-					
-FROM
-                (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
-
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- via nagative
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 329)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- second  visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						--   results screened negative
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and os.value_coded = 1016
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						  AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-                    UNION
-
-                    (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Suspect' AS 'Results','Rescreened' AS 'Visit_Type', sort_order
-                     FROM
-                    (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
-
-                      from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- suspect positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 4793)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- second  visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						--   results screened negative
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and os.value_coded = 1016
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						  AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-                    UNION
-
-                   (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Positive' AS 'Results','Treatment_Follow_up' AS 'Visit_Type', sort_order
-                    FROM
-                   (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
-
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- via positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 328)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- second  visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						--   results screened positive
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and os.value_coded = 1738
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-                    UNION
-
-                    (SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Negative' AS 'Results','Treatment_Follow_up' AS 'Visit_Type', sort_order
-                     FROM
-                     (select distinct patient.patient_id AS Id,
-									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
-									   observed_age_group.sort_order AS sort_order
-
-                from obs o
-						-- CLIENTS NEWLY INITIATED ON ART
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND (o.concept_id = 2249 
-						 ) 
-						 AND patient.voided = 0 AND o.voided = 0
-						 
-						 
-						 AND o.person_id not in 
-								(
-								select distinct person_id 
-													from person
-													where death_date < CAST('#endDate#' AS DATE)
-													and dead = 1
-								)
-							
-						AND o.person_id not in 
-								(
-						       select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4155 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						)
-						
-						-- exclude treatment interruptions
-						AND o.person_id not in
-						        (
-								
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4159 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								
-						) 
-						-- exclude LTFU
-					
-						AND o.person_id not in
-						       (
-							   
-							   	select distinct os.person_id   
-										from obs os
-										inner join person_name pn on os.person_id = pn.person_id
-										inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-										inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-										where os.concept_id = 3752 
-										group by os.person_id
-										having datediff(CAST('#endDate#' AS DATE), max(value_datetime)) > 28		
-						
-						)
-						-- screened for cancer
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4527 and (os.value_coded = 4757 or os.value_coded = 4525 or os.value_coded = 4526)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- via positive
-						AND o.person_id in
-						        
-							(
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 327 and (os.value_coded = 329)
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-							
-							
-						)
-						
-						-- second  visit
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4513 and os.value_coded = 2146
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						--   results screened positive
-						AND o.person_id in
-						
-						    (
-							
-							   select distinct os.person_id 
-							   from obs os
-							   where os.concept_id = 4515 and os.value_coded = 1738
-							   AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-						
-						)
-						
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						  
-						 AND Gender = 'F' and observed_age_group.min_years >= 15 and observed_age_group.max_years < 200
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Screened_For_Cancer
-ORDER BY Screened_For_Cancer.Age)
-
-						
-						   
-						)AS HTS_TOTALS_COLS
-						
-						
-			)
-			
-			
-			
-			
-			
-			
-			) AS HTS_TOTALS_COLS_ROWS
-ORDER BY HTS_TOTALS_COLS_ROWS.sort_order
+)
+	)CXCA_Screening_COLS	
+) 
+) AS CXCA_TOTALS_COLS_ROWS
+ORDER BY CXCA_TOTALS_COLS_ROWS.sort_order
 
