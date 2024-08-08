@@ -1650,14 +1650,14 @@
     }
 },
 "LABORATORY_TB_Results_List": {
-    "name": "LAB-007 | TB Lab Tests Sent Report (List)",
+    "name": "LAB-007 | TB Lab Results Received Report (List)",
     "type": "MRSGeneric",
     "config": {
         "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/TB_Results_Received_list.sql/"
     }
 },
 "LABORATORY_TB_Results_Pivot": {
-    "name": "LAB-008 | TB Lab Tests Sent Report (Pivot)",
+    "name": "LAB-008 | TB Lab Results Received Report (Pivot)",
     "type": "MRSGeneric",
     "config": {
         "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/TB_Results_Received_pivot.sql/"
