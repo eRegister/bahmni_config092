@@ -652,113 +652,127 @@
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/ahd_treatment_pivot.sql"
         }
     },
+    "cd4_count_list": {
+        "name": "ART-078 | CD4 Count (List)",
+        "type": "MRSGeneric",
+        "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/CD4_Count_list.sql"
+        }
+    },
+    "cd4_count_pivot": {
+        "name": "ART-079 | CD4 Count (Pivot)",
+        "type": "MRSGeneric",
+        "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/CD4_Count_pivot.sql"
+        }
+    },
     "weekly_ppr_list": {
-        "name": "ART-078 | Weekly PPR (List)",
+        "name": "ART-080 | Weekly PPR (List)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/weekly_ppr_report_list.sql"
         }
     },
     "weekly_ppr_pivot": {
-        "name": "ART-079 | Weekly PPR (Pivot)",
+        "name": "ART-081 | Weekly PPR (Pivot)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/weekly_ppr_report_pivot.sql"
         }
     },
     "PrEP_new": {
-        "name": "ART-080 | PrEP New (List)",
+        "name": "ART-082 | PrEP New (List)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/prep_new_list.sql"
         }
     },
     "PrEP_new_pivot": {
-        "name": "ART-081 | PrEP New (Pivot)",
+        "name": "ART-083 | PrEP New (Pivot)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/prep_new_pivot.sql"
         }
     },
     "PrEP_ct_list": {
-        "name": "ART-082 | PrEP CT (List)",
+        "name": "ART-084 | PrEP CT (List)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/prep_ct_list.sql"
         }
     },
     "PrEP_ct_pivot": {
-        "name": "ART-083 | PrEP CT (Pivot)",
+        "name": "ART-085 | PrEP CT (Pivot)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/prep_ct_pivot.sql"
         }
     },
     "PrEP_curr_list": {
-        "name": "ART-084 | PrEP Current (List)",
+        "name": "ART-086 | PrEP Current (List)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/prep_curr_list.sql"
         }
     },
     "PrEP_curr_pivot": {
-        "name": "ART-085 | PrEP Current (Pivot)",
+        "name": "ART-087 | PrEP Current (Pivot)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/prep_curr_pivot.sql"
         }
     },
     "visitors_list": {
-        "name": "ART-086 | Visitors Report (List)",
+        "name": "ART-088 | Visitors Report (List)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/visitors.sql"
         }
     },
     "visitors_pivot": {
-        "name": "ART-087 | Visitors Report (Pivot)",
+        "name": "ART-089 | Visitors Report (Pivot)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/visitors_pivot.sql"
         }
     },
     "vmmc_pivot": {
-        "name": "ART-088 | VMMC (List)",
+        "name": "ART-090 | VMMC (List)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/vmmc_list.sql"
         }
     },
     "blood draw eligibility": {
-        "name": "ART-089 | Clients Eligible for Blood Draw (List)",
+        "name": "ART-091 | Clients Eligible for Blood Draw (List)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/eligible_for_blood_draw.sql"
         }
     },
     "ART.6_list": {
-        "name": "ART-090 | ART Clients with Viral Load Test Results (List)",
+        "name": "ART-092 | ART Clients with Viral Load Test Results (List)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/ART6_list.sql/"
         }
     },
     "ART.6_pivot": {
-        "name": "ART-091 | ART Clients with Viral Load Test Results (Pivot)",
+        "name": "ART-093 | ART Clients with Viral Load Test Results (Pivot)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/ART6_pivot.sql/"
         }
     },
     "ART.8_list": {
-        "name": "ART-092 | Appropriate second VL test (List)",
+        "name": "ART-094 | Appropriate second VL test (List)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/ART8_list.sql/"
         }
     },
     "ART.13_list": {
-        "name": "ART-093 | ART Adherence Proxy (List)",
+        "name": "ART-095 | ART Adherence Proxy (List)",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/ART13_list.sql/"
