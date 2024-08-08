@@ -202,8 +202,7 @@
 				"dropdown": true
 			},
 			"ART, Follow-up date" : {
-				"allowFutureDates": true,
-				"required": true
+				"allowFutureDates": true
 			},
 			"ANC, Estimated Date of Delivery" : {
 				"allowFutureDates": true,
