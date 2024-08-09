@@ -1269,7 +1269,14 @@
         }
     },
     "FP_DQA_List": {
-        "name": "MCH-040 | Family Planning Data Quality Assessment",
+        "name": "MCH-041 | Family Planning Data Quality Assessment",
+        "type": "MRSGeneric",
+        "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/fp_dqa.sql"
+        }
+    },
+    "CXCA_DQA_List": {
+        "name": "MCH-042 | CXCA Data Quality Assessment",
         "type": "MRSGeneric",
         "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/fp_dqa.sql"

@@ -9,7 +9,7 @@ FROM (
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-											   floor(datediff(CAST('2023-12-31' AS DATE), person.birthdate)/365) AS Age,
+											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 											   person.gender AS Gender,
 											   observed_age_group.name AS age_group,
                                                o.value_datetime AS Date_Specimen_Collected,
@@ -33,7 +33,7 @@ FROM (
                                         from obs oss
                                         where oss.concept_id = 4266 -- VL test result
                                         and oss.voided=0
-                                        and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('2023-12-31' AS DATE), INTERVAL -12 MONTH)) AND date_add(cast('2023-12-31' as datetime), interval 1 day)
+                                        and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND date_add(cast('#endDate#' as datetime), interval 1 day)
                                         group by oss.person_id
                                     )As VL_result
 
@@ -43,7 +43,7 @@ FROM (
                                     from(select oss.person_id as Id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.concept_id)), 20) AS latest_vl_result
                                                     from obs oss
                                                     where oss.concept_id = 5485 and oss.voided=0 -- from DISA
-                                                    and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('2023-12-31' AS DATE), INTERVAL -12 MONTH)) AND date_add(cast('2023-12-31' as datetime), interval 1 day)
+                                                    and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND date_add(cast('#endDate#' as datetime), interval 1 day)
                                                     and oss.value_numeric < 1000
                                                     group by oss.person_id
 
@@ -55,7 +55,7 @@ FROM (
                                     from(select oss.person_id as Id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.concept_id)), 20) AS latest_vl_result
                                                     from obs oss
                                                     where oss.concept_id = 5489 and oss.voided=0 -- from DISA
-                                                    and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('2023-12-31' AS DATE), INTERVAL -12 MONTH)) AND date_add(cast('2023-12-31' as datetime), interval 1 day)
+                                                    and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND date_add(cast('#endDate#' as datetime), interval 1 day)
                                                     group by oss.person_id
 
                                     ) As LDL
@@ -66,7 +66,7 @@ FROM (
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
 								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
-								  CAST('2023-12-31' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 						  	 WHERE observed_age_group.report_group_name = 'Modified_Ages'
 								) AS viral_loadClients_status
@@ -85,7 +85,7 @@ From
 	inner join
 		(select person_id, max(obs_datetime)as max_observation, SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
 			from obs where concept_id = 4273
-			and obs_datetime <= cast('2023-12-31' as date)
+			and obs_datetime <= cast('#endDate#' as date)
 			and voided = 0
 			-- Viral Load Undetectable
 			group by person_id) as latest_vl_result
@@ -102,7 +102,7 @@ UNION
 	inner join
 		(select person_id, max(obs_datetime)as max_observation, SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
 			from obs where concept_id = 4273
-			and obs_datetime <= cast('2023-12-31' as date)
+			and obs_datetime <= cast('#endDate#' as date)
 			and voided = 0
 			-- Viral Load < 20
 			group by person_id) as latest_vl_result
@@ -121,7 +121,7 @@ from obs o
 inner join
 	(select person_id, max(obs_datetime)as max_observation, SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
 		from obs where concept_id = 4273
-		and obs_datetime <= cast('2023-12-31' as date)
+		and obs_datetime <= cast('#endDate#' as date)
 		and voided = 0
 		-- Viral Load >=20
 		group by person_id) as latest_vl_result
@@ -136,7 +136,7 @@ inner join
 		inner join
 			(select person_id, max(obs_datetime)as max_observation, SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
 				from obs where concept_id = 4273
-				and obs_datetime <= cast('2023-12-31' as date)
+				and obs_datetime <= cast('#endDate#' as date)
 				and voided = 0
 				group by person_id) as latest_vl_result
 			on latest_vl_result.person_id = o.person_id
