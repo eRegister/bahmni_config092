@@ -2881,6 +2881,181 @@ Bahmni.ConceptSet.FormConditions.rules = {
         },
         ///////////////END OF LABOUR AND DELIVERY REGISTER CONDITIONS////////////////
 
+ //////////////////////////////UNDER 5 REGISTER CONDITIONS ////////////////////////
+
+        'Under5 Number': function(formname, formFieldValues){
+                var conditions = { assignedValues: [], disable: [] };
+                if(formname == "under5 Register"){
+                        conditions.assignedValues.push(
+                                {
+                                        field:"Under5 Number",
+                                        fieldValue:{
+                                                isAutoFill: true,
+                                                scopedEncounter: "latestvisit",
+                                                isFilledOnRetrospectiveMode: true,
+                                                enableDefaultValue: false,
+                                                enableEditAfterAutoFill: false   
+                                        }
+                                }
+                        );
+                }
+                return conditions;
+        },
+
+        'ANC, Unique Number': function(formname, formFieldValues){
+                var conditions = { assignedValues: [], disable: [] };
+                if(formname == "under5 Register"){
+                        conditions.assignedValues.push(
+                                {
+                                        field:"ANC, Unique Number",
+                                        fieldValue:{
+                                                isAutoFill: true,
+                                                scopedEncounter: "latestvisit",
+                                                isFilledOnRetrospectiveMode: true,
+                                                enableDefaultValue: false,
+                                                enableEditAfterAutoFill: false   
+                                        }
+                                }
+                        );
+                }
+                return conditions;
+        },
+        
+        'Delivery Note, Delivery location': function(formname, formFieldValues){
+                var conditions = { assignedValues: [], disable: [] };
+                if(formname == "under5 Register"){
+                        conditions.assignedValues.push(
+                                {
+                                        field:"Delivery Note, Delivery location",
+                                        fieldValue:{
+                                                isAutoFill: true,
+                                                scopedEncounter: "latestvisit",
+                                                isFilledOnRetrospectiveMode: true,
+                                                enableDefaultValue: false,
+                                                enableEditAfterAutoFill: false   
+                                        }
+                                }
+                        );
+                }
+                return conditions;
+        },
+       
+        'Mode of Delivery': function(formname, formFieldValues){
+                var conditions = { assignedValues: [], disable: [] };
+                if(formname == "under5 Register"){
+                        conditions.assignedValues.push(
+                                {
+                                        field:"Mode of Delivery",
+                                        fieldValue:{
+                                                isAutoFill: true,
+                                                scopedEncounter: "latestvisit",
+                                                isFilledOnRetrospectiveMode: true,
+                                                enableDefaultValue: false,
+                                                enableEditAfterAutoFill: false   
+                                        }
+                                }
+                        );
+                }
+                return conditions;
+        },
+        
+        'Term at Delivery': function(formname, formFieldValues){
+                var conditions = { assignedValues: [], disable: [] };
+                if(formname == "under5 Register"){
+                        conditions.assignedValues.push(
+                                {
+                                        field:"Term at Delivery",
+                                        fieldValue:{
+                                                isAutoFill: true,
+                                                scopedEncounter: "latestvisit",
+                                                isFilledOnRetrospectiveMode: true,
+                                                enableDefaultValue: false,
+                                                enableEditAfterAutoFill: false   
+                                        }
+                                }
+                        );
+                }
+                return conditions;
+        },
+   
+        'Nutrition, Birth Weight': function(formname, formFieldValues){
+                var conditions = { assignedValues: [], disable: [] };
+                if(formname == "under5 Register"){
+                        conditions.assignedValues.push(
+                                {
+                                        field:"Nutrition, Birth Weight",
+                                        fieldValue:{
+                                                isAutoFill: true,
+                                                scopedEncounter: "latestvisit",
+                                                isFilledOnRetrospectiveMode: true,
+                                                enableDefaultValue: false,
+                                                enableEditAfterAutoFill: false   
+                                        }
+                                }
+                        );
+                }
+                return conditions;
+        },
+
+        'Complications at Birth': function(formname, formFieldValues){
+                var conditions = { assignedValues: [], disable: [] };
+                if(formname == "under5 Register"){
+                        conditions.assignedValues.push(
+                                {
+                                        field:"Complications at Birth",
+                                        fieldValue:{
+                                                isAutoFill: true,
+                                                scopedEncounter: "latestvisit",
+                                                isFilledOnRetrospectiveMode: true,
+                                                enableDefaultValue: false,
+                                                enableEditAfterAutoFill: false   
+                                        }
+                                }
+                        );
+                }
+                return conditions;
+        },
+    
+        'HIV Exposure Status': function(formname, formFieldValues){
+                var conditions = { assignedValues: [], disable: [] };
+                if(formname == "under5 Register"){
+                        conditions.assignedValues.push(
+                                {
+                                        field:"HIV Exposure Status",
+                                        fieldValue:{
+                                                isAutoFill: true,
+                                                scopedEncounter: "latestvisit",
+                                                isFilledOnRetrospectiveMode: true,
+                                                enableDefaultValue: false,
+                                                enableEditAfterAutoFill: false   
+                                        }
+                                }
+                        );
+                }
+                return conditions;
+        },
+      
+        'Feeding Options': function(formname, formFieldValues){
+                var conditions = { assignedValues: [], disable: [] };
+                if(formname == "under5 Register"){
+                        conditions.assignedValues.push(
+                                {
+                                        field:"Feeding Options",
+                                        fieldValue:{
+                                                isAutoFill: true,
+                                                scopedEncounter: "latestvisit",
+                                                isFilledOnRetrospectiveMode: true,
+                                                enableDefaultValue: false,
+                                                enableEditAfterAutoFill: false   
+                                        }
+                                }
+                        );
+                }
+                return conditions;
+        },
+
+        //////////////////////////////UNDER 5 REGISTER CONDITIONS ////////////////////////
+        
         ///////////////MDR-TB////////////////
         'MDR Forms': function (formName, formFieldValues) {
                 var mdrForm = formFieldValues['MDR Forms'];
