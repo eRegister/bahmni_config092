@@ -98,7 +98,11 @@
                         "DISA, GeneXpert Result, MTB Result", 
                         "DISA, GeneXpert Result, Rifampicin", 
                         "DISA, VL Result Testdate",
-                        "DISA, VL Result Comments"
+                        "DISA, VL Result Comments",
+                        "DISA, Smear Result, Ziehl Neelsen",
+                        "DISA, Smear Result, Grading",
+                        "DISA, ZN Date",
+                        "DISA, ZN Remarks"
                         ],
                    "numberOfVisits": "4",
                    "showHeader": true,
@@ -115,7 +119,11 @@
                         "DISA, VL Result Testdate",
                         "DISA, VL Result Comments",
                         "HIVTC, VL Pregnancy Status",
-                        "HIVTC, VL Breastfeeding Status"
+                        "HIVTC, VL Breastfeeding Status",
+                        "DISA, Smear Result, Ziehl Neelsen",
+                        "DISA, Smear Result, Grading",
+                        "DISA, ZN Date",
+                        "DISA, ZN Remarks"
                         ],
                       "showHeader": true
                 }
