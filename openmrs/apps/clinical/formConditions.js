@@ -1924,19 +1924,20 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         return conditions;
                 }
         },
-        'HTC, Pre-test Counseling Set': function (formName, formFieldValues) {
-
+       'HTC, Pre-test Counseling Set': function (formName, formFieldValues) {
                 if (formName == "HIV Testing and Counseling Intake Template") {
                         var testedForHIV = formFieldValues['Testing Eligibility, Tested For HIV'];
+                        var testingStrategy = formFieldValues['HIV, Testing Strategies'];
                         var conditions = { show: [], hide: [], enable: [], disable: [] };
-                        if(testedForHIV == "No" ){
-                                conditions.hide.push("HTC, Previous result given")
-                                conditions.hide.push("HTC, Time Since Test");
-                                conditions.hide.push("HTC, History of Previous Testing");
-                        }
-                        else {
+                        if(testedForHIV == "Yes" && (testingStrategy.includes('HIVTC, Rapid Test'))){
                                 conditions.show.push("HTC, History of Previous Testing");
                         }
+                        else{
+                                conditions.hide.push("HTC, History of Previous Testing");
+                                conditions.hide.push("HTC, Previous result given")
+                                conditions.hide.push("HTC, Time Since Test");
+                        }
+
                         return conditions;
                 }
         },
