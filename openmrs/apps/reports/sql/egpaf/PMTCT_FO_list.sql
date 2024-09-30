@@ -1,6 +1,6 @@
-Select distinct Patient_Identifier, Patient_Name,age_group as Age_Group,Age,Gender,Outcome_Type, concat(Age_at_test, " months") as Age_at_test
+Select distinct Patient_Identifier, Patient_Name,age_group as Age_Group,Age,Gender,Outcome_Type, concat(Age_at_test, " months") as Age_at_test, sort_order
 from
-(SELECT distinct Id, patientIdentifier AS Patient_Identifier, patientName AS Patient_Name, Age , Gender, age_group
+(SELECT distinct Id, patientIdentifier AS Patient_Identifier, patientName AS Patient_Name, Age , Gender, age_group,sort_order
 							 
 	FROM
 
@@ -41,6 +41,7 @@ from
 						AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 					WHERE observed_age_group.report_group_name = 'Modified_Ages'
 			) AS HTSClients_HIV_STATUS
+		where Age = 2
 			Group by Id
 	ORDER BY HTSClients_HIV_STATUS.Age) as final_outcome
 	-- Age at Test
