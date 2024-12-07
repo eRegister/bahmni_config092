@@ -95,7 +95,7 @@ FROM (
                  AND o.concept_id = 2165 and o.value_coded = 1738
                  AND patient.voided = 0 AND o.voided = 0
                  AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
-              AND CAST(o.obs_datetime AS DATE) <= CAST('#startDate#' AS DATE)
+              AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
 
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
