@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/openmrs/apps/reports/sql/hts_final_hiv_status_by_service_point.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/openmrs/apps/reports/sql/hts_pitc_hiv_status_with_history_pivot.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/openmrs/apps/reports/sql/test.sql" dialect="MySQL" />
+  </component>
+</project>
