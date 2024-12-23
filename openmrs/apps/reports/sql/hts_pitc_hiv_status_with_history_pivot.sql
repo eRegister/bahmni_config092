@@ -44,12 +44,12 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 1738
                  AND patient.voided = 0 AND o.voided = 0
                   AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                    AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
@@ -62,7 +62,21 @@ FROM (
                  ) as pitc
                  on o.person_id = pitc.person_id
                  AND o.encounter_id = pitc.encounter
-                               
+
+                -- adding missed concepts
+                 Inner Join (
+                select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
+                from obs os
+                         INNER JOIN patient ON os.person_id = patient.patient_id
+                where os.concept_id = 4844 and os.value_coded = 1732
+                  AND CAST(os.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
+                  AND CAST(os.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
+                  AND patient.voided = 0 AND os.voided = 0
+            ) as test
+                            on o.person_id = test.person_id
+                                AND o.encounter_id = test.encounter
+                -- adding missed concepts
+
                  -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -75,7 +89,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-				
+
 				-- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -86,8 +100,8 @@ FROM (
                    AND CAST(os.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
-                 on o.person_id = testingform.person_id                
-                                 
+                 on o.person_id = testingform.person_id
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -117,15 +131,15 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 1738
                  AND patient.voided = 0 AND o.voided = 0
                  AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
               AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
-                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter 
+                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
                   from obs os
                   INNER JOIN patient ON os.person_id = patient.patient_id
                   where os.concept_id = 4228 and os.value_coded = 4227
@@ -134,7 +148,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  ) as pitc
                  on o.person_id = pitc.person_id
-                  AND o.encounter_id = pitc.encounter             
+                  AND o.encounter_id = pitc.encounter
                  -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -147,7 +161,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-                 
+
 				 -- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -159,7 +173,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
                  on o.person_id = testingform.person_id
-                                 
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -188,15 +202,15 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 1016
                  AND patient.voided = 0 AND o.voided = 0
                  AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                  AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
-                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter 
+                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
                   from obs os
                   INNER JOIN patient ON os.person_id = patient.patient_id
                   where os.concept_id = 4228 and os.value_coded = 4227
@@ -205,7 +219,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  ) as pitc
                  on o.person_id = pitc.person_id
-                 AND o.encounter_id = pitc.encounter              
+                 AND o.encounter_id = pitc.encounter
                  -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -218,7 +232,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-                
+
 				-- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -230,7 +244,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
                  on o.person_id = testingform.person_id
-                                 
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -260,15 +274,15 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 1016
                  AND patient.voided = 0 AND o.voided = 0
                   AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                    AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
-                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter 
+                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
                   from obs os
                   INNER JOIN patient ON os.person_id = patient.patient_id
                   where os.concept_id = 4228 and os.value_coded = 4227
@@ -277,7 +291,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  ) as pitc
                  on o.person_id = pitc.person_id
-                 AND o.encounter_id = pitc.encounter              
+                 AND o.encounter_id = pitc.encounter
                  -- REPEATER, HAS HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -290,7 +304,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-                 
+
 				 -- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -302,7 +316,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
                  on o.person_id = testingform.person_id
-                                 
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -331,12 +345,12 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 4220
                  AND patient.voided = 0 AND o.voided = 0
                   AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                    AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
@@ -349,7 +363,7 @@ FROM (
                  ) as pitc
                  on o.person_id = pitc.person_id
                  AND o.encounter_id = pitc.encounter
-                               
+
                  -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -362,7 +376,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-				
+
 				-- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -373,8 +387,8 @@ FROM (
                    AND CAST(os.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
-                 on o.person_id = testingform.person_id                
-                                 
+                 on o.person_id = testingform.person_id
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -402,15 +416,15 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 4220
                  AND patient.voided = 0 AND o.voided = 0
                  AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                  AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
-                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter 
+                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
                   from obs os
                   INNER JOIN patient ON os.person_id = patient.patient_id
                   where os.concept_id = 4228 and os.value_coded = 4227
@@ -419,7 +433,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  ) as pitc
                  on o.person_id = pitc.person_id
-                 AND o.encounter_id = pitc.encounter              
+                 AND o.encounter_id = pitc.encounter
                  -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -432,7 +446,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-                
+
 				-- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -444,7 +458,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
                  on o.person_id = testingform.person_id
-                                 
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -459,20 +473,20 @@ FROM (
 
 			GROUP BY HTS_STATUS_DRVD_ROWS.age_group, HTS_STATUS_DRVD_ROWS.Gender
 			ORDER BY HTS_STATUS_DRVD_ROWS.sort_order)
-			
-			
+
+
 	UNION ALL
 
 			(SELECT 'Total' AS 'AgeGroup'
 					, 'All' AS 'Sex'
-						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC' 
+						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
 							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_COLS.Testing_History = 'New', 1, 0))) AS New_Positives
-						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'			
+						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
 							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_COLS.Testing_History = 'New', 1, 0))) AS New_Negatives
-              , IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'			
+              , IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
 							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Indeterminate and inconclusive results' AND HTS_STATUS_DRVD_COLS.Testing_History = 'New', 1, 0))) AS New_Indeterminate
-						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC' 
-							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_COLS.Testing_History = 'Repeat', 1, 0))) AS Rep_Positives				
+						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
+							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_COLS.Testing_History = 'Repeat', 1, 0))) AS Rep_Positives
 						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
 							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_COLS.Testing_History = 'Repeat', 1, 0))) AS Rep_Negatives
               , IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
@@ -497,12 +511,12 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 1738
                  AND patient.voided = 0 AND o.voided = 0
                   AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                    AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
@@ -515,7 +529,7 @@ FROM (
                  ) as pitc
                  on o.person_id = pitc.person_id
                  AND o.encounter_id = pitc.encounter
-                               
+
                  -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -528,7 +542,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-				
+
 				-- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -539,8 +553,8 @@ FROM (
                    AND CAST(os.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
-                 on o.person_id = testingform.person_id                
-                                 
+                 on o.person_id = testingform.person_id
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -570,15 +584,15 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 1738
                  AND patient.voided = 0 AND o.voided = 0
                  AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
               AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
-                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter 
+                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
                   from obs os
                   INNER JOIN patient ON os.person_id = patient.patient_id
                   where os.concept_id = 4228 and os.value_coded = 4227
@@ -587,7 +601,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  ) as pitc
                  on o.person_id = pitc.person_id
-                  AND o.encounter_id = pitc.encounter             
+                  AND o.encounter_id = pitc.encounter
                  -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -600,7 +614,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-                 
+
 				 -- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -612,7 +626,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
                  on o.person_id = testingform.person_id
-                                 
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -641,15 +655,15 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 1016
                  AND patient.voided = 0 AND o.voided = 0
                  AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                  AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
-                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter 
+                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
                   from obs os
                   INNER JOIN patient ON os.person_id = patient.patient_id
                   where os.concept_id = 4228 and os.value_coded = 4227
@@ -658,7 +672,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  ) as pitc
                  on o.person_id = pitc.person_id
-                 AND o.encounter_id = pitc.encounter              
+                 AND o.encounter_id = pitc.encounter
                  -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -671,7 +685,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-                
+
 				-- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -683,7 +697,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
                  on o.person_id = testingform.person_id
-                                 
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -713,15 +727,15 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 1016
                  AND patient.voided = 0 AND o.voided = 0
                   AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                    AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
-                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter 
+                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
                   from obs os
                   INNER JOIN patient ON os.person_id = patient.patient_id
                   where os.concept_id = 4228 and os.value_coded = 4227
@@ -730,7 +744,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  ) as pitc
                  on o.person_id = pitc.person_id
-                 AND o.encounter_id = pitc.encounter              
+                 AND o.encounter_id = pitc.encounter
                  -- REPEATER, HAS HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -743,7 +757,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-                 
+
 				 -- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -755,7 +769,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
                  on o.person_id = testingform.person_id
-                                 
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -784,12 +798,12 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 4220
                  AND patient.voided = 0 AND o.voided = 0
                   AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                    AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
@@ -802,7 +816,7 @@ FROM (
                  ) as pitc
                  on o.person_id = pitc.person_id
                  AND o.encounter_id = pitc.encounter
-                               
+
                  -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -815,7 +829,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-				
+
 				-- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -826,8 +840,8 @@ FROM (
                    AND CAST(os.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
-                 on o.person_id = testingform.person_id                
-                                 
+                 on o.person_id = testingform.person_id
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -855,15 +869,15 @@ FROM (
 
             from obs o
                 -- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                 INNER JOIN patient ON o.person_id = patient.patient_id
                  AND o.concept_id = 2165 and o.value_coded = 4220
                  AND patient.voided = 0 AND o.voided = 0
                  AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                  AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-                 
+
                  -- PROVIDER INITIATED TESTING AND COUNSELING
                  Inner Join (
-                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter 
+                  select distinct os.person_id, CAST(os.date_created as Date) as current_conc, os.encounter_id as encounter
                   from obs os
                   INNER JOIN patient ON os.person_id = patient.patient_id
                   where os.concept_id = 4228 and os.value_coded = 4227
@@ -872,7 +886,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  ) as pitc
                  on o.person_id = pitc.person_id
-                 AND o.encounter_id = pitc.encounter              
+                 AND o.encounter_id = pitc.encounter
                  -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
                  Inner Join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -885,7 +899,7 @@ FROM (
                  ) as repeater
                  on o.person_id = repeater.person_id
                  and pitc.current_conc = repeater.current_conc
-                
+
 				-- Observation be in HIV Testing form
                  inner join (
                   select distinct os.person_id, CAST(os.date_created as Date) as current_conc
@@ -897,7 +911,7 @@ FROM (
                   AND patient.voided = 0 AND os.voided = 0
                  )as testingform
                  on o.person_id = testingform.person_id
-                                 
+
                  INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                  INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                  INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
