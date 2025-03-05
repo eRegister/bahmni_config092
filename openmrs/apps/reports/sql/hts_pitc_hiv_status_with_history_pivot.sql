@@ -13,11 +13,11 @@ FROM (
 			(SELECT HTS_STATUS_DRVD_ROWS.age_group AS 'AgeGroup'
 					, HTS_STATUS_DRVD_ROWS.Gender
 						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'PITC' 
-							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_ROWS.Testing_History = 'New', 1, 0))) AS New_Positives
+							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_ROWS.Testing_History = 'Repeat', 1, 0))) AS New_Positives
 						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'PITC'			
-							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_ROWS.Testing_History = 'New', 1, 0))) AS New_Negatives
+							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_ROWS.Testing_History = 'Repeat', 1, 0))) AS New_Negatives
               , IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'PITC'			
-							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Indeterminate and inconclusive results' AND HTS_STATUS_DRVD_ROWS.Testing_History = 'New', 1, 0))) AS New_Indeterminate
+							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Indeterminate and inconclusive results' AND HTS_STATUS_DRVD_ROWS.Testing_History = 'Repeat', 1, 0))) AS New_Indeterminate
 						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'PITC' 
 							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_ROWS.Testing_History = 'Repeat', 1, 0))) AS Rep_Positives				
 						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'PITC'
@@ -116,7 +116,7 @@ FROM (
   UNION
 
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
-        , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
+        , 'Repeat' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
             (select distinct patient.patient_id AS Id,
                          patient_identifier.identifier AS patientIdentifier,
@@ -187,7 +187,7 @@ FROM (
 
   UNION
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
-        , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
+        , 'Repeat' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
             (select distinct patient.patient_id AS Id,
                          patient_identifier.identifier AS patientIdentifier,
@@ -401,7 +401,7 @@ FROM (
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
     UNION
      (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
-        , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
+        , '190' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
             (select distinct patient.patient_id AS Id,
                          patient_identifier.identifier AS patientIdentifier,
@@ -479,11 +479,11 @@ FROM (
 			(SELECT 'Total' AS 'AgeGroup'
 					, 'All' AS 'Sex'
 						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
-							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_COLS.Testing_History = 'New', 1, 0))) AS New_Positives
+							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_COLS.Testing_History = 'Repeat', 1, 0))) AS New_Positives
 						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
-							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_COLS.Testing_History = 'New', 1, 0))) AS New_Negatives
+							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_COLS.Testing_History = 'Repeat', 1, 0))) AS New_Negatives
               , IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
-							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Indeterminate and inconclusive results' AND HTS_STATUS_DRVD_COLS.Testing_History = 'New', 1, 0))) AS New_Indeterminate
+							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Indeterminate and inconclusive results' AND HTS_STATUS_DRVD_COLS.Testing_History = 'Repeat', 1, 0))) AS New_Indeterminate
 						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
 							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_COLS.Testing_History = 'Repeat', 1, 0))) AS Rep_Positives
 						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
@@ -568,7 +568,7 @@ FROM (
   UNION
 
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
-        , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
+        , 'Repeat' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
             (select distinct patient.patient_id AS Id,
                          patient_identifier.identifier AS patientIdentifier,
@@ -639,7 +639,7 @@ FROM (
 
   UNION
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
-        , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
+        , 'Repeat' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
             (select distinct patient.patient_id AS Id,
                          patient_identifier.identifier AS patientIdentifier,
@@ -853,7 +853,7 @@ FROM (
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
     UNION
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
-        , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
+        , 'Repeat' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
             (select distinct patient.patient_id AS Id,
                          patient_identifier.identifier AS patientIdentifier,
