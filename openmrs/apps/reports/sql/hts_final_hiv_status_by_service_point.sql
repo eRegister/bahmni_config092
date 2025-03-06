@@ -3,7 +3,7 @@ from
 (SELECT Id,  Patient_Identifier, Patient_Name, Age, Gender, age_group, HIV_Testing_Initiation , Testing_History , HIV_Status, observation
 FROM (
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
-        , 'Repeat' AS 'Testing_History' , HIV_Status, observation, sort_order
+        , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
             (select distinct patient.patient_id AS Id,
                          patient_identifier.identifier AS patientIdentifier,
@@ -73,7 +73,7 @@ FROM (
                 ) AS HTSClients_HIV_Status
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
-  UNION ALL
+  UNION
    -- pulls data from HIV Testing and Counseling
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
         , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
@@ -145,7 +145,7 @@ FROM (
                 ) AS HTSClients_HIV_Status
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
-  UNION ALL
+  UNION
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
         , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
@@ -216,10 +216,9 @@ FROM (
                 ) AS HTSClients_HIV_Status
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
-  UNION ALL
-
+  UNION
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
-        , 'Repeat' AS 'Testing_History' , HIV_Status, observation, sort_order
+        , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
             (select distinct patient.patient_id AS Id,
                          patient_identifier.identifier AS patientIdentifier,
@@ -288,9 +287,9 @@ FROM (
                 ) AS HTSClients_HIV_Status
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
-  UNION ALL
+  UNION
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
-        , 'Repeat' AS 'Testing_History' , HIV_Status, observation, sort_order
+        , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
             (select distinct patient.patient_id AS Id,
                          patient_identifier.identifier AS patientIdentifier,
@@ -359,7 +358,7 @@ FROM (
                WHERE observed_age_group.report_group_name = 'Modified_Ages'
                 ) AS HTSClients_HIV_Status
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
-    UNION ALL
+    UNION
      (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
         , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
@@ -430,7 +429,7 @@ FROM (
                 ) AS HTSClients_HIV_Status
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
-    UNION ALL
+    UNION
 
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'CITC' AS 'HIV_Testing_Initiation'
         , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
@@ -503,7 +502,7 @@ FROM (
                 ) AS HTSClients_HIV_Status
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
-  UNION ALL
+  UNION
 
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'CITC' AS 'HIV_Testing_Initiation'
         , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
@@ -575,9 +574,9 @@ FROM (
                 ) AS HTSClients_HIV_Status
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
-  UNION ALL
+  UNION
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'CITC' AS 'HIV_Testing_Initiation'
-        , 'Repeat' AS 'Testing_History' , HIV_Status, observation, sort_order
+        , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
             (select distinct patient.patient_id AS Id,
                          patient_identifier.identifier AS patientIdentifier,
@@ -646,10 +645,10 @@ FROM (
                 ) AS HTSClients_HIV_Status
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
-  UNION ALL
+  UNION
 
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'CITC' AS 'HIV_Testing_Initiation'
-        , 'Repeat' AS 'Testing_History' , HIV_Status, observation, sort_order
+        , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
             (select distinct patient.patient_id AS Id,
                          patient_identifier.identifier AS patientIdentifier,
@@ -704,7 +703,7 @@ FROM (
                WHERE observed_age_group.report_group_name = 'Modified_Ages'
                 ) AS HTSClients_HIV_Status
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
-    UNION ALL
+    UNION
      (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'CITC' AS 'HIV_Testing_Initiation'
         , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
@@ -775,7 +774,7 @@ FROM (
                WHERE observed_age_group.report_group_name = 'Modified_Ages'
                 ) AS HTSClients_HIV_Status
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
-    UNION ALL
+    UNION
      (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'CITC' AS 'HIV_Testing_Initiation'
         , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
     FROM
@@ -848,7 +847,7 @@ FROM (
     ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
 -- test
-  UNION ALL
+  UNION
   -- pulls data from HIV Testing and Counseling
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
         , 'New' AS 'Testing_History' , HIV_Status, observation, sort_order
@@ -895,7 +894,7 @@ FROM (
        ) AS HTSClients_HIV_Status
    ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 -- test
-  UNION ALL
+  UNION
 
   -- looking for data in 2385>>>2165
   (SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group,  'PITC' AS 'HIV_Testing_Initiation'
