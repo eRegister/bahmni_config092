@@ -232,7 +232,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
         },
 
 
-        ' ': function (formName, formFieldValues) {
+        'TB, HIV Status': function (formName, formFieldValues) {
                 var result = formFieldValues['TB, HIV Status'];
                 var conditions = { show: [], hide: [] };
                 if (!result || result == 'New Negative' || result == 'Known Negative') {
@@ -1573,7 +1573,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
 
                         if (followUpDate) {
-                                var daysDispesed;
+                                var daysDispensed;
 
                                 if (!retrospectiveDate) {
                                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
