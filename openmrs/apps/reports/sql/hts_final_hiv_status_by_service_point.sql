@@ -1,4 +1,3 @@
-
 SELECT DISTINCT
     pd.identifier AS Patient_Identifier,
     CONCAT(pn.given_name, ' ', pn.family_name) AS Patient_Name,
@@ -18,24 +17,29 @@ SELECT DISTINCT
         WHEN FLOOR(DATEDIFF('#endDate#', p.birthdate) / 365) >= 50 THEN '50+yrs'
         ELSE 'Unknown'
         END AS age_group,
+
     CASE
         WHEN repeater.value_coded = 4227 THEN 'PITC'
         WHEN repeater.value_coded = 4226 THEN 'CITC'
         WHEN repeater.value_coded = 4237 THEN 'HIVST'
         ELSE 'Unknown'
         END AS HIV_Testing_Initiation,
+
     CASE
         WHEN history.value_coded = 2147 THEN 'New'
         WHEN history.value_coded = 2146 THEN 'Repeat'
         ELSE 'New'
         END AS Testing_History,
+
     CASE
         WHEN outcome.value_coded = 1738 THEN 'Positive'
         WHEN outcome.value_coded = 1016 THEN 'Negative'
         WHEN outcome.value_coded = 4220 THEN 'Inconclusive'
         ELSE 'Unknown'
         END AS HIV_Status,
+
     location.name AS Location_Name,
+
     CASE
         WHEN modeOfEntry.value_coded = 4234 THEN 'Antiretroviral'
         WHEN modeOfEntry.value_coded = 4233 THEN 'Anti Natal Care'
@@ -61,17 +65,23 @@ SELECT DISTINCT
 
 FROM obs repeater
          INNER JOIN person p ON p.person_id = repeater.person_id AND p.voided = 0
-         INNER JOIN person_name pn ON pn.person_id = p.person_id AND pn.preferred = 1
-         INNER JOIN patient_identifier pd ON pd.patient_id = p.person_id AND pd.preferred = 1 AND pd.identifier_type = 3
+         INNER JOIN person_name pn ON pn.person_id = p.person_id AND pn.preferred = 1 AND pn.voided = 0
+         INNER JOIN patient_identifier pd ON pd.patient_id = p.person_id AND pd.preferred = 1 AND pd.identifier_type = 3 AND pd.voided = 0
          INNER JOIN location ON location.location_id = repeater.location_id AND location.retired = 0
-         LEFT JOIN obs history ON history.encounter_id = repeater.encounter_id AND history.concept_id = 2137 AND history.voided = 0
-         LEFT JOIN obs outcome ON outcome.encounter_id = repeater.encounter_id AND outcome.concept_id = 2165 AND outcome.voided = 0
+
+         LEFT JOIN obs history ON history.encounter_id = repeater.encounter_id
+    AND history.concept_id = 2137 AND history.voided = 0
+
+         LEFT JOIN obs outcome ON outcome.encounter_id = repeater.encounter_id
+    AND outcome.concept_id = 2165 AND outcome.voided = 0
+
          LEFT JOIN (
     SELECT person_id, MAX(obs_datetime) AS max_obs_datetime
     FROM obs
     WHERE concept_id = 4238 AND voided = 0
     GROUP BY person_id
 ) latestEntry ON latestEntry.person_id = repeater.person_id
+
          LEFT JOIN obs modeOfEntry ON modeOfEntry.person_id = latestEntry.person_id
     AND modeOfEntry.obs_datetime = latestEntry.max_obs_datetime
     AND modeOfEntry.concept_id = 4238
