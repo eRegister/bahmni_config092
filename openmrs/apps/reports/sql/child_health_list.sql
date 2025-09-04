@@ -25,16 +25,15 @@ left outer join
 
 (
 	-- Base Dose
- select o.person_id,case
- when o.value_coded = 4453 then "BCG"
- when o.value_coded = 4454 then "Polio(OPV)"
-else "N/A"
-end AS Base_Dose
-from obs o
-where o.concept_id = 4452 and o.voided = 0
+select o.person_id, value_coded as Base_dose_code, group_concat(distinct name separator ', ') as Base_dose
+from obs o join concept_name cn on o.value_coded = cn.concept_id
+where o.concept_id = 4452 
+	and o.voided = 0
+	and name in ('BCG', 'Polio(OPV)')
 Group by o.person_id
 ) BaseDose
 on Child.Id = BaseDose.person_id
+
 
 
  -- 1st Dose
@@ -128,3 +127,4 @@ where o.concept_id = 4487 and o.voided = 0
 Group by o.person_id
 ) Dt1stDose
 on Child.Id = Dt1stDose.person_id
+
