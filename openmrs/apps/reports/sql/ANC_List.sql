@@ -100,42 +100,18 @@ left outer join
 
 (
 	-- ANC High Risk Pregnancy
-    select o.person_id,o.encounter_id, 
-    case
-    when o.value_coded = 4353 then "No Risk"
-    when o.value_coded = 4354 then "Age less than 16 years"
-    when o.value_coded = 4355 then "Age more than 40 years"
-    when o.value_coded = 4356 then "Previous SB or NND"
-    when o.value_coded = 4357 then "History 3 or more consecutive spontaneous miscarriages"
-    when o.value_coded = 4358 then "Birth Weight< 2500g"
-    when o.value_coded = 4359 then "Birth Weight > 4500g"
-    when o.value_coded = 4360 then "Previous Hx of Hypertension/pre-eclampsia/eclampsia"
-    when o.value_coded = 4361 then "Isoimmunization Rh(-)"
-    when o.value_coded = 1050 then "Renal Disease"
-    when o.value_coded = 4362 then "Cardiac Disease"
-    when o.value_coded = 1048 then "Diabetes"
-    when o.value_coded = 4363 then "Known Substance Abuse"
-    when o.value_coded = 4364 then "Pelvic Mass"
-    when o.value_coded = 5879 then "Primigravida"
-    when o.value_coded = 4366 then "Previous Surgery on Reproductive Tract"
-    when o.value_coded = 1033 then "Other Answer"
-    when o.value_coded = 1783 then "Hypertension"
-    when o.value_coded = 4372 then "Reduced Fetal Movements"
-    when o.value_coded = 670 then "UTI"
-    when o.value_coded = 5278 then "STI"
-    when o.value_coded = 457 then "Anaemia"
-    when o.value_coded = 4374 then "Malpresentation"
-    when o.value_coded = 4375 then "Multiple pregnancy"
-    when o.value_coded = 5187 then "GBV"
-    when o.value_coded = 5880 then "HIV infection"
-    when o.value_coded = 5085 then "Covid19"
-    when o.value_coded = 3798 then "Syphillis"
-    else ""
-    end AS High_Risk_Pregnancy
-    from obs o
-    where o.concept_id = 4352 and o.voided = 0
-    and cast(o.obs_datetime as date) >= CAST('#startDate#' AS DATE)
-    and cast(o.obs_datetime as date) <= CAST('#endDate#' AS DATE)
+    select o.person_id,o.encounter_id, value_coded as high_risk_preg_code, group_concat(distinct name separator ', ') as High_Risk_Pregnancy
+    from obs o join concept_name cn on o.value_coded = cn.concept_id
+    where o.concept_id = 4352 
+    and name in ('No Risk','Age less than 16 years','Age more than 40 years','Previous SB or NND',
+    'History 3 or more consecutive spontaneous miscarriages','Birth Weight< 2500g','Birth Weight > 4500g',
+    'Previous Hx of Hypertension/pre-eclampsia/eclampsia','Isoimmunization Rh(-)','Renal Disease','Cardiac Disease','Diabetes',
+    'Known Substance Abuse','Pelvic Mass','Primigravida','Previous Surgery on Reproductive Tract','Other Answer','Hypertension',
+    'Reduced Fetal Movements','UTI','STI','Anaemia','Malpresentation','Multiple pregnancy','GBV','HIV infection','Covid19','Syphillis','')
+    and o.voided = 0
+    and cast(o.obs_datetime as date) >= CAST('2025-08-01' AS DATE)
+    and cast(o.obs_datetime as date) <= CAST('2025-09-04' AS DATE)
+    group by o.person_id
 ) High_Risk_Preg
 on ANC_Clients.encounter_id = High_Risk_Preg.encounter_id
 
@@ -319,5 +295,6 @@ left outer join
 ) Blood_Group_Status
 on ANC_Clients.encounter_id = Blood_Group_Status.encounter_id
 order by patientName
+
 
 
