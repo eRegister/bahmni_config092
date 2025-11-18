@@ -143,8 +143,10 @@ WHERE p.voided = 0
 ORDER BY 
     CASE 
         WHEN AgeGroup = 'Under 1yr' THEN 0
-        WHEN AgeGroup = 'Total' THEN 2
-        ELSE 1
+        WHEN AgeGroup = '1-4yrs' THEN 1
+        WHEN AgeGroup = '5-9yrs' THEN 2
+        WHEN AgeGroup = 'Total' THEN 4
+        ELSE 3
     END,
     AgeGroup,
     Sex;
