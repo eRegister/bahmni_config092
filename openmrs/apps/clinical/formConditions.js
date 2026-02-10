@@ -1437,7 +1437,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
         /*--- ARV Drug days and drug supply duration generic autocalculations---- */
         'ART, Follow-up date': function (formName, formFieldValues) {
-                if (formName == "Regimen") {
+                if (formName == "HIVTC, Patient Register") {
                         var followUpDate = formFieldValues['ART, Follow-up date'];
                         var conditions = { assignedValues: [], error: [] };
                         var dateUtil = Bahmni.Common.Util.DateUtil;
@@ -1785,6 +1785,93 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }
         },
         /*--------------------- HIV TESTING AND COUNSELING (HTC)----------------------*/
+
+        'HTC, Initiated Testing and Counseling': function (formName, formFieldValues) {
+                if (formName == "HIV Testing and Counseling Intake Template") {
+                        var citcOrPitc = formFieldValues['HTC, Initiated Testing and Counseling'];
+                        var conditions = { show: [], hide: [], enable: [], disable: [] };
+                        console.log("citcOrPitc", !citcOrPitc);
+                        if(!citcOrPitc){
+                                conditions.hide.push("Testing Eligibility, Tested For HIV");
+                        }
+                        else{
+                                conditions.show.push("Testing Eligibility, Tested For HIV");
+                        }
+                        return conditions;
+                }
+        },
+        'Testing Eligibility, Last Test Results': function (formName, formFieldValues) {
+                if (formName == "HIV Testing and Counseling Intake Template") {
+                        var lastResults=formFieldValues['Testing Eligibility, Last Test Results'];
+                        var conditions = { show: [], hide: [], enable: [], disable: [] };     
+                                
+                        if(lastResults){
+                                console.log(lastResults, lastResults);
+                                if(lastResults=="Positive"){
+                                        conditions.hide.push("HTC, HIV Test");
+                                        conditions.hide.push("HTC, Post-test Counseling Set");
+                                        conditions.show.push("Testing Eligibility, Time Last Test Done");
+                                        conditions.hide.push("HTC, Pre-test Counseling Set");
+                                }
+                                else if(lastResults=="Negative" || lastResults == "Do Not Know"){
+                                        conditions.show.push("HTC, HIV Test");
+                                        conditions.show.push("HTC, Post-test Counseling Set");
+                                        conditions.show.push("HTC, Pre-test Counseling Set");
+                                        conditions.show.push("Testing Eligibility, Time Last Test Done");
+                                }
+                                
+                        }
+                        else{
+                                // conditions.hide.push("HTC, Pre-test Counseling Set");
+                                conditions.hide.push("Testing Eligibility, Time Last Test Done");
+                        }
+                        return conditions;
+                }
+        },
+        'HTC, Pre-test Counseling Set': function (formName, formFieldValues) {
+                
+                var conditions = { show: [], hide: [], enable: [], disable: [] };
+                if (formName == "HIV Testing and Counseling Intake Template") {
+                        conditions.hide.push("HTC, Declined");
+                        conditions.hide.push("HTC, Result if tested");
+                }
+                return conditions;
+        },
+        'Testing Eligibility, Tested For HIV': function (formName, formFieldValues) {
+                if (formName == "HIV Testing and Counseling Intake Template") {
+                        var everTestedForHIV = formFieldValues['Testing Eligibility, Tested For HIV'];
+                        var conditions = { show: [], hide: [], enable: [], disable: [] };
+                        if(everTestedForHIV){
+                                if (everTestedForHIV == "Yes") {
+                                        console.log("yes",everTestedForHIV);
+                                        conditions.hide.push("HTC, Pre-test Counseling Set");
+                                        conditions.hide.push("HTC, HIV Test");
+                                        conditions.hide.push("HTC, Post-test Counseling Set");
+                                        conditions.show.push("Testing Eligibility, Last Test Results");
+                                        conditions.hide.push("Testing Eligibility, Time Last Test Done");
+                                                                
+                                }
+                                else if (everTestedForHIV == "No") {
+                                        console.log("No",everTestedForHIV);
+                                        conditions.show.push("HTC, Pre-test Counseling Set");
+                                        conditions.show.push("HTC, HIV Test");
+                                        conditions.show.push("HTC, Post-test Counseling Set");
+                                        conditions.hide.push("Testing Eligibility, Time Last Test Done");
+                                        conditions.hide.push("Testing Eligibility, Last Test Results");
+                                }
+                                return conditions;
+                        }
+                        else{
+                                conditions.hide.push("HTC, HIV Test");
+                                conditions.hide.push("HTC, Post-test Counseling Set");
+                                conditions.hide.push("HTC, Pre-test Counseling Set");
+                                conditions.hide.push("Testing Eligibility, Time Last Test Done");
+                                conditions.hide.push("Testing Eligibility, Last Test Results");
+                                return conditions;
+                        }
+                        
+                }
+        },
 
 
         // 'HTC, Initial HIV Test Determine': function (formName, formFieldValues, patient) {
