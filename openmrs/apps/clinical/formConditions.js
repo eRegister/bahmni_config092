@@ -1,6 +1,6 @@
 // var visitTypeTracker = '';  //This variable tracks the ANC Program visit type
 // var TBStatusTracker = ''; //This varible tracks the TB Status to allow it to be used globally
-Bahmni.ConceptSet.FormConditions.rules = {
+// Bahmni.ConceptSet.FormConditions.rules = {
 
 
 //         //////////////////////////////////////////////////////////////////////////
@@ -256,16 +256,16 @@ Bahmni.ConceptSet.FormConditions.rules = {
 //                 return conditions;
 //         },
 
-        // 'HIVTC, TB Screened': function (formName, formFieldValues) {
-        //         var result = formFieldValues['HIVTC, TB Screened'];
-        //         var conditions = { show: [], hide: [] };
-        //         if (result == 'Yes') {
-        //                 conditions.show.push("TB Status");
-        //         } else {
-        //                 conditions.hide.push("TB Status");
-        //         }
-        //         return conditions;
-        // },
+//         'HIVTC, TB Screened': function (formName, formFieldValues) {
+//                 var result = formFieldValues['HIVTC, TB Screened'];
+//                 var conditions = { show: [], hide: [] };
+//                 if (result == 'Yes') {
+//                         conditions.show.push("TB Status");
+//                 } else {
+//                         conditions.hide.push("TB Status");
+//                 }
+//                 return conditions;
+//         },
 
 
 //         'HIVTC, Prior ART': function (formName, formFieldValues) {
@@ -1219,26 +1219,26 @@ Bahmni.ConceptSet.FormConditions.rules = {
 //                 return conditions;
 //         },
 
-        // 'TB Status': function (formName, formFieldValues) {
-        //         var conditionConcept = formFieldValues['TB Status'];
-        //         var conditions = { show: [], hide: [] };
-        //         TBStatusTracker = conditionConcept; // assign the global variable of TB status to the selected TB status
+//         'TB Status': function (formName, formFieldValues) {
+//                 var conditionConcept = formFieldValues['TB Status'];
+//                 var conditions = { show: [], hide: [] };
+//                 TBStatusTracker = conditionConcept; // assign the global variable of TB status to the selected TB status
 
-        //         if (conditionConcept == "Suspected / Probable") {
-        //                 conditions.show.push("TB Suspect signs");
-        //                 if ((formName == "VMMC, Medical history") || (formName == "VMMC - Intake")) {
-        //                         conditions.show.push("VMMC, Referred to TB Clinic");
+//                 if (conditionConcept == "Suspected / Probable") {
+//                         conditions.show.push("TB Suspect signs");
+//                         if ((formName == "VMMC, Medical history") || (formName == "VMMC - Intake")) {
+//                                 conditions.show.push("VMMC, Referred to TB Clinic");
 
-        //                 }
-        //         } else {
-        //                 conditions.hide.push("TB Suspect signs");
-        //                 if ((formName == "VMMC, Medical history") || (formName == "VMMC - Intake")) {
-        //                         conditions.hide.push("VMMC, Referred to TB Clinic");
+//                         }
+//                 } else {
+//                         conditions.hide.push("TB Suspect signs");
+//                         if ((formName == "VMMC, Medical history") || (formName == "VMMC - Intake")) {
+//                                 conditions.hide.push("VMMC, Referred to TB Clinic");
 
-        //                 }
-        //         }
-        //         return conditions;
-        // },
+//                         }
+//                 }
+//                 return conditions;
+//         },
 //         'PNC, HIV Status Known Before Visit': function (formName, formFieldValues) {
 //                 var status = formFieldValues['PNC, HIV Status Known Before Visit'];
 //                 var conditions = { show: [], hide: [], assignedValues: [] };
@@ -1383,161 +1383,161 @@ Bahmni.ConceptSet.FormConditions.rules = {
 //                 return conditions;
 //         },
 
-        // 'Type of client': function (formName, formFieldValues, patient) {
-        //         var conditionConcept = formFieldValues['Type of client'];
-        //         var conditions = { show: [], hide: [], enable: [], disable: [] };
-        //         var patientAge = patient['age'];
-        //         var patientGender = patient['gender'];
+//         'Type of client': function (formName, formFieldValues, patient) {
+//                 var conditionConcept = formFieldValues['Type of client'];
+//                 var conditions = { show: [], hide: [], enable: [], disable: [] };
+//                 var patientAge = patient['age'];
+//                 var patientGender = patient['gender'];
 
-        //         /*-- Ensure that the ART regimen field is always disabled --*/
-        //         conditions.disable.push("HIVTC, ART Regimen");
-
-
-        //         if (conditionConcept == "ART patient") {
-
-        //                 if ((patientGender == "M") || (patientAge < 12 || patientAge > 50)) {
-        //                         conditions.hide.push("HTC, Pregnancy Status");
-        //                 }
-        //                 else {
-        //                         conditions.show.push("HTC, Pregnancy Status");
-        //                 }
-
-        //                 //conditions.show.push("HTC, Pregnancy Status");
-        //                 conditions.show.push("Function");
-        //                 conditions.show.push("HIVTC, HIV care WHO Staging");
-        //                 conditions.show.push("HIVTC, Treatment Staging");
-        //                 conditions.show.push("TB Status");
-        //                 conditions.show.push("TB Suspect signs");
-        //                 conditions.show.push("Sexually Transmitted Infection");
-        //                 conditions.show.push("Potential Side Effects");
-        //                 conditions.show.push("OI, Opportunistic infections");
-        //                 conditions.show.push("Refer or Consult");
-        //                 conditions.show.push("Number of days hospitalised");
-
-        //         }
-        //         else {
-
-        //                 conditions.hide.push("HTC, Pregnancy Status");
-        //                 conditions.hide.push("Function");
-        //                 conditions.hide.push("HIVTC, HIV care WHO Staging");
-        //                 conditions.hide.push("HIVTC, Treatment Staging");
-        //                 conditions.hide.push("TB Status");
-        //                 conditions.hide.push("TB Suspect signs");
-        //                 conditions.hide.push("Sexually Transmitted Infection");
-        //                 conditions.hide.push("Potential Side Effects");
-        //                 conditions.hide.push("OI, Opportunistic infections");
-        //                 conditions.hide.push("Refer or Consult");
-        //                 conditions.hide.push("Number of days hospitalised");
-        //         }
-
-        //         return conditions;
-        // },
+//                 /*-- Ensure that the ART regimen field is always disabled --*/
+//                 conditions.disable.push("HIVTC, ART Regimen");
 
 
-        /*--- ARV Drug days and drug supply duration generic autocalculations---- */
-        'ART, Follow-up date': function (formName, formFieldValues) {
-                if (formName == "Regimen") {
-                        var followUpDate = formFieldValues['ART, Follow-up date'];
-                        var conditions = { assignedValues: [], error: [] };
-                        var dateUtil = Bahmni.Common.Util.DateUtil;
-                        var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
+//                 if (conditionConcept == "ART patient") {
 
-                        if (followUpDate) {
-                                var daysDispesed;
+//                         if ((patientGender == "M") || (patientAge < 12 || patientAge > 50)) {
+//                                 conditions.hide.push("HTC, Pregnancy Status");
+//                         }
+//                         else {
+//                                 conditions.show.push("HTC, Pregnancy Status");
+//                         }
 
-                                if (!retrospectiveDate) {
-                                        daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
-                                } else {
-                                        daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.parse(retrospectiveDate.substr(1, 10)), followUpDate);
-                                }
+//                         //conditions.show.push("HTC, Pregnancy Status");
+//                         conditions.show.push("Function");
+//                         conditions.show.push("HIVTC, HIV care WHO Staging");
+//                         conditions.show.push("HIVTC, Treatment Staging");
+//                         conditions.show.push("TB Status");
+//                         conditions.show.push("TB Suspect signs");
+//                         conditions.show.push("Sexually Transmitted Infection");
+//                         conditions.show.push("Potential Side Effects");
+//                         conditions.show.push("OI, Opportunistic infections");
+//                         conditions.show.push("Refer or Consult");
+//                         conditions.show.push("Number of days hospitalised");
 
-                                // if(daysDispensed <= 0) {
-                                // conditions.error.push("Invalid input for Follow-up Date, must be a date in the future. Please correct.");
-                                // conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed });
-                                // } else {
-                                var drugSupplyPeriod = "";
+//                 }
+//                 else {
 
-                                if (daysDispensed >= 10 && daysDispensed < 21) {
-                                        // Providing 3 days slack from 2 weeks, in case of weekends or other reasons
-                                        drugSupplyPeriod = "HIVTC, Two weeks supply";
-                                } else if (daysDispensed >= 28 && daysDispensed < 56) {
-                                        drugSupplyPeriod = "HIVTC, One month supply";
-                                } else if (daysDispensed >= 56 && daysDispensed < 84) {
-                                        drugSupplyPeriod = "HIVTC, Two months supply";
-                                } else if (daysDispensed >= 84 && daysDispensed < 112) {
-                                        drugSupplyPeriod = "HIVTC, Three months supply";
-                                } else if (daysDispensed >= 112 && daysDispensed < 140) {
-                                        drugSupplyPeriod = "HIVTC, Four months supply";
-                                } else if (daysDispensed >= 140 && daysDispensed < 168) {
-                                        drugSupplyPeriod = "HIVTC, Five months supply";
-                                } else if (daysDispensed >= 168 && daysDispensed < 196) {
-                                        drugSupplyPeriod = "HIVTC, Six months supply";
-                                } else if (daysDispensed >= 196) {
-                                        drugSupplyPeriod = "HIVTC, Seven+ months supply";
-                                } else {
-                                        // No action
-                                }
+//                         conditions.hide.push("HTC, Pregnancy Status");
+//                         conditions.hide.push("Function");
+//                         conditions.hide.push("HIVTC, HIV care WHO Staging");
+//                         conditions.hide.push("HIVTC, Treatment Staging");
+//                         conditions.hide.push("TB Status");
+//                         conditions.hide.push("TB Suspect signs");
+//                         conditions.hide.push("Sexually Transmitted Infection");
+//                         conditions.hide.push("Potential Side Effects");
+//                         conditions.hide.push("OI, Opportunistic infections");
+//                         conditions.hide.push("Refer or Consult");
+//                         conditions.hide.push("Number of days hospitalised");
+//                 }
 
-                                conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed, autocalculate: true });
-                                conditions.assignedValues.push({ field: "HIVTC, ARV drugs supply duration", fieldValue: drugSupplyPeriod, autocalculate: true });
-
-                                // }
-                        }
-                        return conditions;
-                }
-                // else if (formName == "PrEP , Follow Up Template") {
-                //         var followUpDate = formFieldValues['ART, Follow-up date'];
-                //         var conditions = { assignedValues: [], error: [] };
-                //         var dateUtil = Bahmni.Common.Util.DateUtil;
-                //         var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
-
-                //         if (followUpDate) {
-                //                 var daysDispesed;
-
-                //                 if (!retrospectiveDate) {
-                //                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
-                //                 } else {
-                //                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.parse(retrospectiveDate.substr(1, 10)), followUpDate);
-                //                 }
-
-                //                 // if(daysDispensed <= 0) {
-                //                 // conditions.error.push("Invalid input for Follow-up Date, must be a date in the future. Please correct.");
-                //                 // conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed });
-                //                 // } else {
-                //                 var drugSupplyPeriod = "";
-
-                //                 if (daysDispensed >= 10 && daysDispensed < 21) {
-                //                         // Providing 3 days slack from 2 weeks, in case of weekends or other reasons
-                //                         drugSupplyPeriod = "HIVTC, Two weeks supply";
-                //                 } else if (daysDispensed >= 28 && daysDispensed < 56) {
-                //                         drugSupplyPeriod = "HIVTC, One month supply";
-                //                 } else if (daysDispensed >= 56 && daysDispensed < 84) {
-                //                         drugSupplyPeriod = "HIVTC, Two months supply";
-                //                 } else if (daysDispensed >= 84 && daysDispensed < 112) {
-                //                         drugSupplyPeriod = "HIVTC, Three months supply";
-                //                 } else if (daysDispensed >= 112 && daysDispensed < 140) {
-                //                         drugSupplyPeriod = "HIVTC, Four months supply";
-                //                 } else if (daysDispensed >= 140 && daysDispensed < 168) {
-                //                         drugSupplyPeriod = "HIVTC, Five months supply";
-                //                 } else if (daysDispensed >= 168 && daysDispensed < 196) {
-                //                         drugSupplyPeriod = "HIVTC, Six months supply";
-                //                 } else if (daysDispensed >= 196) {
-                //                         drugSupplyPeriod = "HIVTC, Seven+ months supply";
-                //                 } else {
-                //                         // No action
-                //                 }
+//                 return conditions;
+//         },
 
 
-                //                 conditions.assignedValues.push({ field: "PrEP drugs supply duration", fieldValue: drugSupplyPeriod, autocalculate: true });
-                //                 conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed, autocalculate: true });
+//         /*--- ARV Drug days and drug supply duration generic autocalculations---- */
+//         'ART, Follow-up date': function (formName, formFieldValues) {
+//                 if (formName == "HIVTC, Patient Register") {
+//                         var followUpDate = formFieldValues['ART, Follow-up date'];
+//                         var conditions = { assignedValues: [], error: [] };
+//                         var dateUtil = Bahmni.Common.Util.DateUtil;
+//                         var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
+
+//                         if (followUpDate) {
+//                                 var daysDispesed;
+
+//                                 if (!retrospectiveDate) {
+//                                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
+//                                 } else {
+//                                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.parse(retrospectiveDate.substr(1, 10)), followUpDate);
+//                                 }
+
+//                                 // if(daysDispensed <= 0) {
+//                                 // conditions.error.push("Invalid input for Follow-up Date, must be a date in the future. Please correct.");
+//                                 // conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed });
+//                                 // } else {
+//                                 var drugSupplyPeriod = "";
+
+//                                 if (daysDispensed >= 10 && daysDispensed < 21) {
+//                                         // Providing 3 days slack from 2 weeks, in case of weekends or other reasons
+//                                         drugSupplyPeriod = "HIVTC, Two weeks supply";
+//                                 } else if (daysDispensed >= 28 && daysDispensed < 56) {
+//                                         drugSupplyPeriod = "HIVTC, One month supply";
+//                                 } else if (daysDispensed >= 56 && daysDispensed < 84) {
+//                                         drugSupplyPeriod = "HIVTC, Two months supply";
+//                                 } else if (daysDispensed >= 84 && daysDispensed < 112) {
+//                                         drugSupplyPeriod = "HIVTC, Three months supply";
+//                                 } else if (daysDispensed >= 112 && daysDispensed < 140) {
+//                                         drugSupplyPeriod = "HIVTC, Four months supply";
+//                                 } else if (daysDispensed >= 140 && daysDispensed < 168) {
+//                                         drugSupplyPeriod = "HIVTC, Five months supply";
+//                                 } else if (daysDispensed >= 168 && daysDispensed < 196) {
+//                                         drugSupplyPeriod = "HIVTC, Six months supply";
+//                                 } else if (daysDispensed >= 196) {
+//                                         drugSupplyPeriod = "HIVTC, Seven+ months supply";
+//                                 } else {
+//                                         // No action
+//                                 }
+
+//                                 conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed, autocalculate: true });
+//                                 conditions.assignedValues.push({ field: "HIVTC, ARV drugs supply duration", fieldValue: drugSupplyPeriod, autocalculate: true });
+
+//                                 // }
+//                         }
+//                         return conditions;
+//                 }
+//                 else if (formName == "PrEP , Follow Up Template") {
+//                         var followUpDate = formFieldValues['ART, Follow-up date'];
+//                         var conditions = { assignedValues: [], error: [] };
+//                         var dateUtil = Bahmni.Common.Util.DateUtil;
+//                         var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
+
+//                         if (followUpDate) {
+//                                 var daysDispesed;
+
+//                                 if (!retrospectiveDate) {
+//                                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
+//                                 } else {
+//                                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.parse(retrospectiveDate.substr(1, 10)), followUpDate);
+//                                 }
+
+//                                 // if(daysDispensed <= 0) {
+//                                 // conditions.error.push("Invalid input for Follow-up Date, must be a date in the future. Please correct.");
+//                                 // conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed });
+//                                 // } else {
+//                                 var drugSupplyPeriod = "";
+
+//                                 if (daysDispensed >= 10 && daysDispensed < 21) {
+//                                         // Providing 3 days slack from 2 weeks, in case of weekends or other reasons
+//                                         drugSupplyPeriod = "HIVTC, Two weeks supply";
+//                                 } else if (daysDispensed >= 28 && daysDispensed < 56) {
+//                                         drugSupplyPeriod = "HIVTC, One month supply";
+//                                 } else if (daysDispensed >= 56 && daysDispensed < 84) {
+//                                         drugSupplyPeriod = "HIVTC, Two months supply";
+//                                 } else if (daysDispensed >= 84 && daysDispensed < 112) {
+//                                         drugSupplyPeriod = "HIVTC, Three months supply";
+//                                 } else if (daysDispensed >= 112 && daysDispensed < 140) {
+//                                         drugSupplyPeriod = "HIVTC, Four months supply";
+//                                 } else if (daysDispensed >= 140 && daysDispensed < 168) {
+//                                         drugSupplyPeriod = "HIVTC, Five months supply";
+//                                 } else if (daysDispensed >= 168 && daysDispensed < 196) {
+//                                         drugSupplyPeriod = "HIVTC, Six months supply";
+//                                 } else if (daysDispensed >= 196) {
+//                                         drugSupplyPeriod = "HIVTC, Seven+ months supply";
+//                                 } else {
+//                                         // No action
+//                                 }
 
 
-                //                 // }
-                //         }
-                //         return conditions;
+//                                 conditions.assignedValues.push({ field: "PrEP drugs supply duration", fieldValue: drugSupplyPeriod, autocalculate: true });
+//                                 conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed, autocalculate: true });
 
-                // }
-        },
+
+//                                 // }
+//                         }
+//                         return conditions;
+
+//                 }
+//         },
 //         /*--- TB number of days dispensed generic autocalculation----*/
 //         'TB, Next appointment/refill date': function (formName, formFieldValues) {
 //                 if (formName == "Tuberculosis Followup Template") {
@@ -3561,4 +3561,4 @@ Bahmni.ConceptSet.FormConditions.rules = {
 //                 return conditions;
 //         }
 
-};
+// };
