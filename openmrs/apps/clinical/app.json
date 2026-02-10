@@ -1,709 +1,709 @@
-{
-    "id": "bahmni.clinical",
-    "extensionPoints": [
-        {
-            "id": "org.bahmni.clinical.consultation.board",
-            "description": "Bahmni Clinical Consultation Page"
-        },
-        {
-            "id": "org.bahmni.clinical.conceptSetGroup.*",
-            "description": "Define conceptsets part of a conceptset group"
-        },
-        {
-            "id": "org.bahmni.clinical.orders",
-            "description": "Bahmni Orders Page"
-        },
-        {
-            "id": "org.bahmni.patient.search",
-            "description": "Bahmni Patient search, lookups Page"
-        }
-    ],
-    "contextModel": [
-        "patientUuid",
-        "visitUuid"
-    ],
-    "config": {
-		"readOnlyExtraIdentifiers": ["New HIV Program ID"],
-        "hideConditions": false,
-        "enableRadiologyOrderOptions":["Urgent","NeedsPrint"],
-        "enableLabOrderOptions":["Urgent", "NeedsPrint"],
-        "quickPrints":false,
-        "networkConnectivity" : {
-            "showNetworkStatusMessage": false,
-            "networkStatusCheckInterval": 20000,
-            "locales" : [
-                { "locale" : "fr", "css" : "offline-language-french"},
-                { "locae" : "es", "css": "offline-language-spanish"},
-                { "locale" : "pt", "css": "offline-language-portuguese-brazil"}
-            ]
-        },
-    	"diagnosisStatus": "Inactive",
-        "program": {
-			"patientInformation": {
-				"ageLimit": 100
-			},
-			"ID_Number": {
-				"required" : false
-			}
-        },
-        "patientContext": {
-        	"programAttributes": [
-        	],
-        	"personAttributes": [
-            		"class",
-            		"caste"
-        	],
-        	"additionalPatientIdentifiers": [
-           		"National ID",
-			"HIV Program ID",
-			"TB Program ID",
-			"New HIV Program ID",
-			"File Number"
-       		]
-    	},
-		"programDisplayControl": {
-			"showProgramStateInTimeline": false,
-			"programAttributes": [
-						"ID_Number",
-						"Program_Facility_Enrolled"
-			]
-		},
-        "obsIgnoreList": [
-            "REGISTRATION FEES",
-            "COMMENTS",
-            "Patient file"
-        ],
-        "otherInvestigationsMap": {
-            "Radiology": "Radiology Order",
-            "Endoscopy": "Endoscopy Order"
-        },
-        "allowConsultationWhenNoOpenVisit": false,
-        "defaultVisitType": "OPD",
-        "visitTypeForRetrospectiveEntries": "Special OPD",
-        "maxConceptSetLevels": 3,
-        "allowOnlyCodedDiagnosis": false,
-        "conceptSetUI": {
-			"Chief Complaint Data": {
-				"autocomplete":true,
-				"codedConceptName":"Chief Complaint",
-				"nonCodedConceptName":"Non-Coded Chief Complaint",
-				"durationRequired": false,
-				"allowAddMore": true
-			},
-			"ANC, History of Past Pregnancies": {
-					"autocomplete":true,
-					"codedConceptName":"ANC, Place of Birth",
-					"codedConceptName":"Mode of Delivery",
-					"allowAddMore": true
-			},
+// {
+//     "id": "bahmni.clinical",
+//     "extensionPoints": [
+//         {
+//             "id": "org.bahmni.clinical.consultation.board",
+//             "description": "Bahmni Clinical Consultation Page"
+//         },
+//         {
+//             "id": "org.bahmni.clinical.conceptSetGroup.*",
+//             "description": "Define conceptsets part of a conceptset group"
+//         },
+//         {
+//             "id": "org.bahmni.clinical.orders",
+//             "description": "Bahmni Orders Page"
+//         },
+//         {
+//             "id": "org.bahmni.patient.search",
+//             "description": "Bahmni Patient search, lookups Page"
+//         }
+//     ],
+//     "contextModel": [
+//         "patientUuid",
+//         "visitUuid"
+//     ],
+//     "config": {
+// 		"readOnlyExtraIdentifiers": ["New HIV Program ID"],
+//         "hideConditions": false,
+//         "enableRadiologyOrderOptions":["Urgent","NeedsPrint"],
+//         "enableLabOrderOptions":["Urgent", "NeedsPrint"],
+//         "quickPrints":false,
+//         "networkConnectivity" : {
+//             "showNetworkStatusMessage": false,
+//             "networkStatusCheckInterval": 20000,
+//             "locales" : [
+//                 { "locale" : "fr", "css" : "offline-language-french"},
+//                 { "locae" : "es", "css": "offline-language-spanish"},
+//                 { "locale" : "pt", "css": "offline-language-portuguese-brazil"}
+//             ]
+//         },
+//     	"diagnosisStatus": "Inactive",
+//         "program": {
+// 			"patientInformation": {
+// 				"ageLimit": 100
+// 			},
+// 			"ID_Number": {
+// 				"required" : false
+// 			}
+//         },
+//         "patientContext": {
+//         	"programAttributes": [
+//         	],
+//         	"personAttributes": [
+//             		"class",
+//             		"caste"
+//         	],
+//         	"additionalPatientIdentifiers": [
+//            		"National ID",
+// 			"HIV Program ID",
+// 			"TB Program ID",
+// 			"New HIV Program ID",
+// 			"File Number"
+//        		]
+//     	},
+// 		"programDisplayControl": {
+// 			"showProgramStateInTimeline": false,
+// 			"programAttributes": [
+// 						"ID_Number",
+// 						"Program_Facility_Enrolled"
+// 			]
+// 		},
+//         "obsIgnoreList": [
+//             "REGISTRATION FEES",
+//             "COMMENTS",
+//             "Patient file"
+//         ],
+//         "otherInvestigationsMap": {
+//             "Radiology": "Radiology Order",
+//             "Endoscopy": "Endoscopy Order"
+//         },
+//         "allowConsultationWhenNoOpenVisit": false,
+//         "defaultVisitType": "OPD",
+//         "visitTypeForRetrospectiveEntries": "Special OPD",
+//         "maxConceptSetLevels": 3,
+//         "allowOnlyCodedDiagnosis": false,
+//         "conceptSetUI": {
+// 			"Chief Complaint Data": {
+// 				"autocomplete":true,
+// 				"codedConceptName":"Chief Complaint",
+// 				"nonCodedConceptName":"Non-Coded Chief Complaint",
+// 				"durationRequired": false,
+// 				"allowAddMore": true
+// 			},
+// 			"ANC, History of Past Pregnancies": {
+// 					"autocomplete":true,
+// 					"codedConceptName":"ANC, Place of Birth",
+// 					"codedConceptName":"Mode of Delivery",
+// 					"allowAddMore": true
+// 			},
 
-			"HTSIDX, Index Contact Information" : {
-					"allowAddMore": true
-			},
+// 			"HTSIDX, Index Contact Information" : {
+// 					"allowAddMore": true
+// 			},
 
-			"Self_Test_Buddy" : {
-				"allowAddMore": true
-			},
+// 			"Self_Test_Buddy" : {
+// 				"allowAddMore": true
+// 			},
 
-			"ANC, Family History": {
-				"multiSelect": true
-			},
-			"ANC, High Risk Pregnancy": {
-				"multiSelect": true
-			},
-			"ANC, Drug History": {
-				"multiSelect": true
-			},
-      "HTC, HIVST Results": {
-				"required": true
-			},
-            "HTC, Kit Collected For": {
-                "required": true
-            },
+// 			"ANC, Family History": {
+// 				"multiSelect": true
+// 			},
+// 			"ANC, High Risk Pregnancy": {
+// 				"multiSelect": true
+// 			},
+// 			"ANC, Drug History": {
+// 				"multiSelect": true
+// 			},
+//       "HTC, HIVST Results": {
+// 				"required": true
+// 			},
+//             "HTC, Kit Collected For": {
+//                 "required": true
+//             },
             
-			"HTC, Distribution Mode": {
-				"multiSelect": true,
-				"required": true
-			},
+// 			"HTC, Distribution Mode": {
+// 				"multiSelect": true,
+// 				"required": true
+// 			},
 
-			"Addiction": {
-				"multiSelect": true
-			},
-			"ANC, Family Planning Method": {
-				"multiSelect": true
-			},
-			"ANC, Medical History": {
-				"multiSelect": true
-			},
-			"ANC, High Risk Pregnancy": {
-				"multiSelect": true
-			},
-			"Other underlying health conditions": {
-				"multiSelect": true
-			},
-			"Program, Facility of Enrollment" : {
-				"dropdown": true,
-				"autocomplete":true
-			},
-			"Cervical Cancer Screening" : {
-					"required": true
-			},
-			"PNC, HIV Status Known Before Visit" : {
-				"required": true
-			},
-			"Tested in PNC" : {
-				"required": true
-			},
-			"PNC, Micro-Nutrient supplement" : {
-				"required": true
-			},
-			"Mode of Delivery" : {
-				"required": true
-			},
-			"Cervical Cancer Assessment Method" : {
-				"required": true
-			},
-			"PNC, Initiated on Family Planning" : {
-				"required": true
-			},
-			"HEI, HIV Status at 24 Months" : {
-				"dropdown": true
-			},
-			"Family Planing Counselling" : {
-				"required": false
-			},
-            "FP Counselling Services Done" : {
-                "multiSelect": true
-            },
-            "IUCD/Implant Check-up": {
-                "allowFutureDates": true
-            },
-			"FP, Family Planning Method" : {
-				"required": true
-			},
-			"VIA" : {
-				"required": true
-			},
-			"Pap Smear" : {
-				"required": true
-			},
-			"Tuberculosis, Adverse Effects" :{
-				"multiSelect" : true,
-				"autocomplete" : true
-			},
-			"HIVTC, Transferred in from" : {
-				"dropdown": true
-			},
-			"HIVTC, ART start date": {
-				"required": true
-			},
-			"HIVTC, ART Regimen" : {
-				"required": false,
-				"dropdown": true
-			},
-			"ART, Follow-up date" : {
-				"allowFutureDates": true
-			},
-			"ANC, Estimated Date of Delivery" : {
-				"allowFutureDates": true,
-				"required": false
-			},
-            "ANC, Estimated Delivery Date" : {
-				"allowFutureDates": true,
-				"required": false
-			},
+// 			"Addiction": {
+// 				"multiSelect": true
+// 			},
+// 			"ANC, Family Planning Method": {
+// 				"multiSelect": true
+// 			},
+// 			"ANC, Medical History": {
+// 				"multiSelect": true
+// 			},
+// 			"ANC, High Risk Pregnancy": {
+// 				"multiSelect": true
+// 			},
+// 			"Other underlying health conditions": {
+// 				"multiSelect": true
+// 			},
+// 			"Program, Facility of Enrollment" : {
+// 				"dropdown": true,
+// 				"autocomplete":true
+// 			},
+// 			"Cervical Cancer Screening" : {
+// 					"required": true
+// 			},
+// 			"PNC, HIV Status Known Before Visit" : {
+// 				"required": true
+// 			},
+// 			"Tested in PNC" : {
+// 				"required": true
+// 			},
+// 			"PNC, Micro-Nutrient supplement" : {
+// 				"required": true
+// 			},
+// 			"Mode of Delivery" : {
+// 				"required": true
+// 			},
+// 			"Cervical Cancer Assessment Method" : {
+// 				"required": true
+// 			},
+// 			"PNC, Initiated on Family Planning" : {
+// 				"required": true
+// 			},
+// 			"HEI, HIV Status at 24 Months" : {
+// 				"dropdown": true
+// 			},
+// 			"Family Planing Counselling" : {
+// 				"required": false
+// 			},
+//             "FP Counselling Services Done" : {
+//                 "multiSelect": true
+//             },
+//             "IUCD/Implant Check-up": {
+//                 "allowFutureDates": true
+//             },
+// 			"FP, Family Planning Method" : {
+// 				"required": true
+// 			},
+// 			"VIA" : {
+// 				"required": true
+// 			},
+// 			"Pap Smear" : {
+// 				"required": true
+// 			},
+// 			"Tuberculosis, Adverse Effects" :{
+// 				"multiSelect" : true,
+// 				"autocomplete" : true
+// 			},
+// 			"HIVTC, Transferred in from" : {
+// 				"dropdown": true
+// 			},
+// 			"HIVTC, ART start date": {
+// 				"required": true
+// 			},
+// 			"HIVTC, ART Regimen" : {
+// 				"required": false,
+// 				"dropdown": true
+// 			},
+// 			"ART, Follow-up date" : {
+// 				"allowFutureDates": true
+// 			},
+// 			"ANC, Estimated Date of Delivery" : {
+// 				"allowFutureDates": true,
+// 				"required": false
+// 			},
+//             "ANC, Estimated Delivery Date" : {
+// 				"allowFutureDates": true,
+// 				"required": false
+// 			},
             
 
-			"EIM, Follow up date" : {
-				"allowFutureDates": true
-			},
+// 			"EIM, Follow up date" : {
+// 				"allowFutureDates": true
+// 			},
 
-			"TB, Next appointment/refill date" : {
-				"allowFutureDates": true
-			},
+// 			"TB, Next appointment/refill date" : {
+// 				"allowFutureDates": true
+// 			},
 
-			"EIM, Symptoms or physical exam finding suggestive of HIV infection" :{
-				"multiSelect" : true
-			},
-			"Other TB Management" : {
-				"multiSelect" : true
-			},
+// 			"EIM, Symptoms or physical exam finding suggestive of HIV infection" :{
+// 				"multiSelect" : true
+// 			},
+// 			"Other TB Management" : {
+// 				"multiSelect" : true
+// 			},
 
-			"TB Treatment, TB Regimen":{
-				"multiSelect" : true
-			},
+// 			"TB Treatment, TB Regimen":{
+// 				"multiSelect" : true
+// 			},
 
-			"Phase of TB Treatment" : {
-                "required" : true
-            },
-            "TB, Prevention of OIs" : {
-                "multiSelect" : true
-            },
-            "TB, Index Contact Information" : {
-                "allowAddMore" : true
-            },
-			"ARV drugs No. of days dispensed" : {
-				"required": false
-			},
-			"HIVTC, ARV drugs supply duration" : {
-				"required": true
-			},
-			"HIVTC, Action to Record Viral Load Results": {
-				"multiSelect": true
-			},
-			"HIVTC, Viral Load Blood drawn date" : {
-			"required": false
-			},
+// 			"Phase of TB Treatment" : {
+//                 "required" : true
+//             },
+//             "TB, Prevention of OIs" : {
+//                 "multiSelect" : true
+//             },
+//             "TB, Index Contact Information" : {
+//                 "allowAddMore" : true
+//             },
+// 			"ARV drugs No. of days dispensed" : {
+// 				"required": false
+// 			},
+// 			"HIVTC, ARV drugs supply duration" : {
+// 				"required": true
+// 			},
+// 			"HIVTC, Action to Record Viral Load Results": {
+// 				"multiSelect": true
+// 			},
+// 			"HIVTC, Viral Load Blood drawn date" : {
+// 			"required": false
+// 			},
 
-			"HIVTC, Viral Load Monitoring Type" : {
-			"required": false
-			},
+// 			"HIVTC, Viral Load Monitoring Type" : {
+// 			"required": false
+// 			},
 
-			"HIVTC, Viral Load Result" : {
-			"required" : false
-			},
+// 			"HIVTC, Viral Load Result" : {
+// 			"required" : false
+// 			},
 
-			"HIVTC, Viral Load Data" : {
-					"required" : false
-			},
-			"HIVTC, Viral load blood results return date" : {
-					"required" : false
-			},
-      "Follow up Date" : {
-        "allowFutureDates": true
-      },
-				"Pregnancy Estimated Date of Delivery" : {
-					"allowFutureDates": true
-				},
-				"Posture": {
-					"buttonSelect": true
-				},
-				"P/A Presenting Part": {
-					"multiSelect": true
-				},
-				"FHS": {
-					"buttonSelect": true
-				},
-				"TB Suspect signs": {
-					"required" : true,
-					"multiSelect": true
-				},
+// 			"HIVTC, Viral Load Data" : {
+// 					"required" : false
+// 			},
+// 			"HIVTC, Viral load blood results return date" : {
+// 					"required" : false
+// 			},
+//       "Follow up Date" : {
+//         "allowFutureDates": true
+//       },
+// 				"Pregnancy Estimated Date of Delivery" : {
+// 					"allowFutureDates": true
+// 				},
+// 				"Posture": {
+// 					"buttonSelect": true
+// 				},
+// 				"P/A Presenting Part": {
+// 					"multiSelect": true
+// 				},
+// 				"FHS": {
+// 					"buttonSelect": true
+// 				},
+// 				"TB Suspect signs": {
+// 					"required" : true,
+// 					"multiSelect": true
+// 				},
 
-			"Potential Side Effects": {
-			"multiSelect": true
-			},
+// 			"Potential Side Effects": {
+// 			"multiSelect": true
+// 			},
 
-			"HIVTC, Transferred out to": {
-				"required" : true,
-				"dropdown": true
-			},
-			"TB Status": {
-				"required" : false
-			},
-			"HIVTC, Regimen when transferred out": {
-				"required" : true
-			},
-			"HIVTC, Date of transferred out": {
-				 "required" : true
-			},
+// 			"HIVTC, Transferred out to": {
+// 				"required" : true,
+// 				"dropdown": true
+// 			},
+// 			"TB Status": {
+// 				"required" : false
+// 			},
+// 			"HIVTC, Regimen when transferred out": {
+// 				"required" : true
+// 			},
+// 			"HIVTC, Date of transferred out": {
+// 				 "required" : true
+// 			},
 
-			"ART treatment interruption Date": {
-				 "required" : true
-			},
-			"Date restarted ART": {
-				 "required" : false
-			},
-			"HIVTC, Transfer in ART start date": {
-				 "required" : true
-			},
-			"HIVTC, Reason for treatment switch":{
-				 "required" : false
-			},
-			"HIVTC, Reason for treatment substitution":{
-				 "required" : false
-			},
-			"HIVTC, Pregnancy Estimated Date of Delivery":{
-			 "allowFutureDate": true
-			},
-			"ART treatment interruption stopped reason":{
-				 "required" : false
-			},
+// 			"ART treatment interruption Date": {
+// 				 "required" : true
+// 			},
+// 			"Date restarted ART": {
+// 				 "required" : false
+// 			},
+// 			"HIVTC, Transfer in ART start date": {
+// 				 "required" : true
+// 			},
+// 			"HIVTC, Reason for treatment switch":{
+// 				 "required" : false
+// 			},
+// 			"HIVTC, Reason for treatment substitution":{
+// 				 "required" : false
+// 			},
+// 			"HIVTC, Pregnancy Estimated Date of Delivery":{
+// 			 "allowFutureDate": true
+// 			},
+// 			"ART treatment interruption stopped reason":{
+// 				 "required" : false
+// 			},
 
-			"Appointment scheduled":{
-				 "required" : true
-			},
-			"Delivery date and time":{
-				"required" : true
-		   },
+// 			"Appointment scheduled":{
+// 				 "required" : true
+// 			},
+// 			"Delivery date and time":{
+// 				"required" : true
+// 		   },
 
-			"Type of client":{
-				 "required" : true
-			},
+// 			"Type of client":{
+// 				 "required" : true
+// 			},
 
-			"HIVTC, Name of Switched Regimem":{
-				 "required" : false
-			},
-			"Adult 1st Line Regimens":{
-				 "required" : false
-			},
-			"Adult 2nd Line Regimens":{
-				 "required" : false
-			},
-			"Adult 3rd Line Regimens":{
-			 "required" : false
-			},
-			"Children 1st Line Regimens":{
-				 "required" : false
-			},
-			"Children 2nd Line Regimens":{
-				 "required" : false
-			},
-			"Children 3rd Line Regimens":{
-				 "required" : false
-			},
-			"P/S (Per Speculum) - Cervix": {
-				"grid": true
-			},
-			"Anaemia, Stopped Since When": {
-				"conciseText": true
-			},
-			"Examination Notes": {
-				"conciseText": true
-			},
-			"Set1": {
-				"allowAddMore": true
-			},
-			"Set2": {
-				"allowAddMore": true
-			},
-			"HIVTC, History of TB": {
-				"allowAddMore": true
-			},
-			"Coded3": {
-				"multiSelect": true
-			},
-			"Image": {
-				"allowAddMore": true
-			},
-			"Gynaecology, Gravida": {
-				"stepper": true
-			},
-			"Accepted Family Planning methods": {
-				"multiSelect": true
-			},
-			"HTC, Initiated Testing and Counseling":{
-				"required": true
-			},
-			"HTC, History of Previous Testing": {
-				"required": true
-			},
-			"HTC, Previous result given": {
-				"required": true
-			},
-			"HTC, Informed Consent": {
-				"required": true
-			},
-			"HTC, Initial HIV Test Determine": {
-				"required": true
-			},
-			"HTC, Initial HIV Test Unigold Confirmatory": {
-				"required": true
-			},
-			"HTC, Repeat HIV Test Determine": {
-				"required": true
-			},
-			"HTC, Repeat Unigold Test": {
-				"required": true
-			},
-			"HTC, SD Bioline Tie Breaker": {
-				"required": false
-			},
-			"HTC, DNA PCR Test Results": {
-				"required": true
-			},
-			"HTC, Time Since Test": {
-				"displayMonthAndYear": true,
-				"required": true
-			},
-			"HTC, Pre-test Counseling": {
-				"required": true
-			},
-			"HTC, Date Linked To Care": {
-				"required": true
-			},
-			"HTC, Linked To Care": {
-				"required": true
-			},
-			"HTC, Condom Type Dispensed": {
-				"required": true
-			},
-			"HTC, Condom Type Dispensed": {
-				"multiSelect": true
-			},
-			"HTC, Final Result Given": {
-				"required": true
-			},
-			"HTC, Mode of Entry Point": {
-				"required": true
-			},
-			"HTC, Referred Facility": {
-				"required": true,
-				"dropdown": true
-			},
-			"HTC, Final HIV status": {
-				"required": true
-			},
-			"HIVTC, Pregnancy Estimated Date of Delivery" : {
-				"allowFutureDates": true
-			},
-			"HTC, Mode of Entry Point": {
-				"required": true
-			},
-			"ANC, Last Normal Menstrual Period": {
-				"required": false
-			},
+// 			"HIVTC, Name of Switched Regimem":{
+// 				 "required" : false
+// 			},
+// 			"Adult 1st Line Regimens":{
+// 				 "required" : false
+// 			},
+// 			"Adult 2nd Line Regimens":{
+// 				 "required" : false
+// 			},
+// 			"Adult 3rd Line Regimens":{
+// 			 "required" : false
+// 			},
+// 			"Children 1st Line Regimens":{
+// 				 "required" : false
+// 			},
+// 			"Children 2nd Line Regimens":{
+// 				 "required" : false
+// 			},
+// 			"Children 3rd Line Regimens":{
+// 				 "required" : false
+// 			},
+// 			"P/S (Per Speculum) - Cervix": {
+// 				"grid": true
+// 			},
+// 			"Anaemia, Stopped Since When": {
+// 				"conciseText": true
+// 			},
+// 			"Examination Notes": {
+// 				"conciseText": true
+// 			},
+// 			"Set1": {
+// 				"allowAddMore": true
+// 			},
+// 			"Set2": {
+// 				"allowAddMore": true
+// 			},
+// 			"HIVTC, History of TB": {
+// 				"allowAddMore": true
+// 			},
+// 			"Coded3": {
+// 				"multiSelect": true
+// 			},
+// 			"Image": {
+// 				"allowAddMore": true
+// 			},
+// 			"Gynaecology, Gravida": {
+// 				"stepper": true
+// 			},
+// 			"Accepted Family Planning methods": {
+// 				"multiSelect": true
+// 			},
+// 			"HTC, Initiated Testing and Counseling":{
+// 				"required": true
+// 			},
+// 			"HTC, History of Previous Testing": {
+// 				"required": true
+// 			},
+// 			"HTC, Previous result given": {
+// 				"required": true
+// 			},
+// 			"HTC, Informed Consent": {
+// 				"required": true
+// 			},
+// 			"HTC, Initial HIV Test Determine": {
+// 				"required": true
+// 			},
+// 			"HTC, Initial HIV Test Unigold Confirmatory": {
+// 				"required": true
+// 			},
+// 			"HTC, Repeat HIV Test Determine": {
+// 				"required": true
+// 			},
+// 			"HTC, Repeat Unigold Test": {
+// 				"required": true
+// 			},
+// 			"HTC, SD Bioline Tie Breaker": {
+// 				"required": false
+// 			},
+// 			"HTC, DNA PCR Test Results": {
+// 				"required": true
+// 			},
+// 			"HTC, Time Since Test": {
+// 				"displayMonthAndYear": true,
+// 				"required": true
+// 			},
+// 			"HTC, Pre-test Counseling": {
+// 				"required": true
+// 			},
+// 			"HTC, Date Linked To Care": {
+// 				"required": true
+// 			},
+// 			"HTC, Linked To Care": {
+// 				"required": true
+// 			},
+// 			"HTC, Condom Type Dispensed": {
+// 				"required": true
+// 			},
+// 			"HTC, Condom Type Dispensed": {
+// 				"multiSelect": true
+// 			},
+// 			"HTC, Final Result Given": {
+// 				"required": true
+// 			},
+// 			"HTC, Mode of Entry Point": {
+// 				"required": true
+// 			},
+// 			"HTC, Referred Facility": {
+// 				"required": true,
+// 				"dropdown": true
+// 			},
+// 			"HTC, Final HIV status": {
+// 				"required": true
+// 			},
+// 			"HIVTC, Pregnancy Estimated Date of Delivery" : {
+// 				"allowFutureDates": true
+// 			},
+// 			"HTC, Mode of Entry Point": {
+// 				"required": true
+// 			},
+// 			"ANC, Last Normal Menstrual Period": {
+// 				"required": false
+// 			},
 			
-			"HTC, Referred Facility": {
-				"required": true,
-				"dropdown": true
-			},
-			"HTC, Final HIV status": {
-				"required": true
-			},
-			"Testing Eligibility, On ART Treatment" : {
-				"required": true
-			},
-			"Testing Eligibility, Counselled & linked to Treatment" : {
-				"required": true
-			},
-			"Testing Eligibility, Reinforced Prevention Counselling" : {
-				"required": true
-			},
-      "HIV, Testing Strategies" : {
-        "required": true,
-        "multiSelect": true
-      },
-	  "PrEP ,Entry point": {
-		"required": true
-	},
-	"PrEP ,Entry Point Mode": {
-		"required": true
-	},
-	"PrEP, Indication for starting PrEP": {
-		"required": true
-	},
-	"PrEP ,Date of Initiation": {
-		"required": true
-	},
-	"PrEP , HIV rapid test result": {
-		"required": true
-	},
+// 			"HTC, Referred Facility": {
+// 				"required": true,
+// 				"dropdown": true
+// 			},
+// 			"HTC, Final HIV status": {
+// 				"required": true
+// 			},
+// 			"Testing Eligibility, On ART Treatment" : {
+// 				"required": true
+// 			},
+// 			"Testing Eligibility, Counselled & linked to Treatment" : {
+// 				"required": true
+// 			},
+// 			"Testing Eligibility, Reinforced Prevention Counselling" : {
+// 				"required": true
+// 			},
+//       "HIV, Testing Strategies" : {
+//         "required": true,
+//         "multiSelect": true
+//       },
+// 	  "PrEP ,Entry point": {
+// 		"required": true
+// 	},
+// 	"PrEP ,Entry Point Mode": {
+// 		"required": true
+// 	},
+// 	"PrEP, Indication for starting PrEP": {
+// 		"required": true
+// 	},
+// 	"PrEP ,Date of Initiation": {
+// 		"required": true
+// 	},
+// 	"PrEP , HIV rapid test result": {
+// 		"required": true
+// 	},
 	
 
-			"LPA Susceptibility result" : {
-				"multiSelect": true
-			},
-			"OI, Opportunistic infections" : {
-				"multiSelect": true
-			},
-			"HTSIDX, Contact Firstname": {
-				"required": true
-			},
-			"HTSIDX, Contact Surname": {
-				"required": true
-			},
-			"HTSIDX, Relationship to Index": {
-				"required": true
-			},
-			"HTSIDX, Age of Partner/Child": {
-				"required": true
-			},
-			"HTSIDX, Sex of Partner/Child": {
-				"required": true
-			},
-			"HTSIDX, Prior Tested Before Status": {
-				"required": true
-			},
-			"HTSIDX, Prior Test Result": {
-				"required": true
-			},
-			"HTSIDX, Duration since last test": {
-				"required": true
-			},
-			"HTSIDX,Tested": {
-				"required": true
-			},
-			"HTSIDX, IF No, why": {
-				"required": true
-			},
-			"HTSIDX,Date partner/child tested": {
-				"required": true
-			},
-			"HTSIDX,Partner/ Child Test Result": {
-				"required": true
-			},
-			"HTSIDX,Linked to care and treatment": {
-				"required": true
-			},
-			"defaults": {
-				"Number of living children": 1,
-				"Accepted Family Planning methods": [
-					"Condoms",
-					"Pills"
-				],
-				"Pain management given": true,
-				"Safe Abortion, Remarks": "Remarks",
-				"Malaria, Death Date": "2015-12-01",
-				"HIVTC, ART Regimen": "",
-				"Posture": "Sitting"
-			},
-			"1st Dose": {
-				"multiSelect": true
-			},
-			"2nd Dose": {
-				"multiSelect": true
-			},
-			"3rd Dose": {
-				"multiSelect": true
-			},
-			"Under5, Base Doses":{
-				"multiSelect": true
-			},
-			"Under5, 12 - 14 Months":{
-				"multiSelect": true
-			},
-			"Under5, 18-20 Months":{
-				"multiSelect": true
-			},
-			"Under5, 24-26 Months":{
-				"multiSelect": true
-			},
-			"Under5, 30-32 Months":{
-				"multiSelect": true
-			},
-			"Under5, 36-38 Months":{
-				"multiSelect": true
-			},
-			"Under5, 42-44 Months":{
-				"multiSelect": true
-			},
-			"Under5, 48-50 Months":{
-				"multiSelect": true
-			},
-			"Under5, 54-56 Months":{
-				"multiSelect": true
-			},
-			"LD, Mode of Delivery":{
-				"multiSelect" : true
-			},
-			"LD, Intrapartum and immediate postpartum complications": {
-				"multiSelect": true
-			},
-			"LD, Intrapartum and immediate postpartum interventions": {
-				"multiSelect": true
-			},
-			"LD, Infant details": {
-				"allowAddMore": true
-			},
-			"LD, Discharge Condition of the Baby" : {
-				"allowAddMore": true,
-				"required": true
-			},
-			"LD, Breast-feeding Initiation" : {
-				"required": true
-			},
-			"LD, Suspected/ Presumptive cause of death Baby" : {
-				"allowAddMore": true
-			},
-			"LD, Screened at Maternity" : {
-				"required": true
-			},
-			"LD, HIV Test Results" : {
-				"required": true
-			},
-			"LD, Postpartum HIV Test" : {
-				"required": true
-			},
-			"LD, Postpartum HIV Test Results" : {
-				"required": true
-			},
-			"LD, Postpartum ART Initiation" : {
-				"required": true
-			},
-			"LD, Condition of the Baby" : {
-				"required": true
-			},
-			"LD, Infant Sex" : {
-				"required": true
-			},
-			"LD, Discharge Condition of the Mother" : {
-				"required": true
-			},
-			"LD, ART Received at ANC" : {
-				"required": true
-			},
-			"LD, ART initiated during labour" : {
-				"required": true
-			},
-			"Testing Eligibility, Last 12 Months":
-			{
-				"multiSelect": true
-			},
-			"VMMC, Post-MC Follow up Visits" : {
-				"required": true
-			},
-			"VMMC, Condition" : {
-				"required": true
-			},
-			"VMMC, Does Client have any AEs" : {
-				"required": true
-			},
-			"VMMC, Mode" : {
-				"required": true
-			},
-			"VMMC, Referred by" : {
-				"required": true
-			},
-			"Already on ART" : {
-				"required": true
-			},
-			"VMMC, Accepted HIV test" : {
-				"required": true
-			},
-			"VMMC, Reason" : {
-				"required": true
-			},
-			"VMMC, Referred to TB Clinic" : {
-				"required": true
-			},
-			"VMMC, Complaints" : {
-				"multiSelect": true
-			},
-			"VMMC, Penile examination Findings" : {
-				"multiSelect": true
-			},
-			"VMMC, Consent" : {
-				"required": true
-			},
-			"VMMC, Informed consent signed" : {
-				"required": true
-			},
-			"Method of Surgery": {
-				"required": true
-			},
-			"Reason if not cleared": {
-				"required": true
-			},
-			"Device used": {
-				"required": true
-			}
+// 			"LPA Susceptibility result" : {
+// 				"multiSelect": true
+// 			},
+// 			"OI, Opportunistic infections" : {
+// 				"multiSelect": true
+// 			},
+// 			"HTSIDX, Contact Firstname": {
+// 				"required": true
+// 			},
+// 			"HTSIDX, Contact Surname": {
+// 				"required": true
+// 			},
+// 			"HTSIDX, Relationship to Index": {
+// 				"required": true
+// 			},
+// 			"HTSIDX, Age of Partner/Child": {
+// 				"required": true
+// 			},
+// 			"HTSIDX, Sex of Partner/Child": {
+// 				"required": true
+// 			},
+// 			"HTSIDX, Prior Tested Before Status": {
+// 				"required": true
+// 			},
+// 			"HTSIDX, Prior Test Result": {
+// 				"required": true
+// 			},
+// 			"HTSIDX, Duration since last test": {
+// 				"required": true
+// 			},
+// 			"HTSIDX,Tested": {
+// 				"required": true
+// 			},
+// 			"HTSIDX, IF No, why": {
+// 				"required": true
+// 			},
+// 			"HTSIDX,Date partner/child tested": {
+// 				"required": true
+// 			},
+// 			"HTSIDX,Partner/ Child Test Result": {
+// 				"required": true
+// 			},
+// 			"HTSIDX,Linked to care and treatment": {
+// 				"required": true
+// 			},
+// 			"defaults": {
+// 				"Number of living children": 1,
+// 				"Accepted Family Planning methods": [
+// 					"Condoms",
+// 					"Pills"
+// 				],
+// 				"Pain management given": true,
+// 				"Safe Abortion, Remarks": "Remarks",
+// 				"Malaria, Death Date": "2015-12-01",
+// 				"HIVTC, ART Regimen": "",
+// 				"Posture": "Sitting"
+// 			},
+// 			"1st Dose": {
+// 				"multiSelect": true
+// 			},
+// 			"2nd Dose": {
+// 				"multiSelect": true
+// 			},
+// 			"3rd Dose": {
+// 				"multiSelect": true
+// 			},
+// 			"Under5, Base Doses":{
+// 				"multiSelect": true
+// 			},
+// 			"Under5, 12 - 14 Months":{
+// 				"multiSelect": true
+// 			},
+// 			"Under5, 18-20 Months":{
+// 				"multiSelect": true
+// 			},
+// 			"Under5, 24-26 Months":{
+// 				"multiSelect": true
+// 			},
+// 			"Under5, 30-32 Months":{
+// 				"multiSelect": true
+// 			},
+// 			"Under5, 36-38 Months":{
+// 				"multiSelect": true
+// 			},
+// 			"Under5, 42-44 Months":{
+// 				"multiSelect": true
+// 			},
+// 			"Under5, 48-50 Months":{
+// 				"multiSelect": true
+// 			},
+// 			"Under5, 54-56 Months":{
+// 				"multiSelect": true
+// 			},
+// 			"LD, Mode of Delivery":{
+// 				"multiSelect" : true
+// 			},
+// 			"LD, Intrapartum and immediate postpartum complications": {
+// 				"multiSelect": true
+// 			},
+// 			"LD, Intrapartum and immediate postpartum interventions": {
+// 				"multiSelect": true
+// 			},
+// 			"LD, Infant details": {
+// 				"allowAddMore": true
+// 			},
+// 			"LD, Discharge Condition of the Baby" : {
+// 				"allowAddMore": true,
+// 				"required": true
+// 			},
+// 			"LD, Breast-feeding Initiation" : {
+// 				"required": true
+// 			},
+// 			"LD, Suspected/ Presumptive cause of death Baby" : {
+// 				"allowAddMore": true
+// 			},
+// 			"LD, Screened at Maternity" : {
+// 				"required": true
+// 			},
+// 			"LD, HIV Test Results" : {
+// 				"required": true
+// 			},
+// 			"LD, Postpartum HIV Test" : {
+// 				"required": true
+// 			},
+// 			"LD, Postpartum HIV Test Results" : {
+// 				"required": true
+// 			},
+// 			"LD, Postpartum ART Initiation" : {
+// 				"required": true
+// 			},
+// 			"LD, Condition of the Baby" : {
+// 				"required": true
+// 			},
+// 			"LD, Infant Sex" : {
+// 				"required": true
+// 			},
+// 			"LD, Discharge Condition of the Mother" : {
+// 				"required": true
+// 			},
+// 			"LD, ART Received at ANC" : {
+// 				"required": true
+// 			},
+// 			"LD, ART initiated during labour" : {
+// 				"required": true
+// 			},
+// 			"Testing Eligibility, Last 12 Months":
+// 			{
+// 				"multiSelect": true
+// 			},
+// 			"VMMC, Post-MC Follow up Visits" : {
+// 				"required": true
+// 			},
+// 			"VMMC, Condition" : {
+// 				"required": true
+// 			},
+// 			"VMMC, Does Client have any AEs" : {
+// 				"required": true
+// 			},
+// 			"VMMC, Mode" : {
+// 				"required": true
+// 			},
+// 			"VMMC, Referred by" : {
+// 				"required": true
+// 			},
+// 			"Already on ART" : {
+// 				"required": true
+// 			},
+// 			"VMMC, Accepted HIV test" : {
+// 				"required": true
+// 			},
+// 			"VMMC, Reason" : {
+// 				"required": true
+// 			},
+// 			"VMMC, Referred to TB Clinic" : {
+// 				"required": true
+// 			},
+// 			"VMMC, Complaints" : {
+// 				"multiSelect": true
+// 			},
+// 			"VMMC, Penile examination Findings" : {
+// 				"multiSelect": true
+// 			},
+// 			"VMMC, Consent" : {
+// 				"required": true
+// 			},
+// 			"VMMC, Informed consent signed" : {
+// 				"required": true
+// 			},
+// 			"Method of Surgery": {
+// 				"required": true
+// 			},
+// 			"Reason if not cleared": {
+// 				"required": true
+// 			},
+// 			"Device used": {
+// 				"required": true
+// 			}
 			
 			
-		},
-		"visitPage": {
-			"observationDisplay": {
-					"conceptNames": []
-			}
-		}
-    }
-}
+// 		},
+// 		"visitPage": {
+// 			"observationDisplay": {
+// 					"conceptNames": []
+// 			}
+// 		}
+//     }
+// }
