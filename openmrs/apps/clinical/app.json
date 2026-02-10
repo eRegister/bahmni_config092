@@ -285,7 +285,6 @@
 					"buttonSelect": true
 				},
 				"TB Suspect signs": {
-					"required" : true,
 					"multiSelect": true
 				},
 
@@ -294,7 +293,7 @@
 			},
 
 			"HIVTC, Transferred out to": {
-				"required" : true,
+				"required" : false,
 				"dropdown": true
 			},
 			"TB Status": {

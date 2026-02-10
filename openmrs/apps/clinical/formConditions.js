@@ -1437,7 +1437,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
         /*--- ARV Drug days and drug supply duration generic autocalculations---- */
         'ART, Follow-up date': function (formName, formFieldValues) {
-                if (formName == "HIVTC, Patient Register") {
+                if (formName == "Regimen") {
                         var followUpDate = formFieldValues['ART, Follow-up date'];
                         var conditions = { assignedValues: [], error: [] };
                         var dateUtil = Bahmni.Common.Util.DateUtil;
@@ -1815,181 +1815,102 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
         // },ANC, Estimated Date of Delivery
 
-        'HTC, HIV Test':function(formName, formFieldValues){
-                if ((formName == "HIV Testing and Counseling Intake Template") || (formName == "HTC, HIV Test") || (formName == "HIV Testing Services Retesting Template")) {
-                        var determineResult = formFieldValues['HTC, Initial HIV Test Determine'];
-                        var conditions = { show: [], hide: [] };
-                        if(!determineResult){
-                                conditions.hide.push("HTC, Initial HIV Test Unigold Confirmatory")
-                                conditions.hide.push("HTC, Repeat HIV Test Determine")
-                                conditions.hide.push("HTC, Repeat Unigold Test")
-                                conditions.hide.push("HTC, SD Bioline Tie Breaker")
-                                conditions.hide.push("HTC, DNA PCR Test Results");
-                        }
+        // 'HTC, HIV Test':function(formName, formFieldValues){
+        //         if ((formName == "HTC, HIV Test") || (formName == "HIV Testing Services Retesting Template")) {
+        //                 var determineResult = formFieldValues['HTC, Initial HIV Test Determine'];
+        //                 var conditions = { show: [], hide: [] };
+        //                 if(!determineResult){
+        //                         conditions.hide.push("HTC, Initial HIV Test Unigold Confirmatory")
+        //                         conditions.hide.push("HTC, Repeat HIV Test Determine")
+        //                         conditions.hide.push("HTC, Repeat Unigold Test")
+        //                         conditions.hide.push("HTC, SD Bioline Tie Breaker")
+        //                         conditions.hide.push("HTC, DNA PCR Test Results");
+        //                 }
                         
-                }
-                return conditions;       
-        },
+        //         }
+        //         return conditions;       
+        // },
 
-        'HTC, Initial HIV Test Determine': function (formName, formFieldValues, patient) {
+        // 'HTC, Initial HIV Test Determine': function (formName, formFieldValues, patient) {
 
-                if ((formName == "HIV Testing and Counseling Intake Template") || (formName == "HTC, HIV Test") || (formName == "HIV Testing Services Retesting Template")) {
-                        var determineResult = formFieldValues['HTC, Initial HIV Test Determine'];
-                        var conditions = { show: [], hide: [] };
+        //         if ( (formName == "HIV Testing Services Retesting Template")) {
+        //                 var determineResult = formFieldValues['HTC, Initial HIV Test Determine'];
+        //                 var conditions = { show: [], hide: [] };
                        
-                        if (determineResult == "Positive") {
-                                conditions.show.push("HTC, Initial HIV Test Unigold Confirmatory")
-                        }
-                        else {
-                                conditions.hide.push("HTC, Initial HIV Test Unigold Confirmatory")
-                                conditions.hide.push("HTC, Repeat HIV Test Determine")
-                                conditions.hide.push("HTC, Repeat Unigold Test")
-                                conditions.hide.push("HTC, SD Bioline Tie Breaker")
-                                conditions.hide.push("HTC, DNA PCR Test Results");
-                        }
-                }
-                return conditions;
-        },
+        //                 if (determineResult == "Positive") {
+        //                         conditions.show.push("HTC, Initial HIV Test Unigold Confirmatory")
+        //                 }
+        //                 else {
+        //                         conditions.hide.push("HTC, Initial HIV Test Unigold Confirmatory")
+        //                         conditions.hide.push("HTC, Repeat HIV Test Determine")
+        //                         conditions.hide.push("HTC, Repeat Unigold Test")
+        //                         conditions.hide.push("HTC, SD Bioline Tie Breaker")
+        //                         conditions.hide.push("HTC, DNA PCR Test Results");
+        //                 }
+        //         }
+        //         return conditions;
+        // },
 
 
-        'HTC, Initial HIV Test Unigold Confirmatory': function (formName, formFieldValues) {
+        // 'HTC, Initial HIV Test Unigold Confirmatory': function (formName, formFieldValues) {
 
-                if ((formName == "HIV Testing and Counseling Intake Template") || (formName == "HIV Testing Services Retesting Template") || (formName == "HTC, HIV Test")) {
-                        var unigoldResult = formFieldValues['HTC, Initial HIV Test Unigold Confirmatory'];
-                        var determineResults = formFieldValues['HTC, Initial HIV Test Determine'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
+        //         if ((formName == "HIV Testing Services Retesting Template")) {
+        //                 var unigoldResult = formFieldValues['HTC, Initial HIV Test Unigold Confirmatory'];
+        //                 var determineResults = formFieldValues['HTC, Initial HIV Test Determine'];
+        //                 var conditions = { show: [], hide: [], enable: [], disable: [] };
 
-                        if ((unigoldResult == "Negative") && (determineResults == "Positive")) {
-                                conditions.show.push("HTC, Repeat HIV Test Determine")
-                                conditions.show.push("HTC, Repeat Unigold Test");
-                        }
-                        else {
-                                conditions.hide.push("HTC, SD Bioline Tie Breaker")
-                                conditions.hide.push("HTC, DNA PCR Test Results")
-                                conditions.hide.push("HTC, Repeat HIV Test Determine")
-                                conditions.hide.push("HTC, Repeat Unigold Test");
+        //                 if ((unigoldResult == "Negative") && (determineResults == "Positive")) {
+        //                         conditions.show.push("HTC, Repeat HIV Test Determine")
+        //                         conditions.show.push("HTC, Repeat Unigold Test");
+        //                 }
+        //                 else {
+        //                         conditions.hide.push("HTC, SD Bioline Tie Breaker")
+        //                         conditions.hide.push("HTC, DNA PCR Test Results")
+        //                         conditions.hide.push("HTC, Repeat HIV Test Determine")
+        //                         conditions.hide.push("HTC, Repeat Unigold Test");
 
-                        }
-                        return conditions;
-                }
-        },
+        //                 }
+        //                 return conditions;
+        //         }
+        // },
 
-        'HTC, Repeat Unigold Test': function (formName, formFieldValues) {
+        // 'HTC, Repeat Unigold Test': function (formName, formFieldValues) {
 
-                if ((formName == "HIV Testing and Counseling Intake Template") || (formName == "HIV Testing Services Retesting Template") || (formName == "HTC, HIV Test")) {
-                        var unigoldRepeat = formFieldValues['HTC, Repeat Unigold Test'];
-                        var determineRepeat = formFieldValues['HTC, Repeat HIV Test Determine'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
+        //         if ((formName == "HIV Testing Services Retesting Template")) {
+        //                 var unigoldRepeat = formFieldValues['HTC, Repeat Unigold Test'];
+        //                 var determineRepeat = formFieldValues['HTC, Repeat HIV Test Determine'];
+        //                 var conditions = { show: [], hide: [], enable: [], disable: [] };
 
-                        if ((unigoldRepeat == "Negative" && determineRepeat == "Positive") || (unigoldRepeat == "Positive" && determineRepeat == "Negative")) {
-                                conditions.show.push("HTC, SD Bioline Tie Breaker");
-                        }
-                        else {
-                                conditions.hide.push("HTC, SD Bioline Tie Breaker");
+        //                 if ((unigoldRepeat == "Negative" && determineRepeat == "Positive") || (unigoldRepeat == "Positive" && determineRepeat == "Negative")) {
+        //                         conditions.show.push("HTC, SD Bioline Tie Breaker");
+        //                 }
+        //                 else {
+        //                         conditions.hide.push("HTC, SD Bioline Tie Breaker");
 
-                        }
-                        return conditions;
-                }
-        },
+        //                 }
+        //                 return conditions;
+        //         }
+        // },
 
-        'HTC, SD Bioline Tie Breaker': function (formName, formFieldValues) {
+        // 'HTC, SD Bioline Tie Breaker': function (formName, formFieldValues) {
 
-                if ((formName == "HIV Testing and Counseling Intake Template") || (formName == "HIV Testing Services Retesting Template") || (formName == "HTC, HIV Test")) {
-                        var sdBiolineResult = formFieldValues['HTC, SD Bioline Tie Breaker'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
+        //         if ((formName == "HIV Testing Services Retesting Template")) {
+        //                 var sdBiolineResult = formFieldValues['HTC, SD Bioline Tie Breaker'];
+        //                 var conditions = { show: [], hide: [], enable: [], disable: [] };
 
-                        if (sdBiolineResult == "Positive") {
-                                conditions.show.push("HTC, DNA PCR Test Results");
-                        }
-                        else {
-                                conditions.hide.push("HTC, DNA PCR Test Results");
+        //                 if (sdBiolineResult == "Positive") {
+        //                         conditions.show.push("HTC, DNA PCR Test Results");
+        //                 }
+        //                 else {
+        //                         conditions.hide.push("HTC, DNA PCR Test Results");
 
-                        }
-                        return conditions;
-                }
-        },
+        //                 }
+        //                 return conditions;
+        //         }
+        // },
 
-        'ART, Condoms Dispensed': function (formName, formFieldValues) {
-
-                if (formName == "HIV Testing and Counseling Intake Template" || formName == "HTC, Post-test Counseling Set") {
-                        var condomDispensed = formFieldValues['ART, Condoms Dispensed'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
-
-                        if (condomDispensed == "Yes") {
-                                conditions.show.push("HTC, Condom Type Dispensed");
-                        }
-                        else {
-                                conditions.hide.push("HTC, Condom Type Dispensed");
-
-                        }
-                        return conditions;
-                }
-        },
-       'HTC, Pre-test Counseling Set': function (formName, formFieldValues) {
-                if (formName == "HIV Testing and Counseling Intake Template") {
-                        var testedForHIV = formFieldValues['Testing Eligibility, Tested For HIV'];
-                        var testingStrategy = formFieldValues['HIV, Testing Strategies'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
-                        if(testedForHIV == "Yes" && (testingStrategy.includes('HIVTC, Rapid Test'))){
-                                conditions.show.push("HTC, History of Previous Testing");
-                        }
-                        else{
-                                conditions.hide.push("HTC, History of Previous Testing");
-                                conditions.hide.push("HTC, Previous result given")
-                                conditions.hide.push("HTC, Time Since Test");
-                        }
-
-                        return conditions;
-                }
-        },
-        'HTC, History of Previous Testing': function (formName, formFieldValues) {
-
-                if (formName == "HTC, Pre-test Counseling Set" || formName == "HIV Testing and Counseling Intake Template") {
-                        var testingHistory = formFieldValues['HTC, History of Previous Testing'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
-                        if(!testingHistory || testingHistory == "No"){
-                                conditions.hide.push("HTC, Previous result given")
-                                conditions.hide.push("HTC, Time Since Test");
-                        }
-                       else if (testingHistory == "Yes") {
-                                conditions.show.push("HTC, Previous result given")
-                                conditions.show.push("HTC, Time Since Test");
-                        }
-                        
-                        return conditions;
-                }
-        },
-
-        'HTC, Post-test Counseling Set': function (formName, formFieldValues) {
-
-                if (formName == "HIV Testing and Counseling Intake Template") {
-                        var coupleTest = formFieldValues['HTC, Partner Testing and Counseling'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
-
-                        if (!coupleTest) {
-                                conditions.hide.push("HTC, Discordant Couple");
-                        }
-                        
-                        return conditions;
-                }
-        },
-
-        'HTC, Partner Testing and Counseling': function (formName, formFieldValues) {
-
-                if (formName == "HIV Testing and Counseling Intake Template" || formName == "HTC, Post-test Counseling Set") {
-                        var coupleTest = formFieldValues['HTC, Partner Testing and Counseling'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
-
-                        if (coupleTest == "Yes") {
-                                conditions.show.push("HTC, Discordant Couple");
-                        }
-                        else {
-                                conditions.hide.push("HTC, Discordant Couple");
-
-                        }
-                        return conditions;
-                }
-        },
+        
+        
         /*-----
         'HTC, Linked To Care' : function (formName, formFieldValues) {
 
@@ -2016,27 +1937,27 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
         'HTC, Linked To Care': function (formName, formFieldValues) {
 
-                if ((formName == "HIV Testing and Counseling Intake Template") || (formName == "HIV Testing Services Retesting Template")) {
+                if ((formName == "HIV Testing Services Retesting Template")) {
                         var careLink = formFieldValues['HTC, Linked To Care'];
                         var conditions = { show: [], hide: [], enable: [], disable: [] };
 
                         if (careLink == "Yes") {
-                                conditions.show.push("HTC, Date Linked To Care");
+                                // conditions.show.push("HTC, Date Linked To Care");
                                 conditions.hide.push("HTC, Referred Facility");
                                 conditions.hide.push("HTC, Specify");
                         }
                         if (careLink == "No") {
                                 conditions.show.push("HTC, Specify");
-                                conditions.hide.push("HTC, Date Linked To Care");
+                                // conditions.hide.push("HTC, Date Linked To Care");
                                 conditions.hide.push("HTC, Referred Facility");
                         }
                         else if (careLink == "Referred") {
                                 conditions.show.push("HTC, Referred Facility");
-                                conditions.hide.push("HTC, Date Linked To Care");
+                                // conditions.hide.push("HTC, Date Linked To Care");
                                 conditions.hide.push("HTC, Specify");
                         }
                         else {
-                                conditions.hide.push("HTC, Date Linked To Care")
+                                // conditions.hide.push("HTC, Date Linked To Care")
                                 conditions.hide.push("HTC, Specify")
                                 conditions.hide.push("HTC, Referred Facility");
                         }
@@ -2067,207 +1988,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         conditions.enable.push("HIVTC, Children 2nd Line Regimen")
                         conditions.enable.push("HIVTC, Children 3rd Line Regimen");
                 }
-                return conditions;
-        },
-
-        /*--------------------- SCREENING TOOL FOR HIV TESTING ELIGIBILITY ----------------------*/
-        'HTC, Mode of Entry Point': function (formName, formFieldValues){
-                if(formName == "HIV Testing and Counseling Intake Template"){
-                        var modeofentry = formFieldValues['HTC, Mode of Entry Point'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
-
-                        if(!modeofentry){
-                                conditions.hide.push("Testing Eligibility, Tested For HIV");
-                        }
-                        else{
-                                conditions.show.push("Testing Eligibility, Tested For HIV");
-                        }
-                }
-                return conditions;
-        },
-
-        'Testing Eligibility, Tested For HIV': function (formName, formFieldValues) {
-                if (formName == "HIV Testing and Counseling Intake Template") {
-                        var testedForHIV = formFieldValues['Testing Eligibility, Tested For HIV'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
-
-
-                        if (testedForHIV == "No") {
-                                conditions.show.push("Test For HIV");
-
-                                //conditions.hide.push("HTC, HIV Test");
-                                //conditions.hide.push("HTC, Post-test Counseling Set");
-                                //conditions.hide.push("ART, Condoms Dispensed");
-                                //conditions.hide.push("HIVTC, TB Screened");
-                                //conditions.hide.push("HTS, Referral");
-                                conditions.hide.push("Testing Eligibility, Last Test Results");
-                                conditions.hide.push("Testing Eligibility, On ART Treatment");
-                               // conditions.hide.push("Testing Eligibility, Provided Adherence Counselling");
-                                conditions.hide.push("Testing Eligibility, Counselled & linked to Treatment");
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                                conditions.hide.push("HTC, Tested for HIV in The Past 12 Months");
-                                conditions.hide.push("HTC, History of Previous Testing");
-                                
-
-                        }
-                        if (testedForHIV == "Yes") {
-                                conditions.show.push("Testing Eligibility, Last Test Results");
-                                //conditions.hide.push("Test For HIV");
-
-                                //conditions.hide.push("HTC, Post-test Counseling Set");
-
-                                //conditions.hide.push("ART, Condoms Dispensed");
-                                //conditions.hide.push("HIVTC, TB Screened");
-                                //conditions.hide.push("HTS, Referral");
-                                //conditions.hide.push("Testing Eligibility, Provided Adherence Counselling");
-                               // conditions.hide.push("Testing Eligibility, Counselled & linked to Treatment");
-
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-
-
-                        }
-                        else if (!testedForHIV) {
-
-                                //conditions.hide.push("Self_Test_Buddy");
-                                //conditions.hide.push("Take Secondary Self Test");
-                                conditions.hide.push("HTC, Post-test Counseling Set");
-                                conditions.hide.push("Testing Eligibility, Time Last Test Done");
-                                conditions.hide.push("HIVTC, TB Screened", "HIV, Testing Strategies");
-                                conditions.hide.push("HTS, Referral");
-                                //conditions.hide.push("Testing Eligibility, Provided Adherence Counselling");
-                                conditions.hide.push("Testing Eligibility, Last Test Results");
-                                conditions.hide.push("Testing Eligibility, Counselled & linked to Treatment");
-                                conditions.hide.push("Testing Eligibility, On ART Treatment");
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.hide.push("Testing Eligibility, Last 12 Months");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                                conditions.hide.push("Test For HIV", "HTC, Pre-test Counseling Set");
-                               // conditions.hide.push(/*"ART, Condoms Dispensed",*/ "HTC, Date Of Distribution", "HTC, Distribution channel", "HTC, Distribution Mode", "HTC, Kit Collected For", "HTC, Key Pop", "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results");
-
-                        }
-
-                        return conditions;
-                }
-
-        },
-        'Test For HIV': function (formName, formFieldValues) {
-                if (formName == "HIV Testing and Counseling Intake Template") {
-                        var test = formFieldValues['Test For HIV'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
-
-
-                        if (test == "Yes") {
-                                conditions.show.push("HIV, Testing Strategies");
-                                //conditions.hide.push("ART, Condoms Dispensed");
-                                //conditions.hide.push("HIVTC, TB Screened");
-                                //conditions.hide.push("HTS, Referral");
-                                //conditions.hide.push("Testing Eligibility, On ART Treatment");
-                               // conditions.hide.push("Testing Eligibility, Provided Adherence Counselling");
-                                //conditions.hide.push("Testing Eligibility, Counselled & linked to Treatment");
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                        }
-
-                        else if (test == "No" || test == "Declined" || !test) {
-                                conditions.hide.push("HIV, Testing Strategies");
-
-
-                                conditions.hide.push("HTC, HIV Test");
-                              //  conditions.hide.push("Self_Test_Buddy");
-                                //conditions.hide.push("HIVTC, TB Screened");
-                                //conditions.hide.push("HTS, Referral");
-                               // conditions.hide.push("Testing Eligibility, Provided Adherence Counselling");
-                                //conditions.hide.push("Testing Eligibility, Counselled & linked to Treatment");
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                               // conditions.hide.push("Testing Eligibility, On ART Treatment");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                               // conditions.hide.push(/*"ART, Condoms Dispensed", */"HTC, Date Of Distribution", "HTC, Distribution channel", "HTC, Distribution Mode", "HTC, Kit Collected For", "HTC, Key Pop", "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results");
-                        }
-
-
-                        return conditions;
-                }
-
-        },
-
-        'HIV, Testing Strategies': function (formName, formFieldValues) {
-                var testingStrategy = formFieldValues['HIV, Testing Strategies'];
-                var SecondarySelfTest = formFieldValues['Take Secondary Self Test'];
-                if (formName == "HIV Testing and Counseling Intake Template") {
-                        var conditions = { show: [], hide: [] };
-                       // conditions.hide.push("Self_Test_Buddy");
-                        //conditions.hide.push("HTC, Kit Collected For");
-
-                        if (testingStrategy.includes('HIVTC, Rapid Test') && !testingStrategy.includes('HIVTC, Self Test')) {
-
-                                conditions.show.push("HTC, Pre-test Counseling Set", "HTC, HIV Test", "HTC, Post-test Counseling Set");
-
-                                conditions.show.push("ART, Condoms Dispensed");
-                                conditions.show.push("HIVTC, TB Screened");
-                                conditions.show.push("HTS, Referral");
-                               // conditions.hide.push("Testing Eligibility, Provided Adherence Counselling");
-                                //conditions.hide.push("Testing Eligibility, Counselled & linked to Treatment");
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                                //conditions.hide.push("Testing Eligibility, On ART Treatment");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                                conditions.hide.push("HTC, Date Of Distribution");
-                                conditions.hide.push("HTC, Distribution channel");
-                                conditions.hide.push("HTC, Distribution Mode");
-                                conditions.hide.push("HTC, Kit Collected For");
-                                conditions.hide.push("Self_Test_Buddy");
-                                conditions.hide.push("HTC, Key Pop");
-                                conditions.hide.push("HTC, Tested for HIV in The Past 12 Months");
-                                conditions.hide.push("HTC, HIVST Results");
-                        }
-                        else if (testingStrategy.includes('HIVTC, Self Test') && !testingStrategy.includes('HIVTC, Rapid Test')) {
-                                conditions.show.push("HTC, Distribution Mode"/*, "HTC, Date Of Distribution",  "Self_Test_Buddy", "HTC, Kit Collected For", "HTC, Key Pop", "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results"*/);
-                                conditions.hide.push("HTC, Pre-test Counseling Set", "HTC, HIV Test", "HTC, Post-test Counseling Set");
-
-                                conditions.hide.push("ART, Condoms Dispensed");
-                                conditions.hide.push("HIVTC, TB Screened");
-                                conditions.hide.push("HTS, Referral");
-                        }
-
-                        else if (testingStrategy.includes('HIVTC, Self Test') && testingStrategy.includes('HIVTC, Rapid Test')) {
-
-                                conditions.show.push("HTC, Distribution Mode"/*,"HTC, Date Of Distribution" ,"HTC, Distribution channel", "Self_Test_Buddy", "HTC, Kit Collected For", "HTC, Key Pop", "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results"*/);
-                                conditions.show.push("HTC, Pre-test Counseling Set", "HTC, Post-test Counseling Set");
-                                conditions.show.push("HTC, HIV Test", "ART, Condoms Dispensed", "HIVTC, TB Screened", "HTS, Referral");
-
-                        }
-                        else if (!testingStrategy.includes('HIVTC, Self Test') && !testingStrategy.includes('HIVTC, Rapid Test')) {
-                                if(SecondarySelfTest == "Yes"){
-                                        conditions.show.push("HTC, Date Of Distribution");
-                                        conditions.show.push("HTC, Distribution channel");
-                                        conditions.show.push("HTC, Kit Collected For");
-                                        conditions.show.push("Self_Test_Buddy");
-                                        conditions.show.push("HTC, Key Pop");        
-                                }
-                                else{
-                                        conditions.hide.push("HTC, Date Of Distribution");
-                                        conditions.hide.push("HTC, Distribution channel");
-                                        conditions.hide.push("HTC, Kit Collected For");
-                                        conditions.hide.push("Self_Test_Buddy");
-                                        conditions.hide.push("HTC, Key Pop");    
-                                }
-                                conditions.hide.push("HTC, Distribution Mode");
-                                conditions.hide.push("HTC, Tested for HIV in The Past 12 Months");
-                                conditions.hide.push("HTC, HIVST Results");
-                                conditions.hide.push("HTC, Pre-test Counseling Set","HTC, HIV Test", "HTC, Post-test Counseling Set");
-                                conditions.hide.push("ART, Condoms Dispensed");
-                                conditions.hide.push("HIVTC, TB Screened");
-                                conditions.hide.push("HTS, Referral");
-                        }
-
-
-                }
-
-
                 return conditions;
         },
 
@@ -2351,127 +2071,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 return conditions;
         },
 
-        'Testing Eligibility, Last Test Results': function (formName, formFieldValues) {
-                if (formName == "HIV Testing and Counseling Intake Template") {
-                        var lastTest = formFieldValues['Testing Eligibility, Last Test Results'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
 
-
-                        if (lastTest == "Do Not Know" || lastTest == "Negative") {
-                                /*
-
-                                conditions.hide.push("HTC, History of Previous Testing", "HTC, Pre-test Counseling");*/
-                                conditions.show.push("Testing Eligibility, Time Last Test Done");
-                                conditions.hide.push("Testing Eligibility, On ART Treatment");
-                                //conditions.hide.push("Testing Eligibility, Provided Adherence Counselling");
-                               // conditions.hide.push("Testing Eligibility, Counselled & linked to Treatment");
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                        }
-
-                        else if (lastTest == "Positive") {
-
-                                conditions.show.push("Testing Eligibility, On ART Treatment");
-                                conditions.hide.push("Testing Eligibility, Time Last Test Done");
-                                conditions.hide.push("Test For HIV");
-                               // conditions.hide.push("Testing Eligibility, Provided Adherence Counselling");
-                              //  conditions.hide.push("Testing Eligibility, Counselled & linked to Treatment");
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                        }
-                        if(!lastTest) {
-                                conditions.hide.push("Testing Eligibility, Time Last Test Done");
-                                conditions.hide.push("Testing Eligibility, On ART Treatment");
-                                //conditions.hide.push("Testing Eligibility, Provided Adherence Counselling");
-                                conditions.hide.push("Testing Eligibility, Counselled & linked to Treatment");
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                        }
-                        return conditions;
-                }
-        },
-
-
-        'Testing Eligibility, On ART Treatment': function (formName, formFieldValues) {
-                if (formName == "HIV Testing and Counseling Intake Template") {
-                        var onART = formFieldValues['Testing Eligibility, On ART Treatment'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
-
-
-                        if (onART == "Yes") {
-                                conditions.show.push("Testing Eligibility, Provided Adherence Counselling");
-                                conditions.show.push("Take Secondary Self Test");
-                                conditions.hide.push("Testing Eligibility, Counselled & linked to Treatment");
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                        }
-
-                        else if (onART == "No") {
-                                conditions.show.push("Testing Eligibility, Counselled & linked to Treatment");
-                                conditions.hide.push("Take Secondary Self Test");
-                                conditions.hide.push("Testing Eligibility, Provided Adherence Counselling");
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                        }
-                        else if (!onART){
-                          conditions.hide.push("Testing Eligibility, Provided Adherence Counselling");
-                          conditions.hide.push("Take Secondary Self Test");
-                          conditions.hide.push("Testing Eligibility, Counselled & linked to Treatment");
-                        }
-                        return conditions;
-                }
-        },
-
-        'Take Secondary Self Test': function (formName, formFieldValues) {
-
-                if (formName == "HIV Testing and Counseling Intake Template") {
-                        var takeSelfTest = formFieldValues['Take Secondary Self Test'];
-                        var conditions = { show: [], hide: [], assignedValues: [], disable: [] };
-
-                        if (takeSelfTest == "Yes") {
-                                conditions.show.push("HTC, Date Of Distribution", "HTC, Distribution channel", "Self_Test_Buddy", "HTC, Kit Collected For", "HTC, Key Pop"/*, "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results"*/);
-                                conditions.hide.push("HTC, Pre-test Counseling Set", "HTC, HIV Test", "HTC, Post-test Counseling Set");
-
-                                conditions.hide.push("ART, Condoms Dispensed");
-                                conditions.hide.push("HIVTC, TB Screened");
-                                conditions.hide.push("HTS, Referral");
-                        }
-                        else if (!takeSelfTest || takeSelfTest == "No"){
-                          //conditions.hide.push("HTC, Date Of Distribution", "HTC, Distribution channel", "Self_Test_Buddy", "HTC, Kit Collected For", "HTC, Key Pop"/*, "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results"*/);
-                        }
-                }
-
-                return conditions;
-        },
-
-
-        'Testing Eligibility, Time Last Test Done': function (formName, formFieldValues) {
-                if (formName == "HIV Testing and Counseling Intake Template") {
-                        var timoflasttest = formFieldValues['Testing Eligibility, Time Last Test Done'];
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
-
-
-                        if (timoflasttest == "Testing Eligibility, Within 3 Months") {
-                                conditions.show.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.show.push("Test For HIV");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                        }
-
-                        if (timoflasttest == "Testing Eligibility, More than 3 Months") {
-                                conditions.show.push("Testing Eligibility, Last 12 Months");
-                                conditions.show.push("Test For HIV");
-                                conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                                conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                        }
-                        else{
-                          conditions.hide.push("Testing Eligibility, Last 12 Months");
-                          conditions.hide.push("Testing Eligibility, Reinforced Prevention Counselling");
-                          //conditions.hide.push("Test For HIV");
-                          conditions.hide.push("Offered prevention Counselling and or Linked to prevention services");
-                        }
-                        return conditions;
-                }
-        },
 
         /*'Testing Eligibility, Last 12 Months': function (formName, formFieldValues) {
                 if (formName == "HIV Testing and Counseling Intake Template") {
@@ -2579,35 +2179,38 @@ Bahmni.ConceptSet.FormConditions.rules = {
         },
 
         'HTSIDX,Tested': function (formName, formFieldValues) {
-                var tested = formFieldValues['HTSIDX,Tested'];
+                console.log(formName);
+                if(formName != "HIV Testing and Counseling Intake Template"){
+                        var tested = formFieldValues['HTSIDX,Tested'];
 
-                var conditions = { show: [], hide: [], enable: [], disable: [] };
+                        var conditions = { show: [], hide: [], enable: [], disable: [] };
 
-                if (tested == "Yes") {
-                        conditions.show.push("HTSIDX,Partner/ Child Test Result");
-                        conditions.show.push("HTSIDX,Linked to care and treatment");
-                        conditions.show.push("HTSIDX,Partner/Child's PRE/ART Number");
+                        if (tested == "Yes") {
+                                conditions.show.push("HTSIDX,Partner/ Child Test Result");
+                                conditions.show.push("HTSIDX,Linked to care and treatment");
+                                conditions.show.push("HTSIDX,Partner/Child's PRE/ART Number");
 
-                        conditions.hide.push("HTSIDX, IF No, why");
-                        conditions.hide.push("HTSIDX,Date partner/child tested");
-                        conditions.show.push("HTSIDX,Referral to Prevention");
+                                conditions.hide.push("HTSIDX, IF No, why");
+                                conditions.hide.push("HTSIDX,Date partner/child tested");
+                                conditions.show.push("HTSIDX,Referral to Prevention");
 
-                } else if (tested == "No") {
+                        } else if (tested == "No") {
 
-                        conditions.show.push("HTSIDX, IF No, why");
-                        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
-                        conditions.hide.push("HTSIDX,Linked to care and treatment");
-                        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number");
+                                conditions.show.push("HTSIDX, IF No, why");
+                                conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+                                conditions.hide.push("HTSIDX,Linked to care and treatment");
+                                conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number");
 
-                        conditions.show.push("HTSIDX,Referral to Prevention");
-                } else {
+                                conditions.show.push("HTSIDX,Referral to Prevention");
+                        } else {
 
-                        // Did the client test during their visit to the facility
-                        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
-                        conditions.hide.push("HTSIDX,Linked to care and treatment");
-                        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number");
+                                // Did the client test during their visit to the facility
+                                conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+                                conditions.hide.push("HTSIDX,Linked to care and treatment");
+                                conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number");
+                        }
+                        return conditions;
                 }
-                return conditions;
         },
         /* Auto populate forms in PNC,REGISTER form */
 
@@ -3549,18 +3152,21 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 return conditions;
         },
         'VMMC, Accepted HIV test': function (formName, formFieldValues) {
-                var conditionConcept = formFieldValues['VMMC, Accepted HIV test'];
-                var conditions = { show: [], hide: [] };
+                if(formName != "HIV Testing and Counseling Intake Template" && formName != "HIV Testing Services Retesting Template"){
+                        var conditionConcept = formFieldValues['VMMC, Accepted HIV test'];
+                        var conditions = { show: [], hide: [] };
 
-                if(conditionConcept == undefined){
-                        conditions.hide.push("VMMC, Reason");
-                } else if (conditionConcept) {
-                        conditions.hide.push("VMMC, Reason");
-                } else {
-                        conditions.show.push("VMMC, Reason");
+                        if(conditionConcept == undefined){
+                                conditions.hide.push("VMMC, Reason");
+                        } else if (conditionConcept) {
+                                conditions.hide.push("VMMC, Reason");
+                        } else {
+                                conditions.show.push("VMMC, Reason");
+                        }
+
+                        return conditions;
                 }
-
-                return conditions;
+                
         }
 
 };
