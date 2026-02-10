@@ -115,15 +115,15 @@
 				"multiSelect": true
 			},
       "HTC, HIVST Results": {
-				"required": true
+				"required": false
 			},
             "HTC, Kit Collected For": {
-                "required": true
+                "required": false
             },
             
 			"HTC, Distribution Mode": {
 				"multiSelect": true,
-				"required": true
+				"required": false
 			},
 
 			"Addiction": {
@@ -146,25 +146,25 @@
 				"autocomplete":true
 			},
 			"Cervical Cancer Screening" : {
-					"required": true
+					"required": false
 			},
 			"PNC, HIV Status Known Before Visit" : {
-				"required": true
+				"required": false
 			},
 			"Tested in PNC" : {
-				"required": true
+				"required": false
 			},
 			"PNC, Micro-Nutrient supplement" : {
-				"required": true
+				"required": false
 			},
 			"Mode of Delivery" : {
-				"required": true
+				"required": false
 			},
 			"Cervical Cancer Assessment Method" : {
-				"required": true
+				"required": false
 			},
 			"PNC, Initiated on Family Planning" : {
-				"required": true
+				"required": false
 			},
 			"HEI, HIV Status at 24 Months" : {
 				"dropdown": true
@@ -179,13 +179,13 @@
                 "allowFutureDates": true
             },
 			"FP, Family Planning Method" : {
-				"required": true
+				"required": false
 			},
 			"VIA" : {
-				"required": true
+				"required": false
 			},
 			"Pap Smear" : {
-				"required": true
+				"required": false
 			},
 			"Tuberculosis, Adverse Effects" :{
 				"multiSelect" : true,
@@ -195,7 +195,7 @@
 				"dropdown": true
 			},
 			"HIVTC, ART start date": {
-				"required": true
+				"required": false
 			},
 			"HIVTC, ART Regimen" : {
 				"required": false,
@@ -246,7 +246,7 @@
 				"required": false
 			},
 			"HIVTC, ARV drugs supply duration" : {
-				"required": true
+				"required": false
 			},
 			"HIVTC, Action to Record Viral Load Results": {
 				"multiSelect": true
@@ -392,111 +392,111 @@
 				"multiSelect": true
 			},
 			"HTC, Initiated Testing and Counseling":{
-				"required": true
+				"required": false
 			},
 			"HTC, History of Previous Testing": {
-				"required": true
+				"required": false
 			},
 			"HTC, Previous result given": {
-				"required": true
+				"required": false
 			},
 			"HTC, Informed Consent": {
-				"required": true
+				"required": false
 			},
 			"HTC, Initial HIV Test Determine": {
-				"required": true
+				"required": false
 			},
 			"HTC, Initial HIV Test Unigold Confirmatory": {
-				"required": true
+				"required": false
 			},
 			"HTC, Repeat HIV Test Determine": {
-				"required": true
+				"required": false
 			},
 			"HTC, Repeat Unigold Test": {
-				"required": true
+				"required": false
 			},
 			"HTC, SD Bioline Tie Breaker": {
 				"required": false
 			},
 			"HTC, DNA PCR Test Results": {
-				"required": true
+				"required": false
 			},
 			"HTC, Time Since Test": {
 				"displayMonthAndYear": true,
-				"required": true
+				"required": false
 			},
 			"HTC, Pre-test Counseling": {
-				"required": true
+				"required": false
 			},
 			"HTC, Date Linked To Care": {
-				"required": true
+				"required": false
 			},
 			"HTC, Linked To Care": {
-				"required": true
+				"required": false
 			},
 			"HTC, Condom Type Dispensed": {
-				"required": true
+				"required": false
 			},
 			"HTC, Condom Type Dispensed": {
 				"multiSelect": true
 			},
 			"HTC, Final Result Given": {
-				"required": true
+				"required": false
 			},
 			"HTC, Mode of Entry Point": {
-				"required": true
+				"required": false
 			},
 			"HTC, Referred Facility": {
-				"required": true,
+				"required": false,
 				"dropdown": true
 			},
 			"HTC, Final HIV status": {
-				"required": true
+				"required": false
 			},
 			"HIVTC, Pregnancy Estimated Date of Delivery" : {
 				"allowFutureDates": true
 			},
 			"HTC, Mode of Entry Point": {
-				"required": true
+				"required": false
 			},
 			"ANC, Last Normal Menstrual Period": {
 				"required": false
 			},
 			
 			"HTC, Referred Facility": {
-				"required": true,
+				"required": false,
 				"dropdown": true
 			},
 			"HTC, Final HIV status": {
-				"required": true
+				"required": false
 			},
 			"Testing Eligibility, On ART Treatment" : {
-				"required": true
+				"required": false
 			},
 			"Testing Eligibility, Counselled & linked to Treatment" : {
-				"required": true
+				"required": false
 			},
 			"Testing Eligibility, Reinforced Prevention Counselling" : {
-				"required": true
+				"required": false
 			},
       "HIV, Testing Strategies" : {
-        "required": true,
+        "required": false,
         "multiSelect": true
       },
 	  "PrEP ,Entry point": {
-		"required": true
+		"required": false
 	},
 	"PrEP ,Entry Point Mode": {
-		"required": true
+		"required": false
 	},
 	"PrEP, Indication for starting PrEP": {
-		"required": true
+		"required": false
 	},
 	"PrEP ,Date of Initiation": {
-		"required": true
+		"required": false
 	},
 	"PrEP , HIV rapid test result": {
-		"required": true
+		"required": false
 	},
 	
 
@@ -507,43 +507,43 @@
 				"multiSelect": true
 			},
 			"HTSIDX, Contact Firstname": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX, Contact Surname": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX, Relationship to Index": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX, Age of Partner/Child": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX, Sex of Partner/Child": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX, Prior Tested Before Status": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX, Prior Test Result": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX, Duration since last test": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX,Tested": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX, IF No, why": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX,Date partner/child tested": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX,Partner/ Child Test Result": {
-				"required": true
+				"required": false
 			},
 			"HTSIDX,Linked to care and treatment": {
-				"required": true
+				"required": false
 			},
 			"defaults": {
 				"Number of living children": 1,
@@ -607,74 +607,74 @@
 			},
 			"LD, Discharge Condition of the Baby" : {
 				"allowAddMore": true,
-				"required": true
+				"required": false
 			},
 			"LD, Breast-feeding Initiation" : {
-				"required": true
+				"required": false
 			},
 			"LD, Suspected/ Presumptive cause of death Baby" : {
 				"allowAddMore": true
 			},
 			"LD, Screened at Maternity" : {
-				"required": true
+				"required": false
 			},
 			"LD, HIV Test Results" : {
-				"required": true
+				"required": false
 			},
 			"LD, Postpartum HIV Test" : {
-				"required": true
+				"required": false
 			},
 			"LD, Postpartum HIV Test Results" : {
-				"required": true
+				"required": false
 			},
 			"LD, Postpartum ART Initiation" : {
-				"required": true
+				"required": false
 			},
 			"LD, Condition of the Baby" : {
-				"required": true
+				"required": false
 			},
 			"LD, Infant Sex" : {
-				"required": true
+				"required": false
 			},
 			"LD, Discharge Condition of the Mother" : {
-				"required": true
+				"required": false
 			},
 			"LD, ART Received at ANC" : {
-				"required": true
+				"required": false
 			},
 			"LD, ART initiated during labour" : {
-				"required": true
+				"required": false
 			},
 			"Testing Eligibility, Last 12 Months":
 			{
 				"multiSelect": true
 			},
 			"VMMC, Post-MC Follow up Visits" : {
-				"required": true
+				"required": false
 			},
 			"VMMC, Condition" : {
-				"required": true
+				"required": false
 			},
 			"VMMC, Does Client have any AEs" : {
-				"required": true
+				"required": false
 			},
 			"VMMC, Mode" : {
-				"required": true
+				"required": false
 			},
 			"VMMC, Referred by" : {
-				"required": true
+				"required": false
 			},
 			"Already on ART" : {
-				"required": true
+				"required": false
 			},
 			"VMMC, Accepted HIV test" : {
-				"required": true
+				"required": false
 			},
 			"VMMC, Reason" : {
-				"required": true
+				"required": false
 			},
 			"VMMC, Referred to TB Clinic" : {
-				"required": true
+				"required": false
 			},
 			"VMMC, Complaints" : {
 				"multiSelect": true
@@ -683,19 +683,19 @@
 				"multiSelect": true
 			},
 			"VMMC, Consent" : {
-				"required": true
+				"required": false
 			},
 			"VMMC, Informed consent signed" : {
-				"required": true
+				"required": false
 			},
 			"Method of Surgery": {
-				"required": true
+				"required": false
 			},
 			"Reason if not cleared": {
-				"required": true
+				"required": false
 			},
 			"Device used": {
-				"required": true
+				"required": false
 			}
 			
 			
