@@ -1808,14 +1808,14 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         if(lastResults){
                                 console.log(lastResults, lastResults);
                                 if(lastResults=="Positive"){
-                                        conditions.hide.push("HTC, HIV Test");
                                         conditions.hide.push("HTC, Post-test Counseling Set");
+                                        conditions.hide.push("HTC, HIV Test");
                                         conditions.show.push("Testing Eligibility, Time Last Test Done");
                                         conditions.hide.push("HTC, Pre-test Counseling Set");
                                 }
                                 else if(lastResults=="Negative" || lastResults == "Do Not Know"){
-                                        conditions.show.push("HTC, HIV Test");
                                         conditions.show.push("HTC, Post-test Counseling Set");
+                                        conditions.show.push("HTC, HIV Test");
                                         conditions.show.push("HTC, Pre-test Counseling Set");
                                         conditions.show.push("Testing Eligibility, Time Last Test Done");
                                 }
@@ -1837,6 +1837,20 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }
                 return conditions;
         },
+        'HTC, HIV Test': function (formName, formFieldValues) {
+                
+                var conditions = { show: [], hide: [], enable: [], disable: [] };
+                if (formName == "HIV Testing and Counseling Intake Template") {
+                        conditions.hide.push("HTC, HIV Dual Test");
+                        conditions.hide.push("HTC, Initial HIV Test Determine");
+                        conditions.hide.push("HTC, Initial HIV Test Unigold Confirmatory");
+                        conditions.hide.push("HTC, HIV Test Meriscreen");
+                        conditions.hide.push("HTC, Repeat HIV Test Determine");
+                        conditions.hide.push("HTC, DNA PCR Test Results");
+                }
+                        
+                return conditions;
+        },
         'Testing Eligibility, Tested For HIV': function (formName, formFieldValues) {
                 if (formName == "HIV Testing and Counseling Intake Template") {
                         var everTestedForHIV = formFieldValues['Testing Eligibility, Tested For HIV'];
@@ -1844,26 +1858,26 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         if(everTestedForHIV){
                                 if (everTestedForHIV == "Yes") {
                                         console.log("yes",everTestedForHIV);
+                                        conditions.hide.push("HTC, Post-test Counseling Set");
                                         conditions.hide.push("HTC, Pre-test Counseling Set");
                                         conditions.hide.push("HTC, HIV Test");
-                                        conditions.hide.push("HTC, Post-test Counseling Set");
                                         conditions.show.push("Testing Eligibility, Last Test Results");
                                         conditions.hide.push("Testing Eligibility, Time Last Test Done");
                                                                 
                                 }
                                 else if (everTestedForHIV == "No") {
                                         console.log("No",everTestedForHIV);
+                                        conditions.show.push("HTC, Post-test Counseling Set");
                                         conditions.show.push("HTC, Pre-test Counseling Set");
                                         conditions.show.push("HTC, HIV Test");
-                                        conditions.show.push("HTC, Post-test Counseling Set");
                                         conditions.hide.push("Testing Eligibility, Time Last Test Done");
                                         conditions.hide.push("Testing Eligibility, Last Test Results");
                                 }
                                 return conditions;
                         }
                         else{
-                                conditions.hide.push("HTC, HIV Test");
                                 conditions.hide.push("HTC, Post-test Counseling Set");
+                                conditions.hide.push("HTC, HIV Test");
                                 conditions.hide.push("HTC, Pre-test Counseling Set");
                                 conditions.hide.push("Testing Eligibility, Time Last Test Done");
                                 conditions.hide.push("Testing Eligibility, Last Test Results");
@@ -1872,7 +1886,28 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         
                 }
         },
-
+        
+        'HTC, Initial HIV Test Determine': function (formName, formFieldValues) {
+                var conditions = { show: [], hide: [] };
+                var initialHIVTestDetermine = formFieldValues['HTC, Initial HIV Test Determine'];
+                if (formName == "HIV Testing and Counseling Intake Template" || formName == "HTC, HIV Test") {
+                        if (initialHIVTestDetermine) {
+                                if (initialHIVTestDetermine == "Positive") {
+                                        conditions.show.push("HTC, Initial HIV Test Unigold Confirmatory");
+                                        conditions.show.push("HTC, Repeat HIV Test Determine");
+                                        conditions.show.push("HTC, HIV Test Meriscreen");
+                                        conditions.show.push("HTC, DNA PCR Test Results");
+                                }
+                                else{
+                                        conditions.hide.push("HTC, Initial HIV Test Unigold Confirmatory");
+                                        conditions.hide.push("HTC, Repeat HIV Test Determine");
+                                        conditions.hide.push("HTC, HIV Test Meriscreen");
+                                        conditions.hide.push("HTC, DNA PCR Test Results");
+                                }
+                                return conditions;
+                        }
+                }
+        },
 
         // 'HTC, Initial HIV Test Determine': function (formName, formFieldValues, patient) {
 
@@ -2267,10 +2302,11 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
         'HTSIDX,Tested': function (formName, formFieldValues) {
                 console.log(formName);
-                if(formName != "HIV Testing and Counseling Intake Template"){
-                        var tested = formFieldValues['HTSIDX,Tested'];
+                var tested = formFieldValues['HTSIDX,Tested'];
 
-                        var conditions = { show: [], hide: [], enable: [], disable: [] };
+                var conditions = { show: [], hide: [], enable: [], disable: [] };
+                if(formName != "HIV Testing and Counseling Intake Template" && formName != "HTC, Pre-test Counseling Set"){
+                        
 
                         if (tested == "Yes") {
                                 conditions.show.push("HTSIDX,Partner/ Child Test Result");
@@ -2295,6 +2331,22 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 conditions.hide.push("HTSIDX,Partner/ Child Test Result");
                                 conditions.hide.push("HTSIDX,Linked to care and treatment");
                                 conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number");
+                        }
+                        return conditions;
+                }
+                else if (formName == "HTC, Pre-test Counseling Set") {
+                        console.log("yes",tested);
+                        if(tested == "Yes"){
+                                conditions.hide.push("HTC, Declined");
+                                conditions.show.push("HTC, Result if tested");
+                        }
+                        else if(tested == "No"){
+                                conditions.show.push("HTC, Declined");
+                                conditions.hide.push("HTC, Result if tested");
+                        }
+                        else{
+                                conditions.hide.push("HTC, Declined");
+                                conditions.hide.push("HTC, Result if tested");
                         }
                         return conditions;
                 }
@@ -3238,10 +3290,12 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }
                 return conditions;
         },
-        'VMMC, Accepted HIV test': function (formName, formFieldValues) {
-                if(formName != "HIV Testing and Counseling Intake Template" && formName != "HIV Testing Services Retesting Template"){
-                        var conditionConcept = formFieldValues['VMMC, Accepted HIV test'];
-                        var conditions = { show: [], hide: [] };
+        'VMMC, Accepted HIV test': function (formName, formFieldValues,patient) {
+                var conditionConcept = formFieldValues['VMMC, Accepted HIV test'];
+                var conditions = { show: [], hide: [] };
+                var patientGender = patient['gender'];
+
+                if(formName != "HIV Testing and Counseling Intake Template" && formName != "HIV Testing Services Retesting Template" && formName != "HTC, HIV Test"){
 
                         if(conditionConcept == undefined){
                                 conditions.hide.push("VMMC, Reason");
@@ -3250,10 +3304,22 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         } else {
                                 conditions.show.push("VMMC, Reason");
                         }
-
-                        return conditions;
                 }
-                
+                else if(formName == "HTC, HIV Test"){
+                        if (conditionConcept) {
+                                if(patientGender == "F"){
+                                        conditions.show.push("HTC, HIV Dual Test");
+                                }
+                                conditions.show.push("HTC, Initial HIV Test Determine");
+                        }
+                        else{
+                                if(patientGender == "F"){
+                                        conditions.hide.push("HTC, HIV Dual Test");
+                                }
+                                conditions.hide.push("HTC, Initial HIV Test Determine");
+                        }
+                }
+                return conditions;
         }
 
 };
