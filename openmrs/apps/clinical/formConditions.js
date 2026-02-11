@@ -2177,18 +2177,18 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 conditions.show.push("HTC, Tested for HIV in The Past 12 Months");       
                         }
                 }
-                else if(JSON.stringify(conditionConcept) === JSON.stringify([])){
-                        if(SecondarySelfTest == "Yes"){
-                                conditions.show.push("Self_Test_Buddy");
-                                conditions.show.push("HTC, Kit Collected For");
-                                conditions.show.push("HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop");   
-                        }
-                        else{
-                                conditions.hide.push("Self_Test_Buddy");
-                                conditions.hide.push("HTC, Kit Collected For");
-                                conditions.hide.push("HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop", "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results");
-                        }
-                }
+                // else if(JSON.stringify(conditionConcept) === JSON.stringify([])){
+                //         if(SecondarySelfTest == "Yes"){
+                //                 conditions.show.push("Self_Test_Buddy");
+                //                 conditions.show.push("HTC, Kit Collected For");
+                //                 conditions.show.push("HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop");   
+                //         }
+                //         else{
+                //                 conditions.hide.push("Self_Test_Buddy");
+                //                 conditions.hide.push("HTC, Kit Collected For");
+                //                 conditions.hide.push("HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop", "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results");
+                //         }
+                // }
                 
                 return conditions;
         },
