@@ -87,7 +87,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
         /**** AUTOFILL WEIGHT VALUES */
         'WEIGHT': function (formName, formFieldValues) {
                 var conditions = { assignedValues: [], disable: [] };
-                if (formName == "ANC, ANC Program" || formName == "HIV Treatment and Care Progress Template" || formName == "Vitals") { console.log(conditions.assignedValues.values())
+                if (formName == "ANC, ANC Program" || formName == "HIV Treatment and Care Progress Template" || formName == "Vitals") {
                         conditions.assignedValues.push(
                                 {
                                         field: "WEIGHT",
