@@ -107,7 +107,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
         /**** AUTOFILL SYSTOLIC VALUES */
         'Systolic': function (formName, formFieldValues) {
                 var conditions = { assignedValues: [], disable: [] };
-                if (formName == "ANC, ANC Program" || formName == "Vitals") {
+                if (formName == "ANC, ANC Program" || formName == "Vitals" || formName == "HIV Treatment and Care Progress Template") {
                         conditions.assignedValues.push(
                                 {
                                         field: "Systolic",
@@ -127,7 +127,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
         /**** AUTOFILL DIASTOLIC VALUES */
         'Diastolic': function (formName, formFieldValues) {
                 var conditions = { assignedValues: [], disable: [] };
-                if (formName == "ANC, ANC Program" || formName == "Vitals") {
+                if (formName == "ANC, ANC Program" || formName == "Vitals" || formName == "HIV Treatment and Care Progress Template") {
                         conditions.assignedValues.push(
                                 {
                                         field: "Diastolic",
@@ -148,7 +148,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
         'IMAM, MUAC': function (formName, formFieldValues) {
                 var conditions = { assignedValues: [], disable: [] };
-                if (formName == "ANC, ANC Program") {
+                if (formName == "ANC, ANC Program" || formName == "HIV Treatment and Care Progress Template") {
                         conditions.assignedValues.push(
                                 {
                                         field: "IMAM, MUAC",
@@ -1437,7 +1437,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
         /*--- ARV Drug days and drug supply duration generic autocalculations---- */
         'ART, Follow-up date': function (formName, formFieldValues) {
-                if (formName == "HIVTC, Patient Register") {
+                if (formName == "Regimen") {
                         var followUpDate = formFieldValues['ART, Follow-up date'];
                         var conditions = { assignedValues: [], error: [] };
                         var dateUtil = Bahmni.Common.Util.DateUtil;
@@ -1455,7 +1455,8 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 // if(daysDispensed <= 0) {
                                 // conditions.error.push("Invalid input for Follow-up Date, must be a date in the future. Please correct.");
                                 // conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed });
-                                // } else {
+                                // }
+                                // else {
                                 var drugSupplyPeriod = "";
 
                                 if (daysDispensed >= 10 && daysDispensed < 21) {
@@ -3320,6 +3321,22 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         }
                 }
                 return conditions;
-        }
+        },
+
+
+
+        // New ART form conditions
+        'BonoloMeds Client': function (formName, formFieldValues) {
+                var conditions = { show: [], hide: [] };
+                var conditionConcept = formFieldValues['BonoloMeds Client'];
+                if (formName == "HIV Treatment and Care Progress Template") {
+                        if (conditionConcept==='Yes') {
+                                conditions.show.push("BonoloMeds");
+                        } else {
+                                conditions.hide.push("BonoloMeds");
+                        }
+                }
+                return conditions;
+        },
 
 };
