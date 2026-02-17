@@ -2138,80 +2138,64 @@ Bahmni.ConceptSet.FormConditions.rules = {
         //         return conditions;
         // },
 
+       
         'HTC, Distribution Mode': function (formName, formFieldValues) {
-                var conditionConcept = formFieldValues['HTC, Distribution Mode'];
-                var SecondarySelfTest = formFieldValues['Take Secondary Self Test'];
-                var testedForHIV = formFieldValues['Testing Eligibility, Tested For HIV'];
-                var conditions = { show: [], hide: [] };
-                conditionConcept = conditionConcept.sort();
-
-
-                if (JSON.stringify(conditionConcept) === JSON.stringify(['HTC, Secondary', 'HTC, Secondary'])) {
-                        conditions.show.push("Self_Test_Buddy");
-                        conditions.show.push("HTC, Kit Collected For");
-                        conditions.hide.push("HTC, HIVST Results");
-                        conditions.show.push("HTC, Date Of Distribution","HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop");
-
-
-                } else if (JSON.stringify(conditionConcept) === JSON.stringify(['HTC, Primary', 'HTC, Primary', 'HTC, Secondary', 'HTC, Secondary'])) {
-                        conditions.show.push("HTC, Date Of Distribution", "HTC, Key Pop","HTC, Distribution channel", "HTC, HIVST Results");
-                        if(testedForHIV == "No"){
-                                conditions.hide.push("HTC, Tested for HIV in The Past 12 Months");    
-                        }
-                        else{
-                                conditions.show.push("HTC, Tested for HIV in The Past 12 Months");       
-                        }
-                        conditions.show.push("Self_Test_Buddy");
-                        conditions.show.push("HTC, Kit Collected For");
-                        conditions.show.push("HTC, HIVST Results");
-
-
-                } else if (JSON.stringify(conditionConcept) === JSON.stringify(['HTC, Primary', 'HTC, Primary'])) {
-                        conditions.hide.push("Self_Test_Buddy");
-                        conditions.hide.push("HTC, Kit Collected For");
-                        conditions.show.push("HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop", "HTC, HIVST Results");
-                        if(testedForHIV == "No"){
-                                conditions.hide.push("HTC, Tested for HIV in The Past 12 Months");    
-                        }
-                        else{
-                                conditions.show.push("HTC, Tested for HIV in The Past 12 Months");       
-                        }
-                }
-                else if(JSON.stringify(conditionConcept) === JSON.stringify([])){
-                        if(SecondarySelfTest == "Yes"){
-                                conditions.show.push("Self_Test_Buddy");
-                                conditions.show.push("HTC, Kit Collected For");
-                                conditions.show.push("HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop");   
-                        }
-                        else{
-                                conditions.hide.push("Self_Test_Buddy");
-                                conditions.hide.push("HTC, Kit Collected For");
-                                conditions.hide.push("HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop", "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results");
-                        }
-                }
-                
-                return conditions;
-        },
-
-
-
-        /*'Testing Eligibility, Last 12 Months': function (formName, formFieldValues) {
-                if (formName == "HIV Testing and Counseling Intake Template") {
-                        var months = formFieldValues['Testing Eligibility, Last 12 Months'];
+                if(formName=="HTS Self-test Distribution Register"){
+                        var conditionConcept = formFieldValues['HTC, Distribution Mode'];
                         var conditions = { show: [], hide: [], enable: [], disable: [] };
+                        conditionConcept = conditionConcept.sort();
 
-                        if (months == "Had sex with more than 1 sexual partner" ||
-                                months == "Had unprotected sex with HIV+ partner" ||
-                                months == "Had unprotected sex with partner of unknown HIV status" ||
-                                months == "Had /currently have genital sores and/ or discharge" ||
-                                months == "None") {
-                                conditions.show.push("Test For HIV");
-                                conditions.show.push("Offered prevention Counselling and or Linked to prevention services")
-                        }
                         
+                        console.log(JSON.stringify(conditionConcept),JSON.stringify('HTC, Secondary', 'HTC, Secondary'));
+                        if(JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary A', 'HTC, Primary A')) && JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary B', 'HTC, Primary B')) ){
+                                conditions.disable.push('HTC, Distribution Mode');
+                                conditions.enable.push('HTC, Distribution Mode');
+                                alert('Cannot have both both both Primary A and Primary B selected');
+                        }
+
+                        if (JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Secondary', 'HTC, Secondary'))) {
+                                if(JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary A', 'HTC, Primary A')) || JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary B', 'HTC, Primary B'))){
+                                        conditions.show.push("Self_Test_Buddy");
+                                        conditions.show.push("HTS, Tested on site");
+                                        conditions.show.push("HIVTC, Population Group");
+                                        conditions.show.push("Education Level");
+                                        conditions.show.push("HTC, HIVST Results");
+                                        conditions.show.push("HTS, Confirmatory results")
+                                }
+                                else{
+                                        conditions.hide.push("Self_Test_Buddy");
+                                        conditions.hide.push("HTS, Tested on site");
+                                        conditions.hide.push("HIVTC, Population Group");
+                                        conditions.hide.push("Education Level");
+                                        conditions.hide.push("HTC, HIVST Results");
+                                        conditions.hide.push("HTS, Confirmatory results")
+                                        
+                                }
+                        }
+                        else if(!JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Secondary', 'HTC, Secondary'))) {
+
+                                if(JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary A', 'HTC, Primary A')) || JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary B', 'HTC, Primary B'))){
+                                        conditions.hide.push("Self_Test_Buddy");
+                                        conditions.show.push("HTS, Tested on site");
+                                        conditions.show.push("HIVTC, Population Group");
+                                        conditions.show.push("Education Level");
+                                        conditions.show.push("HTC, HIVST Results");
+                                        conditions.show.push("HTS, Confirmatory results")
+                                }
+                                else{
+                                        conditions.hide.push("Self_Test_Buddy");
+                                        conditions.hide.push("HTS, Tested on site");
+                                        conditions.hide.push("HIVTC, Population Group");
+                                        conditions.hide.push("Education Level");
+                                        conditions.hide.push("HTC, HIVST Results");
+                                        conditions.hide.push("HTS, Confirmatory results")
+                                }
+                        }
                         return conditions;
                 }
+                
         },
+
         /*
                ------------------------------------------------------
                                 Contact index tracing formConditions
