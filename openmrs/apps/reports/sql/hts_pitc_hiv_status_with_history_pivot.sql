@@ -50,6 +50,7 @@ JOIN (
       AND o.voided = 0
 ) th 
     ON th.person_id = p.person_id
+    AND th.encounter_id = tr.encounter_id
 
 -- ✅ PITC Only
 JOIN (
@@ -62,6 +63,7 @@ JOIN (
     GROUP BY person_id
 ) pitc 
     ON pitc.person_id = p.person_id
+    AND pitc.encounter_id = tr.encounter_id
 
 -- ✅ Age Grouping
 JOIN reporting_age_group ag
@@ -134,6 +136,7 @@ JOIN (
 ) pitc 
     ON pitc.person_id = p.person_id
 WHERE p.voided = 0
+
 
 -- ==============================
 -- Custom Sort Order:
