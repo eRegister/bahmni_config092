@@ -93,6 +93,51 @@ SELECT
         LIMIT 1                                         -- Get just one value
     ) AS "E-locker District",
 
+    -- Subquery to get the latest VL collection date
+    (
+        SELECT DATE(o5.value_datetime)
+        FROM obs o5
+        WHERE o5.person_id = pn.person_id
+            AND o5.concept_id = 5494           -- VL collection date concept
+            AND o5.voided = 0
+        ORDER BY o5.obs_datetime DESC, o5.date_created DESC
+        LIMIT 1
+    ) AS "Latest VL Collection Date",
+
+    -- Subquery to get the latest VL result (concept 4266)
+    (
+        SELECT cn.name
+        FROM obs o6
+        INNER JOIN concept_name cn ON o6.value_coded = cn.concept_id
+        WHERE o6.person_id = pn.person_id
+            AND o6.concept_id = 4266           -- VL result concept
+            AND o6.voided = 0
+        ORDER BY o6.obs_datetime DESC, o6.date_created DESC
+        LIMIT 1
+    ) AS "Latest VL Result",
+
+    -- Subquery to the latest CD4 collection date
+    (
+        SELECT DATE(o7.value_datetime)
+        FROM obs o7
+        WHERE o7.person_id = pn.person_id
+            AND o7.concept_id = 6526           -- CD4 collection date concept
+            AND o7.voided = 0
+        ORDER BY o7.obs_datetime DESC, o7.date_created DESC
+        LIMIT 1
+    ) AS "Latest CD4 Collection Date",
+
+     -- Subquery to get the latest CD4 result
+    (
+        SELECT o8.value_numeric
+        FROM obs o8
+        WHERE o8.person_id = pn.person_id
+            AND o8.concept_id = 2256           -- CD4 result concept
+            AND o8.voided = 0
+        ORDER BY o8.obs_datetime DESC, o8.date_created DESC
+        LIMIT 1
+    ) AS "Latest CD4 Result",
+
     -- Subquery to get patient allergies
     (
         -- Get the readable name from concept_name table for the coded value
@@ -149,7 +194,10 @@ SELECT
             WHERE pa.person_id = pn.person_id 
             AND pa.preferred = 1
         LIMIT 1
-    ) AS "Address"
+    ) AS "Address",
+
+    -- Select the name of the location where the ART encounter took place
+    parent_loc.name AS "Location"
 
 -- Main table: person_name (contains patient names)
 FROM 
@@ -179,6 +227,11 @@ FROM
      -- Join to get provider information
     LEFT JOIN encounter_provider ep ON latest_art.encounter_id = ep.encounter_id
     LEFT JOIN provider prov ON ep.provider_id = prov.provider_id
+
+    -- Join to get location information
+    LEFT JOIN encounter e ON latest_art.encounter_id = e.encounter_id
+    LEFT JOIN location loc ON e.location_id = loc.location_id
+    LEFT JOIN location parent_loc ON loc.parent_location = parent_loc.location_id
 
 
 -- Order results by the date of the ART encounter
