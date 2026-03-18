@@ -138,7 +138,7 @@ SELECT
         LIMIT 1
     ) AS "Latest CD4 Result",
 
-    -- Subquery to get patient allergies
+    -- Subquery to get if patient has allergies
     (
         -- Get the readable name from concept_name table for the coded value
         SELECT cn.name
@@ -146,6 +146,17 @@ SELECT
         INNER JOIN concept_name cn ON o4.value_coded = cn.concept_id 
         WHERE o4.person_id = pn.person_id           -- Match current patient
             AND o4.concept_id = 5591                 -- Allergy concept
+            AND o4.voided = 0
+        LIMIT 1                                         -- Just in case of multiple allergies, take one
+    ) AS "Has Allergies",
+
+    -- Subquery to get specific allergies if any
+    (
+        SELECT o4.value_text
+        FROM obs o4
+        WHERE o4.person_id = pn.person_id           -- Match current patient
+            AND o4.concept_id = 5592                 -- Allergy concept
+            AND o4.voided = 0
         LIMIT 1                                         -- Just in case of multiple allergies, take one
     ) AS "Allergies",
 
