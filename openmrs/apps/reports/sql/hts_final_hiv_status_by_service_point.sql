@@ -67,11 +67,12 @@ LEFT JOIN obs o_history
     AND o_history.encounter_id = tr.encounter_id
 
 -- Mode of Entry
-LEFT JOIN obs o_entry 
+INNER JOIN obs o_entry 
     ON o_entry.person_id = tr.person_id
     AND o_entry.encounter_id = tr.encounter_id
     AND o_entry.concept_id = 4238
     AND o_entry.voided = 0
+    AND o_entry.value_coded IS NOT NULL
 
 JOIN reporting_age_group ag 
     ON CAST('#endDate#' AS DATE) BETWEEN 
