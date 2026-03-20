@@ -29,7 +29,7 @@ JOIN obs tr
     ON tr.person_id = p.person_id
     AND tr.concept_id = 2165 -- HIV Final Status
     AND tr.voided = 0
-    AND CAST(tr.obs_datetime AS DATE) BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+    AND CAST(tr.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE) AND CAST(tr.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
 
 -- ✅ Latest Testing History per patient
 JOIN (
