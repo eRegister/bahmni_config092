@@ -82,7 +82,7 @@ JOIN reporting_age_group ag
 
 WHERE tr.concept_id = 2165
   AND tr.voided = 0
-  AND tr.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+  AND tr.obs_datetime >= CAST('#startDate#' AS DATE) AND tr.obs_datetime <= CAST('#endDate#' AS DATE)
   AND pi.identifier_type = 3 
   AND pi.preferred = 1 
   AND pi.voided = 0
