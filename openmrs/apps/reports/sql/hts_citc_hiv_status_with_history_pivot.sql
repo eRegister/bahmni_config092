@@ -102,7 +102,8 @@ JOIN obs tr
     ON tr.person_id = p.person_id
     AND tr.concept_id = 2165
     AND tr.voided = 0
-    AND CAST(tr.obs_datetime AS DATE) BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+    AND CAST(tr.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE) AND CAST(tr.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
+
 JOIN (
     SELECT o.person_id,
            IF(o.value_coded = 2146, 'Repeat', 'New') AS Testing_History
@@ -112,7 +113,7 @@ JOIN (
         FROM obs
         WHERE concept_id = 4798
           AND voided = 0
-          AND CAST(obs_datetime AS DATE) BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+          AND CAST(obs_datetime AS DATE) >= CAST('#startDate#' AS DATE) AND CAST(obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
         GROUP BY person_id
     ) latest 
         ON latest.person_id = o.person_id 
@@ -129,7 +130,8 @@ JOIN (
     WHERE concept_id = 4228
       AND value_coded = 4226 -- CITC
       AND voided = 0
-      AND CAST(obs_datetime AS DATE) BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+      AND CAST(obs_datetime AS DATE) >= CAST('#startDate#' AS DATE) AND CAST(obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
+
     GROUP BY person_id
 ) pitc 
     ON pitc.person_id = p.person_id
