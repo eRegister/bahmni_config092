@@ -29,7 +29,7 @@ FROM (
         ON tr.person_id = p.person_id
         AND tr.concept_id = 2165
         AND tr.voided = 0
-        AND CAST(tr.obs_datetime AS DATE) BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+        AND tr.obs_datetime >= CAST('#startDate#' AS DATE) AND tr.obs_datetime <= CAST('#endDate#' AS DATE)
 
     -- Require PITC selected in same encounter
     JOIN obs pitc
@@ -57,7 +57,7 @@ FROM (
             FROM obs
             WHERE concept_id = 4798
               AND voided = 0
-              AND CAST(obs_datetime AS DATE) BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+              AND obs_datetime >= CAST('#startDate#' AS DATE) AND obs_datetime <= CAST('#endDate#' AS DATE)
             GROUP BY person_id
         ) latest
             ON latest.person_id = o.person_id
@@ -108,7 +108,7 @@ FROM (
         ON tr.person_id = p.person_id
         AND tr.concept_id = 2165
         AND tr.voided = 0
-        AND CAST(tr.obs_datetime AS DATE) BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+        AND tr.obs_datetime >= CAST('#startDate#' AS DATE) AND tr.obs_datetime <= CAST('#endDate#' AS DATE)
 
     -- Require PITC selected in same encounter
     JOIN obs pitc
@@ -136,8 +136,9 @@ FROM (
             FROM obs
             WHERE concept_id = 4798
               AND voided = 0
-              AND CAST(obs_datetime AS DATE) BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-            GROUP BY person_id
+            AND obs_datetime >= CAST('#startDate#' AS DATE) AND obs_datetime <= CAST('#endDate#' AS DATE)
+
+    GROUP BY person_id
         ) latest
             ON latest.person_id = o.person_id
            AND latest.latest_date = o.obs_datetime
