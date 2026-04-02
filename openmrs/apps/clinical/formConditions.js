@@ -1,3 +1,4 @@
+
 var visitTypeTracker = '';  //This variable tracks the ANC Program visit type
 var TBStatusTracker = ''; //This varible tracks the TB Status to allow it to be used globally
 
@@ -1444,7 +1445,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
 
                         if (followUpDate) {
-                                var daysDispesed;
+                                var daysDispensed;
 
                                 if (!retrospectiveDate) {
                                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
@@ -1494,7 +1495,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
 
                         if (followUpDate) {
-                                var daysDispesed;
+                                var daysDispensed;
 
                                 if (!retrospectiveDate) {
                                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
@@ -1540,6 +1541,31 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
                 }
         },
+
+        'Date of last test': function (formName, formFieldValues) {
+                if (formName == "HTC, HIV Test") {
+                        var testDate = formFieldValues['Date of last test'];
+                        var conditions = { assignedValues: [], error: [] };
+                        var dateUtil = Bahmni.Common.Util.DateUtil;
+                        var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
+
+                        if (testDate) {
+                                var sinceTest;
+
+                                if (!retrospectiveDate) {
+                                        sinceTest = dateUtil.diffInDaysRegardlessOfTime(testDate, dateUtil.now());
+                                } else {
+                                        sinceTest = dateUtil.diffInDaysRegardlessOfTime( testDate, dateUtil.parse(retrospectiveDate.substr(1, 10)));
+                                }
+
+                              
+
+                                conditions.assignedValues.push({ field: "Days since test", fieldValue: sinceTest, autocalculate: true });
+                                
+                        }
+                        return conditions;
+                }
+        },
         /*--- TB number of days dispensed generic autocalculation----*/
         'TB, Next appointment/refill date': function (formName, formFieldValues) {
                 if (formName == "Tuberculosis Followup Template") {
@@ -1549,7 +1575,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
 
                         if (followUpDate) {
-                                var daysDispesed;
+                                var daysDispensed;
 
                                 if (!retrospectiveDate) {
                                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
