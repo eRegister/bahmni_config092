@@ -138,7 +138,7 @@ Left outer join
                 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
                 
                 AND o.voided=0
-				where o.concept_id = 4833  and o.value_coded = 4834
+				where o.concept_id = 4833  and o.value_coded IN (4834, 6535)
 				AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                 AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
 				AND patient.voided = 0 AND o.voided = 0
@@ -373,7 +373,7 @@ Left outer join
                 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
                 
                 AND o.voided=0
-				where o.concept_id = 4833  and o.value_coded = 4834
+				where o.concept_id = 4833  and o.value_coded IN (4834, 6535)
 				AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                 AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
 				AND patient.voided = 0 AND o.voided = 0

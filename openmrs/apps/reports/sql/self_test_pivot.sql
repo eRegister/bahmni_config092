@@ -20,7 +20,7 @@ from
                 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
-                 AND o.concept_id = 4833  and o.value_coded = 4834
+                 AND o.concept_id = 4833  and o.value_coded IN (4834,6535)
                  AND patient.voided = 0 AND o.voided = 0
                  AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                  AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
@@ -123,7 +123,7 @@ from
                 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
                 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
                 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
-                 AND o.concept_id = 4833  and o.value_coded = 4834
+                 AND o.concept_id = 4833  and o.value_coded IN (4834,6535)
                  AND patient.voided = 0 AND o.voided = 0
                  AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
                  AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
