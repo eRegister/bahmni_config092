@@ -43,7 +43,7 @@ SELECT
         WHERE o4.encounter_id = latest_art.encounter_id  -- From our latest ART encounter
             AND o4.concept_id = 4538                   -- Type of visit concept
         LIMIT 1                                         -- Get just one value
-    ) AS "New or Repeat",
+    ) AS "New or Revisit",
 
     DATE(latest_art.obs_datetime) AS "Prescription Date",  -- Convert datetime to just date for display
 
@@ -68,6 +68,16 @@ SELECT
             AND o2.concept_id = 3752                   -- Next clinical appointment date concept
         LIMIT 1                                         -- Just in case of ties, take one
     ) AS "Next Clinical Appointment Date",
+
+    -- Subquery to get the next drug pickup date from the latest ART encounter
+    (
+        -- Select the next drug pickup date (converted from datetime to just date)
+        SELECT DATE(o2.value_datetime) 
+        FROM obs o2 
+        WHERE o2.encounter_id = latest_art.encounter_id  -- From latest ART encounter
+            AND o2.concept_id = 6567                   -- Next drug pickup date concept
+        LIMIT 1                                         -- Just in case of ties, take one
+    ) AS "Next Drug Pickup Date",
 
     -- Subquery to select the drug pickup point from the latest ART encounter
     (
@@ -115,28 +125,6 @@ SELECT
         ORDER BY o6.obs_datetime DESC, o6.date_created DESC
         LIMIT 1
     ) AS "Latest VL Result",
-
-    -- Subquery to the latest CD4 collection date
-    (
-        SELECT DATE(o7.value_datetime)
-        FROM obs o7
-        WHERE o7.person_id = pn.person_id
-            AND o7.concept_id = 6526           -- CD4 collection date concept
-            AND o7.voided = 0
-        ORDER BY o7.obs_datetime DESC, o7.date_created DESC
-        LIMIT 1
-    ) AS "Latest CD4 Collection Date",
-
-     -- Subquery to get the latest CD4 result
-    (
-        SELECT o8.value_numeric
-        FROM obs o8
-        WHERE o8.person_id = pn.person_id
-            AND o8.concept_id = 2256           -- CD4 result concept
-            AND o8.voided = 0
-        ORDER BY o8.obs_datetime DESC, o8.date_created DESC
-        LIMIT 1
-    ) AS "Latest CD4 Result",
 
     -- Subquery to get if patient has allergies
     (
