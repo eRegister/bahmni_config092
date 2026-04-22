@@ -3466,6 +3466,31 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }
                 
                 return conditions;
+        },
+        'HIVTC, Bonolo Health next collection date': function (formName, formFieldValues) {
+                if (formName == "Bonolo Health") {
+                        var nextCollectionDate = formFieldValues['HIVTC, Bonolo Health next collection date'];
+                        var conditions = { assignedValues: [], error: [] };
+                        var dateUtil = Bahmni.Common.Util.DateUtil;
+                        var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
+
+                        if (nextCollectionDate) {
+                                var daysTillNextCollection;
+
+                                if (!retrospectiveDate) {
+                                        daysTillNextCollection = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), nextCollectionDate);
+                                } else {
+                                        daysTillNextCollection = dateUtil.diffInDaysRegardlessOfTime(dateUtil.parse(retrospectiveDate.substr(1, 10)), nextCollectionDate);
+                                }
+
+
+                                conditions.assignedValues.push({ field: "HIVTC, Bonolo Health days till next collection date", fieldValue: daysTillNextCollection, autocalculate: true });
+
+                                // }
+                        }
+                        return conditions;
                 }
+        }
+
 
 };
