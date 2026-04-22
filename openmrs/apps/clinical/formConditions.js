@@ -3346,17 +3346,126 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
 
         // New ART form conditions
-        'BonoloMeds Client': function (formName, formFieldValues) {
+        'Bonolo Health Client': function (formName, formFieldValues) {
                 var conditions = { show: [], hide: [] };
-                var conditionConcept = formFieldValues['BonoloMeds Client'];
+                var conditionConcept = formFieldValues['Bonolo Health Client'];
                 if (formName == "HIV Treatment and Care Progress Template") {
                         if (conditionConcept==='Yes') {
-                                conditions.show.push("BonoloMeds");
+                                conditions.show.push("Bonolo Health");
+                                conditions.hide.push("E-locker District");
+                                conditions.hide.push("E-locker Pickup Location Maseru");
+                                conditions.hide.push("E-locker Pickup Location Mafeteng");
+                                conditions.hide.push("E-locker Pickup Location Mohales Hoek");
+                                conditions.hide.push("Retail Pharmacy Pickup location Maseru");
+                                conditions.hide.push("Retail Pharmacy Pickup location Mohales Hoek");
+                                conditions.hide.push("Retail Pharmacy Pickup location Mafeteng");
+                                conditions.hide.push("Outreach/Health Post Pickup location Maseru");
+                                conditions.hide.push("Outreach/Health Post Pickup location Mohales Hoek");
+                                conditions.hide.push("Outreach/Health Post Pickup location Mafeteng");
                         } else {
-                                conditions.hide.push("BonoloMeds");
+                                conditions.hide.push("Bonolo Health");
                         }
                 }
                 return conditions;
         },
+
+        'Pick-up Locker Type': function (formName, formFieldValues) {
+                var conditions = { show: [], hide: [] };
+                var conditionConcept = formFieldValues['Pick-up Locker Type'];
+                if (formName == "Bonolo Health" || formName == "HIV Treatment and Care Progress Template") {
+                        if (conditionConcept == "E-locker" || conditionConcept == "Retail Pharmacy" || conditionConcept == "Outreach_Health_Post") {
+                                conditions.show.push("E-locker District");
+                        }
+                        else {
+                                conditions.hide.push("E-locker District");
+                        }
+                return conditions;
+                }
+        },
+
+
+        'E-locker District': function (formName, formFieldValues) {
+                var conditions = { show: [], hide: [] };
+                
+                if (formName !== "Bonolo Health") {
+                        return conditions;
+                }
+                
+                var district = formFieldValues['E-locker District'];
+                var lockerType = formFieldValues['Pick-up Locker Type'];
+                
+                // Map districts to their location suffixes
+                var districtMap = {
+                        'E-locker District Maseru': 'Maseru',
+                        'E-locker District Mafeteng': 'Mafeteng',
+                        'E-locker District Mohales Hoek': 'Mohales Hoek'
+                };
+                
+                var locationSuffix = districtMap[district];
+                
+                // If district not recognized or locker type missing, hide everything
+                if (!locationSuffix || !lockerType) {
+                        conditions.hide.push(
+                        "E-locker Pickup Location Maseru",
+                        "E-locker Pickup Location Mafeteng",
+                        "E-locker Pickup Location Mohales Hoek",
+                        "Retail Pharmacy Pickup location Maseru",
+                        "Retail Pharmacy Pickup location Mafeteng",
+                        "Retail Pharmacy Pickup location Mohales Hoek",
+                        "Outreach/Health Post Pickup location Maseru",
+                        "Outreach/Health Post Pickup location Mafeteng",
+                        "Outreach/Health Post Pickup location Mohales Hoek"
+                        );
+                        return conditions;
+                }
+                
+                // Map locker types to their prefix
+                var prefixMap = {
+                        'E-locker': 'E-locker Pickup Location',
+                        'Retail Pharmacy': 'Retail Pharmacy Pickup location',
+                        'Outreach_Health_Post': 'Outreach/Health Post Pickup location'
+                };
+                
+                var prefix = prefixMap[lockerType];
+                
+                if (prefix) {
+                        // Show only the matching location
+                        var showLocation = prefix + ' ' + locationSuffix;
+                        conditions.show.push(showLocation);
+                        
+                        // Hide all other locations for this locker type
+                        var allLocations = ['Maseru', 'Mafeteng', 'Mohales Hoek'];
+                        allLocations.forEach(function(location) {
+                        if (location !== locationSuffix) {
+                                conditions.hide.push(prefix + ' ' + location);
+                        }
+                        });
+                        
+                        // Hide all locations from other locker types
+                        for (var otherType in prefixMap) {
+                        if (otherType !== lockerType) {
+                                var otherPrefix = prefixMap[otherType];
+                                allLocations.forEach(function(location) {
+                                conditions.hide.push(otherPrefix + ' ' + location);
+                                });
+                        }
+                        }
+                } else {
+                        // Locker type  not selected - hide all pickup locations
+                        conditions.hide.push(
+                        "E-locker Pickup Location Maseru",
+                        "E-locker Pickup Location Mafeteng",
+                        "E-locker Pickup Location Mohales Hoek",
+                        "Retail Pharmacy Pickup location Maseru",
+                        "Retail Pharmacy Pickup location Mafeteng",
+                        "Retail Pharmacy Pickup location Mohales Hoek",
+                        "Outreach/Health Post Pickup location Maseru",
+                        "Outreach/Health Post Pickup location Mafeteng",
+                        "Outreach/Health Post Pickup location Mohales Hoek"
+                        );
+                }
+                
+                return conditions;
+                }
 
 };
