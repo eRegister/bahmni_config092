@@ -1,3 +1,4 @@
+
 var visitTypeTracker = '';  //This variable tracks the ANC Program visit type
 var TBStatusTracker = ''; //This varible tracks the TB Status to allow it to be used globally
 
@@ -1444,7 +1445,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
 
                         if (followUpDate) {
-                                var daysDispesed;
+                                var daysDispensed;
 
                                 if (!retrospectiveDate) {
                                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
@@ -1494,7 +1495,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
 
                         if (followUpDate) {
-                                var daysDispesed;
+                                var daysDispensed;
 
                                 if (!retrospectiveDate) {
                                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
@@ -1540,6 +1541,31 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
                 }
         },
+
+        'Date of last test': function (formName, formFieldValues) {
+                if (formName == "HTC, HIV Test") {
+                        var testDate = formFieldValues['Date of last test'];
+                        var conditions = { assignedValues: [], error: [] };
+                        var dateUtil = Bahmni.Common.Util.DateUtil;
+                        var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
+
+                        if (testDate) {
+                                var sinceTest;
+
+                                if (!retrospectiveDate) {
+                                        sinceTest = dateUtil.diffInDaysRegardlessOfTime(testDate, dateUtil.now());
+                                } else {
+                                        sinceTest = dateUtil.diffInDaysRegardlessOfTime( testDate, dateUtil.parse(retrospectiveDate.substr(1, 10)));
+                                }
+
+                              
+
+                                conditions.assignedValues.push({ field: "Days since test", fieldValue: sinceTest, autocalculate: true });
+                                
+                        }
+                        return conditions;
+                }
+        },
         /*--- TB number of days dispensed generic autocalculation----*/
         'TB, Next appointment/refill date': function (formName, formFieldValues) {
                 if (formName == "Tuberculosis Followup Template") {
@@ -1549,7 +1575,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
 
                         if (followUpDate) {
-                                var daysDispesed;
+                                var daysDispensed;
 
                                 if (!retrospectiveDate) {
                                         daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
@@ -1582,7 +1608,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 conditions.hide.push('Viral Load Lab Test');
 
                         }
-                        console.log(showTest);
                 }
                 return conditions;
         },
@@ -1791,7 +1816,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 if (formName == "HIV Testing and Counseling Intake Template") {
                         var citcOrPitc = formFieldValues['HTC, Initiated Testing and Counseling'];
                         var conditions = { show: [], hide: [], enable: [], disable: [] };
-                        console.log("citcOrPitc", !citcOrPitc);
                         if(!citcOrPitc){
                                 conditions.hide.push("Testing Eligibility, Tested For HIV");
                         }
@@ -1807,7 +1831,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         var conditions = { show: [], hide: [], enable: [], disable: [] };     
                                 
                         if(lastResults){
-                                console.log(lastResults, lastResults);
                                 if(lastResults=="Positive"){
                                         conditions.hide.push("HTC, Post-test Counseling Set");
                                         conditions.hide.push("HTC, HIV Test");
@@ -1858,7 +1881,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         var conditions = { show: [], hide: [], enable: [], disable: [] };
                         if(everTestedForHIV){
                                 if (everTestedForHIV == "Yes") {
-                                        console.log("yes",everTestedForHIV);
                                         conditions.hide.push("HTC, Post-test Counseling Set");
                                         conditions.hide.push("HTC, Pre-test Counseling Set");
                                         conditions.hide.push("HTC, HIV Test");
@@ -1867,7 +1889,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                                                 
                                 }
                                 else if (everTestedForHIV == "No") {
-                                        console.log("No",everTestedForHIV);
                                         conditions.show.push("HTC, Post-test Counseling Set");
                                         conditions.show.push("HTC, Pre-test Counseling Set");
                                         conditions.show.push("HTC, HIV Test");
@@ -2140,59 +2161,61 @@ Bahmni.ConceptSet.FormConditions.rules = {
         // },
 
         'HTC, Distribution Mode': function (formName, formFieldValues) {
-                var conditionConcept = formFieldValues['HTC, Distribution Mode'];
-                var SecondarySelfTest = formFieldValues['Take Secondary Self Test'];
-                var testedForHIV = formFieldValues['Testing Eligibility, Tested For HIV'];
-                var conditions = { show: [], hide: [] };
-                conditionConcept = conditionConcept.sort();
+                if(formName=="HTS Self-test Distribution Register"){
+                        var conditionConcept = formFieldValues['HTC, Distribution Mode'];
+                        var conditions = { show: [], hide: [], enable: [], disable: [] };
+                        conditionConcept = conditionConcept.sort();
 
-
-                if (JSON.stringify(conditionConcept) === JSON.stringify(['HTC, Secondary', 'HTC, Secondary'])) {
-                        conditions.show.push("Self_Test_Buddy");
-                        conditions.show.push("HTC, Kit Collected For");
-                        conditions.hide.push("HTC, HIVST Results");
-                        conditions.show.push("HTC, Date Of Distribution","HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop");
-
-
-                } else if (JSON.stringify(conditionConcept) === JSON.stringify(['HTC, Primary', 'HTC, Primary', 'HTC, Secondary', 'HTC, Secondary'])) {
-                        conditions.show.push("HTC, Date Of Distribution", "HTC, Key Pop","HTC, Distribution channel", "HTC, HIVST Results");
-                        if(testedForHIV == "No"){
-                                conditions.hide.push("HTC, Tested for HIV in The Past 12 Months");    
+                        
+                        if(JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary A', 'HTC, Primary A')) && JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary B', 'HTC, Primary B')) ){
+                                conditions.disable.push('HTC, Distribution Mode');
+                                conditions.enable.push('HTC, Distribution Mode');
+                                alert('Cannot have both both both Primary A and Primary B selected');
                         }
-                        else{
-                                conditions.show.push("HTC, Tested for HIV in The Past 12 Months");       
-                        }
-                        conditions.show.push("Self_Test_Buddy");
-                        conditions.show.push("HTC, Kit Collected For");
-                        conditions.show.push("HTC, HIVST Results");
 
+                        if (JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Secondary', 'HTC, Secondary'))) {
+                                if(JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary A', 'HTC, Primary A')) || JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary B', 'HTC, Primary B'))){
+                                        conditions.show.push("Self_Test_Buddy");
+                                        conditions.show.push("HTS, Tested on site");
+                                        conditions.show.push("HIVTC, Population Group");
+                                        conditions.show.push("Education Level");
+                                        conditions.show.push("HTC, HIVST Results");
+                                        conditions.show.push("HTS, Confirmatory results")
+                                }
+                                else{
+                                        conditions.hide.push("Self_Test_Buddy");
+                                        conditions.hide.push("HTS, Tested on site");
+                                        conditions.hide.push("HIVTC, Population Group");
+                                        conditions.hide.push("Education Level");
+                                        conditions.hide.push("HTC, HIVST Results");
+                                        conditions.hide.push("HTS, Confirmatory results")
+                                        
+                                }
+                        }
+                        else if(!JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Secondary', 'HTC, Secondary'))) {
 
-                } else if (JSON.stringify(conditionConcept) === JSON.stringify(['HTC, Primary', 'HTC, Primary'])) {
-                        conditions.hide.push("Self_Test_Buddy");
-                        conditions.hide.push("HTC, Kit Collected For");
-                        conditions.show.push("HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop", "HTC, HIVST Results");
-                        if(testedForHIV == "No"){
-                                conditions.hide.push("HTC, Tested for HIV in The Past 12 Months");    
+                                if(JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary A', 'HTC, Primary A')) || JSON.stringify(conditionConcept).includes(JSON.stringify('HTC, Primary B', 'HTC, Primary B'))){
+                                        conditions.hide.push("Self_Test_Buddy");
+                                        conditions.show.push("HTS, Tested on site");
+                                        conditions.show.push("HIVTC, Population Group");
+                                        conditions.show.push("Education Level");
+                                        conditions.show.push("HTC, HIVST Results");
+                                        conditions.show.push("HTS, Confirmatory results")
+                                }
+                                else{
+                                        conditions.hide.push("Self_Test_Buddy");
+                                        conditions.hide.push("HTS, Tested on site");
+                                        conditions.hide.push("HIVTC, Population Group");
+                                        conditions.hide.push("Education Level");
+                                        conditions.hide.push("HTC, HIVST Results");
+                                        conditions.hide.push("HTS, Confirmatory results")
+                                }
                         }
-                        else{
-                                conditions.show.push("HTC, Tested for HIV in The Past 12 Months");       
-                        }
+                        return conditions;
                 }
-                // else if(JSON.stringify(conditionConcept) === JSON.stringify([])){
-                //         if(SecondarySelfTest == "Yes"){
-                //                 conditions.show.push("Self_Test_Buddy");
-                //                 conditions.show.push("HTC, Kit Collected For");
-                //                 conditions.show.push("HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop");   
-                //         }
-                //         else{
-                //                 conditions.hide.push("Self_Test_Buddy");
-                //                 conditions.hide.push("HTC, Kit Collected For");
-                //                 conditions.hide.push("HTC, Date Of Distribution","HTC, Distribution channel", "HTC, Key Pop", "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results");
-                //         }
-                // }
                 
-                return conditions;
         },
+
 
 
 
@@ -2302,7 +2325,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
         },
 
         'HTSIDX,Tested': function (formName, formFieldValues) {
-                console.log(formName);
                 var tested = formFieldValues['HTSIDX,Tested'];
 
                 var conditions = { show: [], hide: [], enable: [], disable: [] };
@@ -2336,7 +2358,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         return conditions;
                 }
                 else if (formName == "HTC, Pre-test Counseling Set") {
-                        console.log("yes",tested);
                         if(tested == "Yes"){
                                 conditions.hide.push("HTC, Declined");
                                 conditions.show.push("HTC, Result if tested");
@@ -3095,7 +3116,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 conditions.hide.push("MDR-TB, Outcome");
                                 break;
                         case "MDR TB Followup Form":
-                                console.log("MDR-TB Followup Form");
                                 conditions.hide.push("MDR-TB, Baseline Assessment");
                                 conditions.hide.push("MDR-TB, PHQ9");
                                 conditions.show.push("MDR-TB Followup Form"); //show
