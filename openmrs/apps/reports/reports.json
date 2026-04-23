@@ -764,6 +764,13 @@
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/ART13_list.sql/"
         }
     },
+    "bonolo_meds_prescription_report": {
+        "name": "ART-094 | Bonolo Health Prescriptions (List)",
+        "type": "MRSGeneric",
+        "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/bonolo_meds_prescriptions_list.sql/"
+        }
+    },
     "htsfinalhivstatusbyservicepointlist": {
         "name": "HTS-001 | HTS Final HIV Status (List)",
         "type": "MRSGeneric",
