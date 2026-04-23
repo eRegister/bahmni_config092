@@ -272,6 +272,9 @@
       "Follow up Date" : {
         "allowFutureDates": true
       },
+	  "HIVTC, Bonolo Health next collection date" : {
+        "allowFutureDates": true
+      },
 				"Pregnancy Estimated Date of Delivery" : {
 					"allowFutureDates": true
 				},
