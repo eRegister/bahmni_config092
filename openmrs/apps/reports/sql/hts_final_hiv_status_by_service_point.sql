@@ -1,7 +1,7 @@
 SELECT 
     pi.identifier AS Patient_Identifier,
     CONCAT(pn.given_name, ' ', pn.family_name) AS Patient_Name,
-    FLOOR(DATEDIFF(CAST('#endDate#' AS DATE), p.birthdate)/365) AS Age,
+    TIMESTAMPDIFF(YEAR, p.birthdate, CAST('#endDate#' AS DATE)) AS Age,
     p.gender AS Sex,
     ag.name AS Age_Group,
     
@@ -45,7 +45,7 @@ SELECT
         WHEN 2143 THEN 'Other'
     END AS Mode_of_Entry
 
-FROM obs tr
+FROM obs tr /*tr => Testing results*/
 JOIN person p ON p.person_id = tr.person_id
 JOIN patient_identifier pi ON pi.patient_id = tr.person_id
 JOIN person_name pn ON pn.person_id = tr.person_id  AND pn.preferred = 1
@@ -55,7 +55,7 @@ JOIN location loc ON loc.location_id = tr.location_id
 LEFT JOIN obs o_initiation 
     ON o_initiation.person_id = tr.person_id
     AND o_initiation.encounter_id = tr.encounter_id
-    AND o_initiation.obs_datetime = tr.obs_datetime
+--    AND o_initiation.obs_datetime = tr.obs_datetime
     AND o_initiation.concept_id = 4228
     AND o_initiation.voided = 0
 
@@ -82,7 +82,7 @@ JOIN reporting_age_group ag
 
 WHERE tr.concept_id = 2165
   AND tr.voided = 0
-  AND tr.obs_datetime >= CAST('#startDate#' AS DATE) AND tr.obs_datetime <= CAST('#endDate#' AS DATE)
+  AND tr.obs_datetime >= CAST('#startDate#' AS DATE) AND tr.obs_datetime < DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL 1 DAY)
   AND pi.identifier_type = 3 
   AND pi.preferred = 1 
   AND pi.voided = 0
