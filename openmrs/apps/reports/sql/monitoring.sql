@@ -1,5 +1,5 @@
 SELECT 
-p.Patient_Identifier,
+    p.Patient_Identifier,
     p.ART_Number,
     p.File_Number,
     p.Patient_Name,
@@ -29,7 +29,7 @@ FROM
             WHEN base.initiated_this_month = 1 THEN 'Initiated'
             WHEN base.seen_this_month = 1 THEN 'Seen'
             WHEN base.seen_this_month = 0
-                AND base.latest_follow_up > '#endDate#'
+                AND base.latest_follow_up >= '#endDate#'
                 AND base.latest_follow_up IS NOT NULL
             THEN 'Seen_Prev_Months'
             WHEN base.days_missed BETWEEN 1 AND 28 THEN 'MissedWithin28Days'
@@ -48,7 +48,7 @@ FROM
             file.identifier AS File_Number,
             CONCAT(pn.given_name, ' ', pn.family_name) AS Patient_Name,
 
-            FLOOR(DATEDIFF('#endDate#', person.birthdate)/365) AS Age,
+            TIMESTAMPDIFF(YEAR, person.birthdate, '#endDate#') AS Age,
             person.birthdate AS DOB,
             person.gender AS Gender,
             ag.name AS age_group,
@@ -123,7 +123,7 @@ FROM
             SELECT 1
             FROM obs o
             WHERE o.person_id = patient.patient_id
-            AND o.concept_id IN (2249,2250,2403)
+            AND o.concept_id IN (2249,2403)
             AND o.voided = 0
             AND o.obs_datetime < DATE_ADD('#endDate#', INTERVAL 1 DAY)
         )
@@ -261,15 +261,40 @@ LEFT JOIN (
 /* =========================
    ENCOUNTER
 ========================= */
+
 LEFT JOIN (
     SELECT 
-        person_id,
-        MAX(DATE(obs_datetime)) AS encounter_date,
-        MAX(DATE(value_datetime)) AS follow_up
-    FROM obs
-    WHERE concept_id IN (3752,3753,6515)
-    AND obs_datetime < DATE_ADD('#endDate#', INTERVAL 1 DAY)
-    GROUP BY person_id
+        latest.person_id,
+        DATE(latest.max_obs_date) AS encounter_date,
+        DATE(latest.latest_follow_up) AS follow_up
+
+    FROM (
+        SELECT 
+            a.person_id,
+
+            /* latest encounter */
+            MAX(a.obs_datetime) AS max_obs_date,
+
+            /* linked follow-up from same obs group */
+            SUBSTRING_INDEX(
+                MAX(CONCAT(a.obs_datetime, '|', b.value_datetime)),
+                '|',
+                -1
+            ) AS latest_follow_up
+
+        FROM obs a
+
+        INNER JOIN obs b
+            ON a.obs_id = b.obs_group_id
+            AND b.concept_id = 3752
+            AND b.voided = 0
+
+        WHERE a.concept_id IN (3753,6515,2397)  /* encounter types */
+        AND a.voided = 0
+        AND a.obs_datetime < DATE_ADD('#endDate#', INTERVAL 1 DAY)
+
+        GROUP BY a.person_id
+    ) latest
 ) e ON p.Id = e.person_id
 
 /* =========================
