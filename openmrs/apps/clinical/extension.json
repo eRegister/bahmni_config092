@@ -81,6 +81,20 @@
         "requiredPrivilege": "app:clinical"
     },
 
+    "bahmniClinicalPatientsSearchPrepDrugPickupPatients": {
+        "id": "bahmni.clinical.patients.search.PrepDrugPickupPatients",
+        "extensionPointId": "org.bahmni.patient.search",
+        "type": "config",
+        "extensionParams": {
+                "searchHandler": "emrapi.sqlSearch.prepdrugpickup",
+                "translationKey": "MODULE_LABEL_PREP",
+                "forwardUrl": "#/default/patient/{{patientUuid}}/dashboard"
+        },
+        "label": "PrEP Drug Pickup",
+        "order": 4,
+        "requiredPrivilege": "app:clinical"
+    },
+
     "bahmniClinicalPatientsSearchNewOrPreARTPatients": {
         "id": "bahmni.clinical.patients.search.NewOrPreARTPatients",
         "extensionPointId": "org.bahmni.patient.search",
