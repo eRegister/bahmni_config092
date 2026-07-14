@@ -3353,9 +3353,9 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         if (conditionConcept==='Yes') {
                                 conditions.show.push("Bonolo Health");
                                 conditions.hide.push("Pick-up District");
-                                conditions.hide.push("Pick-up Pickup Location Maseru");
-                                conditions.hide.push("Pick-up Pickup Location Mafeteng");
-                                conditions.hide.push("Pick-up Pickup Location Mohales Hoek");
+                                conditions.hide.push("Pick-up Location Maseru");
+                                conditions.hide.push("Pick-up Location Mafeteng");
+                                conditions.hide.push("Pick-up Location Mohales Hoek");
                                 conditions.hide.push("Retail Pharmacy Pickup location Maseru");
                                 conditions.hide.push("Retail Pharmacy Pickup location Mohales Hoek");
                                 conditions.hide.push("Retail Pharmacy Pickup location Mafeteng");
