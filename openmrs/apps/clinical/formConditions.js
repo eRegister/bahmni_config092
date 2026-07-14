@@ -3352,7 +3352,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 if (formName == "HIV Treatment and Care Progress Template") {
                         if (conditionConcept==='Yes') {
                                 conditions.show.push("Bonolo Health");
-                                conditions.hide.push("E-locker District");
+                                conditions.hide.push("Pick-up District");
                                 conditions.hide.push("E-locker Pickup Location Maseru");
                                 conditions.hide.push("E-locker Pickup Location Mafeteng");
                                 conditions.hide.push("E-locker Pickup Location Mohales Hoek");
