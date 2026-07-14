@@ -3374,31 +3374,31 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 var conditionConcept = formFieldValues['Pick-up Locker Type'];
                 if (formName == "Bonolo Health" || formName == "HIV Treatment and Care Progress Template") {
                         if (conditionConcept == "E-locker" || conditionConcept == "Retail Pharmacy" || conditionConcept == "Outreach_Health_Post") {
-                                conditions.show.push("E-locker District");
+                                conditions.show.push("Pick-up District");
                         }
                         else {
-                                conditions.hide.push("E-locker District");
+                                conditions.hide.push("Pick-up District");
                         }
                 return conditions;
                 }
         },
 
 
-        'E-locker District': function (formName, formFieldValues) {
+        'Pick-up District': function (formName, formFieldValues) {
                 var conditions = { show: [], hide: [] };
                 
                 if (formName !== "Bonolo Health") {
                         return conditions;
                 }
                 
-                var district = formFieldValues['E-locker District'];
+                var district = formFieldValues['Pick-up District'];
                 var lockerType = formFieldValues['Pick-up Locker Type'];
                 
                 // Map districts to their location suffixes
                 var districtMap = {
-                        'E-locker District Maseru': 'Maseru',
-                        'E-locker District Mafeteng': 'Mafeteng',
-                        'E-locker District Mohales Hoek': 'Mohales Hoek'
+                        'Pick-up District Maseru': 'Maseru',
+                        'Pick-up District Mafeteng': 'Mafeteng',
+                        'Pick-up District Mohales Hoek': 'Mohales Hoek'
                 };
                 
                 var locationSuffix = districtMap[district];
