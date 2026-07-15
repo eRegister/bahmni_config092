@@ -79,46 +79,29 @@ SELECT
         LIMIT 1                                         -- Just in case of ties, take one
     ) AS "Next Drug Pickup Date",
 
-  -- Pickup type, for example E-locker
-   (
-     SELECT cn.name
-     FROM obs o4
-     INNER JOIN concept_name cn
-        ON cn.concept_id = o4.value_coded
-       AND cn.locale_preferred = 1
-     WHERE o4.encounter_id = latest_art.encounter_id
-      AND o4.concept_id = 6506
-      AND o4.voided = 0
-     ORDER BY o4.obs_datetime DESC, o4.date_created DESC
-    LIMIT 1
-   ) AS "Pickup Type",
-  -- Actual Maseru E-locker pickup location
-   (
-    SELECT cn.name
-    FROM obs o4
-    INNER JOIN concept_name cn
-        ON cn.concept_id = o4.value_coded
-       AND cn.locale_preferred = 1
-    WHERE o4.encounter_id = latest_art.encounter_id
-      AND o4.concept_id IN (6511,6574,6573,6575,6572,6571,6576,6577,6578)
-      AND o4.voided = 0
-    ORDER BY o4.obs_datetime DESC, o4.date_created DESC
-    LIMIT 1
-) AS "Pickup Location",
+    -- Subquery to select the drug pickup point from the latest ART encounter
+    (
+        -- Get the readable name from concept_name table for the coded value
+        SELECT cn.name
+        FROM obs o4
+        INNER JOIN concept_name cn ON o4.value_coded = cn.concept_id 
+                      
+        WHERE o4.encounter_id = latest_art.encounter_id  -- From latest ART encounter
+            AND o4.concept_id = 6511                   -- Drug pickup point concept (stores a concept ID)
+        LIMIT 1                                         -- Get just one value
+    ) AS "Drug Pickup Point",
 
- -- Pickup district, for example Maseru
-(
-    SELECT cn.name
-    FROM obs o4
-    INNER JOIN concept_name cn
-        ON cn.concept_id = o4.value_coded
-       AND cn.locale_preferred = 1
-    WHERE o4.encounter_id = latest_art.encounter_id
-      AND o4.concept_id = 6510
-      AND o4.voided = 0
-    ORDER BY o4.obs_datetime DESC, o4.date_created DESC
-    LIMIT 1
-) AS "Pickup District",
+    -- Subquery to get E-locker district from the latest ART encounter
+    (
+        -- Get the readable name from concept_name table for the coded value
+        SELECT cn.name
+        FROM obs o4
+        INNER JOIN concept_name cn ON o4.value_coded = cn.concept_id 
+                   
+        WHERE o4.encounter_id = latest_art.encounter_id  -- From latest ART encounter
+            AND o4.concept_id = 6510                   -- E-locker district concept (stores a concept ID)
+        LIMIT 1                                         -- Get just one value
+    ) AS "E-locker District",
 
     -- Subquery to get the latest VL collection date
     (
@@ -187,12 +170,13 @@ SELECT
     ) AS "Secondary Contact",
 
     -- Subquery to get the gender of the patient
-  
-     CASE p.gender
-         WHEN 'M' THEN 'Male'
-         WHEN 'F' THEN 'Female'
-        ELSE p.gender
-    END AS "Gender",
+    (
+        SELECT value
+        FROM person_attribute pa 
+        WHERE pa.person_id = pn.person_id 
+            AND pa.person_attribute_type_id = 33
+        LIMIT 1
+    ) AS "Gender",
 
     -- Subquery to get the DOB of the patient
     (
@@ -201,13 +185,6 @@ SELECT
         WHERE p.person_id = pn.person_id
         LIMIT 1
     ) AS "DOB",
-  
-    -- Subquery to calculate the Age of a patient
-    TIMESTAMPDIFF(
-    YEAR,
-    p.birthdate,
-    DATE(latest_art.obs_datetime)
-    ) AS "Age",
 
     -- Subquery to the address of the patient
     (
@@ -225,8 +202,6 @@ SELECT
 FROM 
     person_name pn
     
-    LEFT JOIN person p
-        ON p.person_id = pn.person_id
     -- INNER JOIN with a subquery that finds the latest ART encounter for each patient
     INNER JOIN (
         -- Subquery to get the latest ART encounter (concept 6491 with value 2146)
