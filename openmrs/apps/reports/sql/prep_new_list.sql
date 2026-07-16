@@ -1,4 +1,4 @@
-SELECT patientIdentifier AS Patient_Identifier, patientName as Patient_Name, Age, Gender, age_group as Age_Group, 'Initiated' AS 'Program_Status',Entry_Point,Entry_Point_level_facility,Entry_Point_level_community,IFNULL(prep_group,'Other') as Prep_Group, IFNULL(prep_option,'Other') as Prep_Option, Location
+SELECT patientIdentifier AS Patient_Identifier, patientName as Patient_Name, Age, Gender, age_group as Age_Group, 'Initiated' AS 'Program_Status',Entry_Point,Entry_Point_level_facility,Entry_Point_level_community,IFNULL(prep_group,'Other') as Prep_Group, IFNULL(prep_option,'Other') as Prep_Option, IFNULL(switch_to_len,'No') AS Switch_Status, Location
 	FROM
                 (select distinct patient.patient_id AS Id,
 									   patient_identifier.identifier AS patientIdentifier,
@@ -253,6 +253,67 @@ SELECT patientIdentifier AS Patient_Identifier, patientName as Patient_Name, Age
 
 						ON Newly_Initiated_Clients.Id = prep_option_data.patient_id
 					
+					LEFT JOIN
+						(
+							SELECT DISTINCT
+								patient.patient_id,
+
+								CASE
+									WHEN o.value_coded = 2146 THEN 'Yes'
+									WHEN o.value_coded = 2147 THEN 'No'
+									ELSE 'Unknown'
+								END AS switch_to_len
+
+							FROM obs o
+
+							INNER JOIN patient
+								ON o.person_id = patient.patient_id
+								AND o.voided = 0
+								AND o.concept_id = 6605
+								AND o.value_coded IN (2146,2147)
+								AND CAST(o.obs_datetime AS DATE) >= CAST('#startDate#' AS DATE)
+								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
+
+							INNER JOIN person
+								ON person.person_id = patient.patient_id
+								AND person.voided = 0
+
+							INNER JOIN location l
+								ON o.location_id = l.location_id
+								AND l.retired = 0
+
+							INNER JOIN person_name
+								ON person.person_id = person_name.person_id
+								AND person_name.preferred = 1
+
+							INNER JOIN patient_identifier
+								ON patient_identifier.patient_id = person.person_id
+								AND patient_identifier.identifier_type = 3
+								AND patient_identifier.preferred = 1
+
+							INNER JOIN reporting_age_group AS observed_age_group
+								ON CAST('#endDate#' AS DATE) BETWEEN
+								(
+									DATE_ADD(
+										DATE_ADD(person.birthdate,
+										INTERVAL observed_age_group.min_years YEAR),
+										INTERVAL observed_age_group.min_days DAY
+									)
+								)
+								AND
+								(
+									DATE_ADD(
+										DATE_ADD(person.birthdate,
+										INTERVAL observed_age_group.max_years YEAR),
+										INTERVAL observed_age_group.max_days DAY
+									)
+								)
+
+							WHERE observed_age_group.report_group_name = 'Modified_Ages'
+
+						) switch_to_len_data
+
+						ON Newly_Initiated_Clients.Id = switch_to_len_data.patient_id
 
 
 					GROUP BY Newly_Initiated_Clients.patientName
